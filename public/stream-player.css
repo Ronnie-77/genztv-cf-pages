@@ -1,0 +1,706 @@
+/* StreamPlayer — Production Live Streaming Player */
+/* Version 1.0.0 */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.sp-wrapper {
+  position: relative;
+  width: 100%;
+  background: #000;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.sp-wrapper:focus {
+  outline: none;
+}
+
+/* Aspect ratio container */
+.sp-ratio {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 */
+  background: #000;
+  overflow: hidden;
+}
+
+.sp-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  background: #000;
+}
+
+/* ─── Poster ─── */
+.sp-poster {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-color: #111;
+  z-index: 2;
+  transition: opacity 0.4s ease;
+}
+
+.sp-poster.sp-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ─── Overlays ─── */
+.sp-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* Big play button */
+.sp-big-play {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: all;
+  transition: background 0.2s ease, transform 0.15s ease;
+  backdrop-filter: blur(4px);
+}
+
+.sp-big-play:hover {
+  background: rgba(230, 57, 70, 0.8);
+  transform: scale(1.08);
+}
+
+.sp-big-play svg {
+  width: 28px;
+  height: 28px;
+  fill: #fff;
+  margin-left: 4px;
+}
+
+.sp-big-play.sp-hidden {
+  display: none;
+}
+
+/* Spinner */
+.sp-spinner {
+  width: 48px;
+  height: 48px;
+  pointer-events: none;
+}
+
+.sp-spinner circle {
+  fill: none;
+  stroke: #e63946;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 60;
+  transform-origin: center;
+  animation: sp-spin 0.9s linear infinite;
+}
+
+@keyframes sp-spin {
+  to { transform: rotate(360deg); }
+}
+
+.sp-spinner.sp-hidden {
+  display: none;
+}
+
+/* ─── LIVE badge (top-left) ─── */
+.sp-live-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 4px 10px 4px 8px;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.sp-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e63946;
+  animation: sp-pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes sp-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.sp-live-text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+/* ─── Stream Title ─── */
+.sp-title-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 20;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  max-width: calc(100% - 120px);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ─── Error overlay ─── */
+.sp-error-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+}
+
+.sp-error-overlay.sp-hidden {
+  display: none;
+}
+
+.sp-error-icon {
+  width: 48px;
+  height: 48px;
+  opacity: 0.6;
+}
+
+.sp-error-icon path {
+  fill: #e63946;
+}
+
+.sp-error-message {
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.sp-error-sub {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+}
+
+.sp-retry-btn {
+  margin-top: 4px;
+  padding: 9px 22px;
+  background: #e63946;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.sp-retry-btn:hover {
+  background: #c1121f;
+}
+
+.sp-retry-btn:active {
+  transform: scale(0.97);
+}
+
+/* ─── Screen click area ─── */
+.sp-click-area {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  cursor: pointer;
+}
+
+/* ─── Controls ─── */
+.sp-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 25;
+  padding: 40px 12px 10px;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.sp-controls.sp-hidden-controls {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Progress bar (VOD only) */
+.sp-progress-wrap {
+  position: relative;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 6px;
+}
+
+.sp-progress-wrap.sp-live-mode {
+  display: none;
+}
+
+.sp-progress-track {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  overflow: visible;
+  transition: height 0.15s ease;
+}
+
+.sp-progress-wrap:hover .sp-progress-track {
+  height: 6px;
+}
+
+.sp-progress-buffer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  width: 0%;
+  pointer-events: none;
+}
+
+.sp-progress-played {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: #e63946;
+  border-radius: 2px;
+  width: 0%;
+  pointer-events: none;
+}
+
+.sp-progress-thumb {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  background: #e63946;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.3);
+}
+
+.sp-progress-wrap:hover .sp-progress-thumb {
+  opacity: 1;
+}
+
+.sp-progress-tooltip {
+  position: absolute;
+  bottom: 22px;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.sp-progress-wrap:hover .sp-progress-tooltip {
+  opacity: 1;
+}
+
+/* Control bar row */
+.sp-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sp-spacer {
+  flex: 1;
+}
+
+/* Buttons */
+.sp-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.85);
+  transition: color 0.15s ease, background 0.15s ease;
+  flex-shrink: 0;
+}
+
+.sp-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sp-btn:focus-visible {
+  outline: 2px solid #e63946;
+  outline-offset: 2px;
+}
+
+.sp-btn svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+  fill: currentColor;
+}
+
+.sp-btn.sp-btn-sm svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* Live edge button */
+.sp-live-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+  padding: 3px 9px 3px 7px;
+  border-radius: 4px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sp-live-btn .sp-live-btn-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e63946;
+  flex-shrink: 0;
+}
+
+.sp-live-btn.sp-at-live {
+  border-color: #e63946;
+  color: #e63946;
+}
+
+.sp-live-btn.sp-at-live:hover {
+  background: rgba(230, 57, 70, 0.12);
+}
+
+.sp-live-btn.sp-behind-live {
+  border-color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.6);
+}
+
+.sp-live-btn.sp-behind-live .sp-live-btn-dot {
+  background: rgba(255,255,255,0.4);
+}
+
+.sp-live-btn.sp-behind-live:hover {
+  border-color: rgba(255,255,255,0.5);
+  color: #fff;
+}
+
+/* Time display */
+.sp-time {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
+  padding: 0 4px;
+  letter-spacing: 0.02em;
+}
+
+/* Volume */
+.sp-volume-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sp-volume-slider-wrap {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.2s ease;
+}
+
+.sp-volume-wrap:hover .sp-volume-slider-wrap,
+.sp-volume-wrap:focus-within .sp-volume-slider-wrap {
+  width: 72px;
+}
+
+.sp-volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 72px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.25);
+  outline: none;
+  cursor: pointer;
+  display: block;
+  accent-color: #e63946;
+}
+
+.sp-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+.sp-volume-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+/* Quality button */
+.sp-quality-btn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  padding: 3px 9px;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sp-quality-btn:hover {
+  border-color: rgba(255,255,255,0.5);
+  color: #fff;
+}
+
+.sp-quality-btn:focus-visible {
+  outline: 2px solid #e63946;
+  outline-offset: 2px;
+}
+
+.sp-quality-caret {
+  font-size: 9px;
+  opacity: 0.7;
+}
+
+/* Quality Panel */
+.sp-quality-panel {
+  position: absolute;
+  bottom: 52px;
+  right: 12px;
+  width: 148px;
+  background: rgba(15, 15, 15, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 50;
+  backdrop-filter: blur(12px);
+  transform-origin: bottom right;
+  transform: scaleY(0.8) scaleX(0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.18s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+.sp-quality-panel.sp-open {
+  transform: scaleY(1) scaleX(1);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.sp-quality-panel-header {
+  padding: 9px 12px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.sp-quality-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+  border-left: 2px solid transparent;
+}
+
+.sp-quality-option:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.sp-quality-option.sp-active {
+  color: #e63946;
+  border-left-color: #e63946;
+  background: rgba(230, 57, 70, 0.08);
+}
+
+.sp-quality-option-badge {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.03em;
+}
+
+.sp-quality-option.sp-active .sp-quality-option-badge {
+  color: rgba(230, 57, 70, 0.6);
+}
+
+/* ─── CC Button ─── */
+.sp-cc-btn {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 3px;
+  padding: 2px 5px;
+  line-height: 1.4;
+}
+
+.sp-cc-btn.sp-cc-active {
+  background: rgba(255,255,255,0.9);
+  color: #000;
+  border-color: rgba(255,255,255,0.9);
+}
+
+/* ─── Fullscreen ─── */
+:fullscreen .sp-ratio {
+  padding-top: 0;
+  height: 100vh;
+}
+
+:-webkit-full-screen .sp-ratio {
+  padding-top: 0;
+  height: 100vh;
+}
+
+/* ─── Accessibility: screen reader only ─── */
+.sp-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .sp-live-dot,
+  .sp-spinner circle {
+    animation: none;
+  }
+  .sp-live-dot {
+    opacity: 1;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Mobile adaptations ─── */
+@media (max-width: 600px) {
+  .sp-volume-slider-wrap {
+    width: 50px !important;
+  }
+  .sp-volume-wrap:hover .sp-volume-slider-wrap {
+    width: 50px;
+  }
+  .sp-time {
+    display: none;
+  }
+  .sp-quality-panel {
+    right: 8px;
+  }
+}

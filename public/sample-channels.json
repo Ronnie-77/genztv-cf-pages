@@ -1,0 +1,78 @@
+{
+  "playlist_name": "GenZTV — Direct + Proxy Channel Pack",
+  "version": "2.0",
+  "description": "প্রক্সি চ্যানেল (m3u8_proxy) ও ডিরেক্ট চ্যানেল (m3u8_direct) — অ্যাডমিন প্যানেলে এই JSON আপলোড করলেই সঠিক প্লেয়ারে চলে যাবে।",
+  "import_instructions": "অ্যাডমিন → Channels → Import File → JSON আপলোড → Select All → Import",
+  "channels": [
+    {
+      "name": "FIFA 2026 — Toffeelive (Proxy)",
+      "logo": "",
+      "group": "sports",
+      "streamType": "m3u8_proxy",
+      "url": "https://prod-cdn01-live.toffeelive.com/live/FIFA-2026-4/0/master_2000.m3u8?hdntl=exp=...~acl=/*~data=...~hmac=...",
+      "language": "en",
+      "country": "int",
+      "note": "Akamai hdntl signed token — প্রক্সি দিয়ে চলবে; টোকেন মেয়াদ শেষ হলে URL রিফ্রেশ করুন"
+    },
+    {
+      "name": "FIFA 2026 — Backup Server 2 (Direct)",
+      "logo": "",
+      "group": "sports",
+      "streamType": "m3u8_direct",
+      "url": "https://example-cdn.com/fifa2026/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "টোকেন-বিহীন public CDN — সরাসরি ডিরেক্ট প্লেয়ারে চলবে"
+    },
+    {
+      "name": "Argentina vs Austria — Multi-Audio (Proxy)",
+      "logo": "",
+      "group": "sports",
+      "streamType": "m3u8_proxy",
+      "url": "https://lb11.strmd.st/secure/FdZeOitRztUhWPYTiivDgnJhoHQSfeCy/rtmp/stream/PlxudREa2uzMNbgCH2votCaZ-wRF0-E4l0H6zs1ZldF-qt414hfjbS_BmuO84m0ID-vXT3mHjw/1/playlist.m3u8",
+      "language": "multi",
+      "country": "int",
+      "note": "strmd.st CDN Referer চেক করে — প্রক্সি বাধ্যতামূলক; ৮টি ভাষা ভেরিয়েন্ট"
+    },
+    {
+      "name": "Dulo TV Live (Proxy)",
+      "logo": "",
+      "group": "entertainment",
+      "streamType": "m3u8_proxy",
+      "url": "https://dulo.tv/live/stream.m3u8",
+      "language": "bn",
+      "country": "bd",
+      "note": "CORS/hotlink সুরক্ষা — প্রক্সি দিয়ে চলবে"
+    },
+    {
+      "name": "GitHub IPTV — Public HLS (Direct)",
+      "logo": "",
+      "group": "international",
+      "streamType": "m3u8_direct",
+      "url": "https://example.github.io/iptv/channels/news.m3u8",
+      "language": "en",
+      "country": "us",
+      "note": "GitHub raw M3U — CORS-ওপেন, ডিরেক্ট প্লেয়ারে সরাসরি চলবে"
+    },
+    {
+      "name": "Big Buck Bunny — Test Stream (Direct)",
+      "logo": "",
+      "group": "entertainment",
+      "streamType": "m3u8_direct",
+      "url": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Mux public test stream — CORS-ওপেন, ডিরেক্ট প্লেয়ার টেস্ট করার জন্য"
+    },
+    {
+      "name": "Apple Advanced HLS — Test (Direct)",
+      "logo": "",
+      "group": "entertainment",
+      "streamType": "m3u8_direct",
+      "url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Apple fMP4 test stream — CORS-ওপেন, ডিরেক্ট প্লেয়ার টেস্ট"
+    }
+  ]
+}

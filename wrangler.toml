@@ -1,0 +1,13 @@
+name = "genztv"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "genztv-db"
+database_id = "YOUR_D1_DATABASE_ID"  # Replace after creating D1 database
+
+# Pages project config
+[placement]
+mode = "smart"

@@ -1,0 +1,978 @@
+{
+  "playlist_name": "GenZTV — JSSS TV Channel Pack (97 channels from tv.jsssbd.com)",
+  "version": "1.0",
+  "source": "https://tv.jsssbd.com/index.php",
+  "extracted_at": "2026-06-23T07:59:16.548Z",
+  "description": "tv.jsssbd.com থেকে agent-browser দিয়ে extracted 97টি চ্যানেল। প্রতিটির CORS টেস্ট করে m3u8_direct / m3u8_proxy / mpegts / iframe হিসেবে শ্রেণীবদ্ধ করা হয়েছে।",
+  "import_instructions": "Admin → Channels → Import File → JSON আপলোড → Select All → Import",
+  "stats": {
+    "total": 96,
+    "direct": 60,
+    "proxy": 32,
+    "mpegts": 3,
+    "iframe": 1,
+    "skipped_dash": 1
+  },
+  "channels": [
+    {
+      "name": "RTB GO",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_6e3ba6f720f7.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://d1211whpimeups.cloudfront.net/smil:rtbgo/chunklist_b4096000_slENG.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "FoX FIFA",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_f8884c34575c.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://inproviszon.st/fox.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "Now TV",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_5b502fa794ec.jpg",
+      "group": "FIFA",
+      "streamType": "m3u8_proxy",
+      "url": "https://liveplay1.camel4.live/live/27551_12568347_pxwrxlhy30w0ryk_md.m3u8?txSecret=54131bccd741c8be653e5cc86dae92f6&txTime=6A39D09D&lat=9000&auth=afaf576f03ae9edcb7fbe37d58abb46f",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=403"
+    },
+    {
+      "name": "RTB Aneka",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_5e165a294e8e.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://d1211whpimeups.cloudfront.net/smil:rtb2/chunklist_b608000_sleng.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "KOORA Sports",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_f8561e611454.png",
+      "group": "FIFA",
+      "streamType": "m3u8_proxy",
+      "url": "https://ed.omener.xyz/qoozn2_720/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=NONE status=404"
+    },
+    {
+      "name": "Migu TV",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_b9c14cad9149.png",
+      "group": "FIFA",
+      "streamType": "m3u8_proxy",
+      "url": "https://cdn.jsssbd.com/api/hls.php?u=http%3A%2F%2Flive.wxinxi.com%2Flive%2F84600906_46n5rq10l0bmsj8e2aovavl914psvggx.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=? status=TIMEOUT"
+    },
+    {
+      "name": "DAZN FIFA",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_d0955bbd9ff7.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://1nyaler.streamhostingcdn.top/stream/94/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "beIN Sports Max 2",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_dd5b6025d6e3.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://edge22.776740.ir.cdn.ir/hls2/sport.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "D Sports",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_e4eadd52194d.png",
+      "group": "Sports",
+      "streamType": "m3u8_direct",
+      "url": "https://1nyaler.streamhostingcdn.top/stream/106/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "ColaTV.live",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_3c2ee3de4c84.png",
+      "group": "FIFA",
+      "streamType": "m3u8_proxy",
+      "url": "https://live05.msdht.app/live/24561735.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=? status=TIMEOUT"
+    },
+    {
+      "name": "SuperSport",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_3da1324fc154.png",
+      "group": "FIFA",
+      "streamType": "mpegts",
+      "url": "https://cdn.jsssbd.com/api/ts.php?u=http://rgkkw.live/live/1Aoen7elp5/IgMJ60tmAa/745149.ts",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=ts | CORS=* status=200"
+    },
+    {
+      "name": "beIN SPORTS 4 Max",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_762dc9e97e58.png",
+      "group": "FIFA",
+      "streamType": "m3u8_proxy",
+      "url": "https://42cup.s3.us-east-2.amazonaws.com/max4/max4_1080p/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=NONE status=403"
+    },
+    {
+      "name": "beIN Sports 2 MAX 8k",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_b37727a91639.jpg",
+      "group": "FIFA",
+      "streamType": "m3u8_proxy",
+      "url": "https://42cup.s3.us-east-2.amazonaws.com/max2/max2_1080p/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=NONE status=403"
+    },
+    {
+      "name": "Bóng Bàn - Hội Quán TV",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_3199e269265e.jpg",
+      "group": "FIFA",
+      "streamType": "m3u8_proxy",
+      "url": "https://tfwt1gradgmttgy41hqbifaaugcjppbasa4mscwz81am1p3tse5tqptwzc3e.100ycdn.com/hqlive.yarncdn.live/live/hqtv_blv_phanma/playlist.m3u8?",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=? status=TIMEOUT"
+    },
+    {
+      "name": "ČT Sport",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_55fb8471d56d.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://cdn.jsssbd.com/api/hls.php?u=http://88.212.15.19/live/test_ctsport_25p/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "Toffee",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_03430ebe29eb.jpg",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://sm-monirul.top/tof/live/toffee4/index.m3u8?nocache=1782146598612",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "ViX",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_d1d49c322521.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://1nyaler.streamhostingcdn.top/stream/52/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "ELTA",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_da3fa8e05efa.jpg",
+      "group": "FIFA",
+      "streamType": "m3u8_proxy",
+      "url": "https://live.wxinxi.com/live/86597104_okehlpipbdoz2lujaxkrvv9eylmlbduv.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=? status=TIMEOUT"
+    },
+    {
+      "name": "Telemundo",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_d2a970acedeb.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://nbculocallive.akamaized.net/hls/live/2037499/puertorico/stream1/master.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "TRT 1",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_25018bb78541.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://andro.226503.xyz/checklist/androstreamlivebs1.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "Willow Sports",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_d5b785798340.webp",
+      "group": "Sports",
+      "streamType": "m3u8_direct",
+      "url": "https://warm-caverns-48629-92fab798385f.herokuapp.com/https://d36r8jifhgsk5j.cloudfront.net/Willow_TV540p.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "Al Iraqiya Sports",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_c8e911ea1c09.png",
+      "group": "Sports",
+      "streamType": "m3u8_direct",
+      "url": "https://imn-live.esite-lab.com/hls/iraqia-sports-1.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "Cricket Gold",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_d1989345c24f.png",
+      "group": "Cricket",
+      "streamType": "m3u8_direct",
+      "url": "https://streams2.sofast.tv/ptnr-yupptv/title-cricketgold/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/b2048bb8-1686-4432-aa50-647245383e0c/manifest.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "beIN Sports XTRA en Espanol (1080p)",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_7d659b8f3c37.webp",
+      "group": "Sports",
+      "streamType": "m3u8_direct",
+      "url": "https://bein-esp-xumo.amagi.tv/playlistR1080p.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "Africa 24 Sport",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_ec0fce770fc0.png",
+      "group": "Sports",
+      "streamType": "m3u8_direct",
+      "url": "https://africa24.vedge.infomaniak.com/livecast/ik:africa24sport/manifest.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=302"
+    },
+    {
+      "name": "Sport.tv 1",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_69fb4e7e4a0a.png",
+      "group": "Sports",
+      "streamType": "m3u8_direct",
+      "url": "https://1nyaler.streamhostingcdn.top/stream/33/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "TyC Sports",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_12123e2dd8b4.jpg",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://1nyaler.streamhostingcdn.top/stream/84/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "BEIN SPORTS 1",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_d2a39a33fc10.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://1nyaler.streamhostingcdn.top/stream/23/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "Win Sports",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_0d5e4e93c6bd.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://1nyaler.streamhostingcdn.top/stream/32/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "T Sports",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_4bc4a56061e4.jpg",
+      "group": "FIFA",
+      "streamType": "mpegts",
+      "url": "https://cdn.jsssbd.com/api/ts.php?u=http%3A%2F%2Frgkkw.live%3A80%2Flive%2F1Aoen7elp5%2FIgMJ60tmAa%2F130714.ts",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=ts | CORS=* status=200"
+    },
+    {
+      "name": "beIN sports Xtra HD",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_291a92f8c156.png",
+      "group": "Sports",
+      "streamType": "m3u8_direct",
+      "url": "https://bein-esp-xumo.amagi.tv/playlistR1080p.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "TNT Sports",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_e1399c94f086.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://1nyaler.streamhostingcdn.top/stream/30/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "Caze TV",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_bf5d93ed8e8c.png",
+      "group": "Sports",
+      "streamType": "m3u8_direct",
+      "url": "https://cdn.jsssbd.com/api/hls.php?u=https://dfr80qz435crc.cloudfront.net/MNOP/Amagi/Caze/Caze_TV_BR/Caze_TV.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "صل على النبي",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_6833abc385d2.webp",
+      "group": "FIFA",
+      "streamType": "m3u8_proxy",
+      "url": "https://uyhdsgyu.yallashooott.online/hls/ch1.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=451"
+    },
+    {
+      "name": "Sky Sports Cricket",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_2da790279677.jpg",
+      "group": "Sports",
+      "streamType": "m3u8_direct",
+      "url": "https://cdn.jsssbd.com/api/hls.php?u=https%3A%2F%2Fbl.rutube.ru%2Flivestream%2F7c13a51576b9ff2601f08f5d57dd5169%2Findex.m3u8%3Fs%3D8Q-Mt7GTaRI2Eo9LNZ9mrg%26e%3D2081082141",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "Zee Bangla Sonar",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_cc0742d0600d.webp",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://d1g8wgjurz8via.cloudfront.net/bpk-tv/ColorsHD/default/ColorsHD-video=2137600.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "TSN 1",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_87d2cec397e9.png",
+      "group": "Sports",
+      "streamType": "m3u8_proxy",
+      "url": "https://cdn.jsssbd.com/api/hls.php?u=https%3A%2F%2Fkplust.pages.dev%2Fspw1.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=502"
+    },
+    {
+      "name": "FIFA +",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_926538e4b878.png",
+      "group": "Sports",
+      "streamType": "m3u8_proxy",
+      "url": "https://d2w9q46ikgrcwx.cloudfront.net/v1/sysdata_s_p_a_fifa_7/samsungheadend_us/V00000002/0/HLS/playlist_3000k_20260604T024843.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=200"
+    },
+    {
+      "name": "Zee-Cinema",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_cc4038361efa.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://d1g8wgjurz8via.cloudfront.net/bpk-tv/NGCHD/default/master2.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "Somoy TV",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_a370c9353742.webp",
+      "group": "Bangladesh",
+      "streamType": "m3u8_direct",
+      "url": "https://live.thebosstv.com:30443/dwlive/Somoy-TV/chunks.m3u8?nimblesessionid=51288399",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "FUSSBALL.TV2",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_a7ed0843ba89.webp",
+      "group": "Sports",
+      "streamType": "m3u8_proxy",
+      "url": "https://cdn.jsssbd.com/api/hls.php?u=https%3A%2F%2Ftv.jsssbd.com%2Fapi%2Fhls.php%3Fu%3Dhttps%3A%2F%2Ftest.movielinkbd.com%2Fstorage%2Frelay%2Ftest%2Findex.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=502"
+    },
+    {
+      "name": "TUDN",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_8f74bbbfb544.png",
+      "group": "FIFA",
+      "streamType": "m3u8_proxy",
+      "url": "https://cdn.jsssbd.com/api/hls.php?u=https%3A%2F%2F24.152.53.3%3A8090%2Fplay%2Fa012%2Findex.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=? status=TIMEOUT"
+    },
+    {
+      "name": "Tigo Sports",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_77d458fec8e9.png",
+      "group": "FIFA",
+      "streamType": "m3u8_proxy",
+      "url": "https://master.tucableip.com/Amistoso/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=404"
+    },
+    {
+      "name": "FIFA +",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_926538e4b878.png",
+      "group": "Sports",
+      "streamType": "m3u8_proxy",
+      "url": "https://c822c659.wurl.com/manifest/f36d25e7e52f1ba8d7e56eb859c636563214f541/U2Ftc3VuZy1pbl9GSUZBUGx1c0VuZ2xpc2hfSExT/a4288c44-0852-418a-874a-6068c1f660a7/2.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=404"
+    },
+    {
+      "name": "MAT4!",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_ccca4114bee0.jpg",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "FoX Sports",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_34b55a9f25b6.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://cdn.jsssbd.com/api/hls.php?u=https://d1jzu95oc8fgt3.cloudfront.net/FOX_Sports1080p.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "DD Sports",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_c2cffd774183.jpg",
+      "group": "Cricket",
+      "streamType": "m3u8_proxy",
+      "url": "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/b17adfe543354fdd8d189b110617cddd/index_7.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=200"
+    },
+    {
+      "name": "Star Sports 1 HD",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_5dfefa42a0a4.png",
+      "group": "Cricket",
+      "streamType": "m3u8_proxy",
+      "url": "https://eprime.nav.bd/stream-proxy?url=https%3A%2F%2Fstarsportshindiii.pages.dev%2F720p.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=503"
+    },
+    {
+      "name": "BTV",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_221e5d29c07d.png",
+      "group": "Bangladesh",
+      "streamType": "m3u8_direct",
+      "url": "https://cdn.jsssbd.com/api/hls.php?u=https%3A%2F%2Ftv.beyondtaxconsultants.com%2Fapi%2Fbtv%2Fbtv.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "TRT Spor",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_8207d6b361f9.jpg",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://andro.226503.xyz/checklist/androstreamlivebs1.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "M6",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_6d7325425a68.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://cdn.jsssbd.com/api/hls.php?u=http://151.80.18.177:86/M6_HD/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "beIN sports MAX 1",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_412138433421.png",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://cdn.jsssbd.com/api/ts.php?u=https://tv.jsssbd.com/api/ts.php?u=http://starhub.pro/live/farhat-3379/67897-913379/744517.ts",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "الرياضية",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_a0d500434c46.jpg",
+      "group": "FIFA",
+      "streamType": "m3u8_direct",
+      "url": "https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=* status=200"
+    },
+    {
+      "name": "CCTV 5",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_2b4272d92c0a.png",
+      "group": "FIFA",
+      "streamType": "m3u8_proxy",
+      "url": "https://cdn.jsssbd.com/api/hls.php?u=https%3A%2F%2Flive.wxinxi.com%2Flive%2F25816724_sb2maw7iluj1ghr92sk5siud28tpimx0.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=hls | CORS=? status=TIMEOUT"
+    },
+    {
+      "name": "Jamuna TV",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_38635f1f2565.png",
+      "group": "Bangladesh",
+      "streamType": "iframe",
+      "url": "https://cn-tv.appwrite.network/api/stream?url=aHR0cHM6Ly9saXZlLnd4aW54aS5jb20vbGl2ZS8yNTgxNjcyNF9zYjJtYXc3aWx1ajFnaHI5MnNrNXNpdWQyOHRwaW14MC5tM3U4",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=embed | CORS=? status=TIMEOUT"
+    },
+    {
+      "name": "Independent TV",
+      "logo": "https://tv.jsssbd.com/assets/logos/independent.png",
+      "group": "Bangladesh",
+      "streamType": "m3u8_direct",
+      "url": "https://bozztv.com/rongo/rongo-IndependentTV/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "Channel 24",
+      "logo": "https://tv.jsssbd.com/assets/logos/channel24.png",
+      "group": "Bangladesh",
+      "streamType": "m3u8_direct",
+      "url": "https://bozztv.com/rongo/rongo-Channel24HD/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "RTV",
+      "logo": "https://tv.jsssbd.com/assets/logos/rtv.png",
+      "group": "Bangladesh",
+      "streamType": "m3u8_direct",
+      "url": "https://bozztv.com/rongo/rongo-RTV/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "Mohona TV",
+      "logo": "https://tv.jsssbd.com/assets/logos/mohona.png",
+      "group": "Bangladesh",
+      "streamType": "m3u8_direct",
+      "url": "https://bozztv.com/rongo/rongo-MohonaTV/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "Deshi TV",
+      "logo": "https://tv.jsssbd.com/assets/logos/deshi.png",
+      "group": "Bangladesh",
+      "streamType": "m3u8_direct",
+      "url": "https://deshitv.deshitv24.net/live/myStream/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "Channel S",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_a754fcbcb9ac.png",
+      "group": "Bangladesh",
+      "streamType": "m3u8_direct",
+      "url": "https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI/chsukoff.stream/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "Madani Channel",
+      "logo": "https://tv.jsssbd.com/assets/logos/madani.png",
+      "group": "Bangladesh",
+      "streamType": "m3u8_proxy",
+      "url": "https://streaming.madanichannel.tv/static/streaming-playlists/hls/d3e49b76-ac06-4689-a641-9200445b647f/master.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=200"
+    },
+    {
+      "name": "DW English",
+      "logo": "https://tv.jsssbd.com/assets/logos/dw.png",
+      "group": "News",
+      "streamType": "m3u8_direct",
+      "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "France 24",
+      "logo": "https://tv.jsssbd.com/assets/logos/france24.png",
+      "group": "News",
+      "streamType": "m3u8_direct",
+      "url": "https://static.france24.com/live/F24_EN_HI_HLS/live_web.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "Al Jazeera",
+      "logo": "https://tv.jsssbd.com/assets/logos/aljazeera.png",
+      "group": "News",
+      "streamType": "m3u8_proxy",
+      "url": "https://live-hls-web-aja.getaj.net/AJA/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=200"
+    },
+    {
+      "name": "TRT World",
+      "logo": "https://tv.jsssbd.com/assets/logos/trtworld.png",
+      "group": "News",
+      "streamType": "m3u8_direct",
+      "url": "https://tv-trtworld.medya.trt.com.tr/master.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "CGTN",
+      "logo": "https://tv.jsssbd.com/assets/logos/cgtn.png",
+      "group": "News",
+      "streamType": "m3u8_direct",
+      "url": "https://news.cgtn.com/resource/live/english/cgtn-news.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "CBS News",
+      "logo": "https://tv.jsssbd.com/assets/logos/cbsnews.png",
+      "group": "News",
+      "streamType": "m3u8_direct",
+      "url": "https://cbsn-us.cbsnstream.cbsnews.com/out/v1/55a8648e8f134e82a470f83d562deeca/master.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "RT News",
+      "logo": "https://tv.jsssbd.com/assets/logos/rt.png",
+      "group": "News",
+      "streamType": "m3u8_direct",
+      "url": "https://rt-glb.rttv.com/live/rtnews/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=ERR status=ERR"
+    },
+    {
+      "name": "Newsmax",
+      "logo": "https://tv.jsssbd.com/assets/logos/newsmax.png",
+      "group": "News",
+      "streamType": "m3u8_direct",
+      "url": "https://nmxlive.akamaized.net/hls/live/529965/Live_1/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "DW Español",
+      "logo": "https://tv.jsssbd.com/assets/logos/dw.png",
+      "group": "News",
+      "streamType": "m3u8_direct",
+      "url": "https://dwamdstream104.akamaized.net/hls/live/2015530/dwstream104/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "DW Deutsch",
+      "logo": "https://tv.jsssbd.com/assets/logos/dw.png",
+      "group": "News",
+      "streamType": "m3u8_direct",
+      "url": "https://dwamdstream101.akamaized.net/hls/live/2015524/dwstream101/index.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "FIFA+ (Français)",
+      "logo": "https://tv.jsssbd.com/assets/logos/fifaplus.png",
+      "group": "Sports",
+      "streamType": "m3u8_proxy",
+      "url": "https://37b4c228.wurl.com/manifest/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWZyX0ZJRkFQbHVzRnJlbmNoX0hMUw/6f5437c5-e015-4754-8476-c8c6d27d3a55/1.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=404"
+    },
+    {
+      "name": "Red Bull TV",
+      "logo": "https://tv.jsssbd.com/assets/logos/redbull.png",
+      "group": "Sports",
+      "streamType": "m3u8_direct",
+      "url": "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "DAZN Combat",
+      "logo": "https://tv.jsssbd.com/assets/logos/dazn-combat.png",
+      "group": "Sports",
+      "streamType": "m3u8_proxy",
+      "url": "https://dazn-combat-rakuten.amagi.tv/hls/amagi_hls_data_rakutenAA-dazn-combat-rakuten/CDN/master.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=307"
+    },
+    {
+      "name": "ACC Digital Network",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_f225a42c3a75.jpg",
+      "group": "Sports",
+      "streamType": "m3u8_proxy",
+      "url": "https://raycom-accdn-firetv.amagi.tv/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=200"
+    },
+    {
+      "name": "FloRacing",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_1e550f709361.png",
+      "group": "Sports",
+      "streamType": "m3u8_proxy",
+      "url": "https://amg02278-amg02278c1-flosports-worldwide-7592.playouts.now.amagi.tv/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=200"
+    },
+    {
+      "name": "Fuel TV",
+      "logo": "https://tv.jsssbd.com/assets/logos/fueltv.png",
+      "group": "Sports",
+      "streamType": "m3u8_proxy",
+      "url": "https://amg01074-fueltv-fueltvemeaen-rakuten-b6j62.amagi.tv/hls/amagi_hls_data_rakutenAA-fueltvemeaen/CDN/master.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=307"
+    },
+    {
+      "name": "World of Freesports",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_f2f369150006.jpg",
+      "group": "Sports",
+      "streamType": "m3u8_proxy",
+      "url": "https://mainstreammedia-worldoffreesportsintl-rakuten.amagi.tv/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=200"
+    },
+    {
+      "name": "World Poker Tour",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_76890234a04f.jpg",
+      "group": "Sports",
+      "streamType": "m3u8_direct",
+      "url": "https://amg00477-samsungelectron-worldpokertour-samsunguk-81igb.amagi.tv/playlist/amg00477-samsungelectron-worldpokertour-samsunguk/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "24h Free Movies",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_4079d5efe380.png",
+      "group": "Movies",
+      "streamType": "m3u8_proxy",
+      "url": "https://d1b5mlajbmvkjv.cloudfront.net/v1/master/9d062541f2ff39b5c0f48b743c6411d25f62fc25/UDU-DistroTV/145.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=404"
+    },
+    {
+      "name": "Alien Nation by DUST",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_8a8987495f01.png",
+      "group": "Movies",
+      "streamType": "m3u8_proxy",
+      "url": "https://dqi7ayt2o24fn.cloudfront.net/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=200"
+    },
+    {
+      "name": "AMC Absolute Reality",
+      "logo": "https://tv.jsssbd.com/assets/logos/amc-reality.png",
+      "group": "Entertainment",
+      "streamType": "m3u8_direct",
+      "url": "https://amc-absolutereality-1-us.plex.wurl.tv/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "Circle",
+      "logo": "https://tv.jsssbd.com/assets/logos/circle.png",
+      "group": "Entertainment",
+      "streamType": "m3u8_proxy",
+      "url": "https://circle-roku.amagi.tv/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=200"
+    },
+    {
+      "name": "Dry Bar Comedy",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_0985ff7c8975.png",
+      "group": "Comedy",
+      "streamType": "m3u8_direct",
+      "url": "https://drybar-drybarcomedy-1-au.samsung.wurl.tv/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "FailArmy",
+      "logo": "https://tv.jsssbd.com/assets/logos/failarmy.png",
+      "group": "Comedy",
+      "streamType": "m3u8_direct",
+      "url": "https://failarmy-international-gb.samsung.wurl.tv/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "BBC Earth",
+      "logo": "https://tv.jsssbd.com/assets/logos/bbc-earth.png",
+      "group": "Documentary",
+      "streamType": "m3u8_direct",
+      "url": "https://amg00793-amg00793c6-xumo-us-2669.playouts.now.amagi.tv/BBCStudios-BBCEarthA-hls/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "CGTN Documentary",
+      "logo": "https://tv.jsssbd.com/assets/logos/cgtn-doc.png",
+      "group": "Documentary",
+      "streamType": "m3u8_proxy",
+      "url": "https://amg00405-rakutentv-cgtndocumentary-rakuten-0ql8j.amagi.tv/master.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=200"
+    },
+    {
+      "name": "Court TV",
+      "logo": "https://tv.jsssbd.com/assets/logos/court-tv.png",
+      "group": "Documentary",
+      "streamType": "m3u8_proxy",
+      "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01438-ewscrippscompan-courttv-tablo/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=302"
+    },
+    {
+      "name": "NASA TV",
+      "logo": "https://tv.jsssbd.com/assets/logos/nasa.png",
+      "group": "Science",
+      "streamType": "m3u8_direct",
+      "url": "https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "InWonder",
+      "logo": "https://tv.jsssbd.com/assets/logos/inwonder.png",
+      "group": "Science",
+      "streamType": "m3u8_direct",
+      "url": "https://amg00861-terninternation-inwonder-samsungau-1k63k.amagi.tv/playlist/amg00861-terninternation-inwonder-samsungau/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "Baby Shark TV",
+      "logo": "https://tv.jsssbd.com/assets/logos/babyshark.png",
+      "group": "Kids",
+      "streamType": "m3u8_direct",
+      "url": "https://newidco-babysharktv-1-us.roku.wurl.tv/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "ABC Kids",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_d56c8376bb44.png",
+      "group": "Kids",
+      "streamType": "m3u8_direct",
+      "url": "https://c.mjh.nz/abc-kids.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=307"
+    },
+    {
+      "name": "Fashion Finds",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_8e5565a8c40a.jpg",
+      "group": "Lifestyle",
+      "streamType": "m3u8_direct",
+      "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lsqvc5us/master.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=* status=200"
+    },
+    {
+      "name": "Autentic Travel",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_6aed365f9aea.png",
+      "group": "Lifestyle",
+      "streamType": "m3u8_proxy",
+      "url": "https://cb0c87cc605942ff9766a4e6744bbadc.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/RlaxxTV-eu_AutenticTravel/playlist.m3u8",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=auto | CORS=NONE status=404"
+    },
+    {
+      "name": "Z Bangla HD",
+      "logo": "https://tv.jsssbd.com/assets/logos/up_c568ba736725.webp",
+      "group": "India",
+      "streamType": "mpegts",
+      "url": "https://cdn.jsssbd.com/api/ts.php?u=http%3A%2F%2Fstarshare.cx%3A80%2FPeH5kPWFfG%2Finfamous7funny%2F435.ts",
+      "language": "en",
+      "country": "int",
+      "note": "Source: tv.jsssbd.com | stype=ts | CORS=* status=200"
+    }
+  ]
+}

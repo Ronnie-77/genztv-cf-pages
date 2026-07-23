@@ -1,0 +1,209 @@
+// GenZ TV — Cloudflare D1 (SQLite at edge) schema
+// This is the ONLY schema for the CF Pages deployment.
+// Cloudflare D1 is SQLite-based, so provider = "sqlite" is required.
+// For local dev: DATABASE_URL=file:./dev.db
+// For production: D1 binding configured in wrangler.toml (no DATABASE_URL needed)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Channel {
+  id            String   @id @default(cuid())
+  name          String
+  logo          String   @default("")
+  category      String   @default("entertainment")
+  streamType    String   @default("m3u")
+  streamUrl     String   @default("")
+  githubM3uPath String   @default("")
+  language      String   @default("")
+  country       String   @default("")
+  tags          String   @default("")
+  isFeatured    Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  viewCount     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sourcePageUrl   String    @default("")
+  refreshPattern  String    @default("")
+  tokenExpiresAt  DateTime?
+  lastRefreshedAt DateTime?
+  autoRefresh     Boolean   @default(false)
+  refreshError    String    @default("")
+
+  @@index([isActive])
+  @@index([isActive, category])
+  @@index([autoRefresh, isActive])
+}
+
+model Match {
+  id            String    @id @default(cuid())
+  title         String
+  sport         String     @default("football")
+  teamA         String
+  teamALogo     String     @default("")
+  teamB         String
+  teamBLogo     String     @default("")
+  league        String     @default("")
+  thumbnail     String     @default("")
+  startTime     DateTime
+  endTime       DateTime?
+  status        String     @default("upcoming")
+  isFeatured    Boolean    @default(false)
+  liveNotifiedAt DateTime?  // When live push was sent (prevents duplicates)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  streams       MatchStream[]
+
+  @@index([status])
+  @@index([status, startTime])
+  @@index([status, endTime])
+}
+
+model MatchStream {
+  id      String @id @default(cuid())
+  matchId String
+  name    String @default("Stream 1")
+  channel String @default("")
+  type    String @default("iframe")
+  url     String @default("")
+  match   Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@index([matchId])
+}
+
+model Category {
+  id           String   @id @default(cuid())
+  name         String
+  icon         String   @default("")
+  color        String   @default("")
+  order        Int      @default(0)
+  channelCount Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model AppSetting {
+  id                        String  @id @default("app")
+  appName                   String  @default("GenZ TV")
+  logoUrl                   String  @default("")
+  maintenanceMode           Boolean @default(false)
+  featuredChannelId         String  @default("")
+  heroBannerText            String  @default("")
+  defaultQuality            String  @default("auto")
+  bannerAdScript            String  @default("")
+  socialBarAdScript         String  @default("")
+  customAdScripts           String  @default("[]")
+  adsEnabled                Boolean @default(true)
+  homeAdsEnabled            Boolean @default(true)
+  videoAdsEnabled           Boolean @default(true)
+  apkUrl                    String  @default("")
+  ga4MeasurementId          String  @default("")
+  firebaseConfig            String  @default("{}")
+  securityEnabled           Boolean @default(true)
+  redirectAdUrl             String  @default("")
+  redirectAdEnabled         Boolean @default(false)
+  redirectAdIntervalMinutes Int     @default(5)
+  monetagEnabled            Boolean @default(false)
+  monetagZoneId             String  @default("")
+  monetagDomain             String  @default("5gvci.com")
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  category  String   @default("other")
+  email     String   @default("")
+  subject   String   @default("")
+  message   String
+  page      String   @default("")
+  userAgent String   @default("")
+  device    String   @default("")
+  browser   String   @default("")
+  status    String   @default("new")
+  adminNote String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  sessionId String
+  page      String
+  channelId String?
+  matchId   String?
+  referrer  String   @default("")
+  userAgent String   @default("")
+  country   String   @default("")
+  ip        String   @default("")
+  device    String   @default("")
+  browser   String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+  @@index([sessionId, createdAt])
+  @@index([createdAt])
+  @@index([channelId])
+}
+
+model DailyStat {
+  id             String   @id @default(cuid())
+  date           String   @unique
+  totalViews     Int      @default(0)
+  uniqueVisitors Int      @default(0)
+  peakVisitors   Int      @default(0)
+  topPages       String   @default("{}")
+  topChannels    String   @default("{}")
+  topCountries   String   @default("{}")
+  topDevices     String   @default("{}")
+  topBrowsers    String   @default("{}")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model VisitorSession {
+  id               String   @id @default(cuid())
+  sessionId        String   @unique
+  firstSeen        DateTime @default(now())
+  lastSeen         DateTime @default(now())
+  pageCount        Int      @default(0)
+  country          String   @default("")
+  userAgent        String   @default("")
+  ip               String   @default("")
+  device           String   @default("")
+  browser          String   @default("")
+  currentChannelId String?
+  currentMatchId   String?
+
+  @@index([lastSeen])
+  @@index([currentChannelId])
+  @@index([currentMatchId])
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  body      String   @default("")
+  url       String   @default("")
+  icon      String   @default("")
+  type      String   @default("general")
+  isActive  Boolean  @default(true)
+  pushSent  Boolean  @default(false)
+  sentCount Int      @default(0)
+  failCount Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

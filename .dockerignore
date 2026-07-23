@@ -1,0 +1,14 @@
+node_modules
+.git
+.next
+db/*.db
+db/*.db-journal
+*.log
+.env
+.env.local
+download/
+tool-results/
+agent-ctx/
+skills/
+*.png
+*.sh

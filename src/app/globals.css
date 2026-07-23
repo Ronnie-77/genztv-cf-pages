@@ -1,0 +1,2238 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-plus-jakarta);
+  --font-body: var(--font-inter);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-zeng-accent2: var(--zeng-accent2);
+  --color-zeng-gold: var(--zeng-gold);
+  --color-zeng-surface2: var(--zeng-surface2);
+  --color-zeng-live: var(--zeng-live);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* ===== Light Mode — Clean Pastel Design ===== */
+:root {
+  --radius: 0.75rem;
+  --background: #FFFFFF;
+  --foreground: #1d1d1f;
+  --card: #FFFFFF;
+  --card-foreground: #1d1d1f;
+  --popover: #FFFFFF;
+  --popover-foreground: #1d1d1f;
+  --primary: #1d1d1f;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F5F3F7;
+  --secondary-foreground: #1d1d1f;
+  --muted: #F5F3F7;
+  --muted-foreground: #6e6e73;
+  --accent: #F5F3F7;
+  --accent-foreground: #1d1d1f;
+  --destructive: #FF3B30;
+  --border: rgba(0,0,0,0.08);
+  --input: rgba(0,0,0,0.1);
+  --ring: #1d1d1f;
+  --chart-1: #E0636A;
+  --chart-2: #7C8CF8;
+  --chart-3: #FFB74D;
+  --chart-4: #4ECDC4;
+  --chart-5: #B39DDB;
+  --sidebar: #FAFAFA;
+  --sidebar-foreground: #1d1d1f;
+  --sidebar-primary: #1d1d1f;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F0EDF5;
+  --sidebar-accent-foreground: #1d1d1f;
+  --sidebar-border: rgba(0,0,0,0.06);
+  --sidebar-ring: #1d1d1f;
+  --zeng-accent2: #7C8CF8;
+  --zeng-gold: #FFB74D;
+  --zeng-surface2: #F5F3F7;
+  --zeng-live: #FF3B30;
+}
+
+/* ===== Dark Mode ===== */
+.dark {
+  --background: #0D0D12;
+  --foreground: #F5F5F7;
+  --card: #1A1A24;
+  --card-foreground: #F5F5F7;
+  --popover: #1A1A24;
+  --popover-foreground: #F5F5F7;
+  --primary: #F5F5F7;
+  --primary-foreground: #0D0D12;
+  --secondary: #252530;
+  --secondary-foreground: #F5F5F7;
+  --muted: #252530;
+  --muted-foreground: #8E8E93;
+  --accent: #252530;
+  --accent-foreground: #F5F5F7;
+  --destructive: #FF3B30;
+  --border: rgba(255,255,255,0.08);
+  --input: rgba(255,255,255,0.12);
+  --ring: #F5F5F7;
+  --chart-1: #E0636A;
+  --chart-2: #7C8CF8;
+  --chart-3: #FFB74D;
+  --chart-4: #4ECDC4;
+  --chart-5: #B39DDB;
+  --sidebar: #111118;
+  --sidebar-foreground: #E8E6E3;
+  --sidebar-primary: #F5F5F7;
+  --sidebar-primary-foreground: #0D0D12;
+  --sidebar-accent: #1E1E28;
+  --sidebar-accent-foreground: #E8E6E3;
+  --sidebar-border: rgba(255,255,255,0.06);
+  --sidebar-ring: #F5F5F7;
+  --zeng-accent2: #7C8CF8;
+  --zeng-gold: #FFB74D;
+  --zeng-surface2: #252530;
+  --zeng-live: #FF3B30;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-background text-foreground;
+    overflow-x: hidden;
+  }
+}
+
+/* ===== Security Protections (CSS layer) ===== */
+/* Disable text selection on non-input elements */
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Re-enable selection for inputs and textareas */
+input,
+textarea,
+[contenteditable="true"] {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}
+
+/* Disable drag on images and links */
+img,
+a,
+video {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  pointer-events: auto;
+}
+
+/* Prevent touch callout on iOS */
+* {
+  -webkit-touch-callout: none;
+}
+
+/* Disable print styles — blank page when printing */
+@media print {
+  body {
+    display: none !important;
+  }
+}
+
+/* ===== Mobile GPU Scroll Glitch Fix ===== */
+/* MOVED TO END OF FILE — must come after all desktop style definitions
+   so CSS cascade doesn't override the mobile fixes. */
+
+/* ===== Custom Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ===== Glass Morphism ===== */
+.glass {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ===== Card Hover Effect ===== */
+.card-hover {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* NOTE: contain and content-visibility removed — they cause mobile GPU
+     texture overflow during upward scroll (elements re-entering viewport
+     trigger rapid re-compositing that overwhelms mobile GPU) */
+}
+.card-hover:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+.dark .card-hover:hover {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+
+/* ===== Button Press Effect ===== */
+.btn-press {
+  transition: transform 0.15s ease;
+}
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* ===== Live Pulse Animation ===== */
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.animate-live-pulse {
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+
+/* ===== Hero Animations ===== */
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes hero-fade-left {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes icon-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes title-pop {
+  0% { opacity: 0; transform: translateY(30px) scale(0.9); }
+  60% { opacity: 1; transform: translateY(-4px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes btn-entrance {
+  0% { opacity: 0; transform: translateY(16px) scale(0.95); }
+  70% { opacity: 1; transform: translateY(-2px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes play-icon-bounce {
+  0%, 100% { transform: translateX(0); }
+  30% { transform: translateX(3px); }
+  60% { transform: translateX(-1px); }
+}
+@keyframes watch-live-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(29, 29, 31, 0), 0 2px 8px rgba(0,0,0,0.06);
+  }
+  50% {
+    box-shadow: 0 0 20px 3px rgba(124, 140, 248, 0.15), 0 2px 12px rgba(0,0,0,0.08);
+  }
+}
+@keyframes watch-live-glow-dark {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(245, 245, 247, 0), 0 2px 8px rgba(0,0,0,0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px 3px rgba(124, 140, 248, 0.12), 0 2px 12px rgba(0,0,0,0.3);
+  }
+}
+
+/* Hero text animations */
+.hero-new-text {
+  animation: hero-fade-up 0.8s ease-out both;
+}
+.hero-new-badge {
+  animation: hero-fade-up 0.6s ease-out 0.1s both;
+}
+.hero-new-title {
+  animation: title-pop 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+}
+.hero-new-subtitle {
+  animation: hero-fade-up 0.7s ease-out 0.35s both;
+}
+.hero-new-actions {
+  animation: btn-entrance 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both;
+}
+.hero-new-stats {
+  animation: hero-fade-up 0.7s ease-out 0.65s both;
+}
+
+/* Hero visual side animations */
+.hero-new-visual {
+  animation: hero-fade-left 0.8s ease-out 0.3s both;
+}
+
+/* Phone float animation */
+.hero-new-phone-image {
+  animation: float-gentle 4s ease-in-out infinite;
+}
+
+/* Download text shimmer */
+.hero-new-download-text {
+  background: linear-gradient(90deg, var(--foreground) 40%, #7C8CF8 50%, var(--foreground) 60%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+.hero-new-download-text svg {
+  -webkit-text-fill-color: initial;
+}
+
+/* Download button breathe glow */
+@keyframes btn-breathe {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(124, 140, 248, 0), 0 2px 8px rgba(0,0,0,0.08);
+  }
+  50% {
+    box-shadow: 0 0 18px 2px rgba(124, 140, 248, 0.2), 0 2px 8px rgba(0,0,0,0.08);
+  }
+}
+
+/* Shine sweep on hover */
+@keyframes btn-shine {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+/* TV icon - simple classic style with animations */
+@keyframes tv-icon-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+@keyframes tv-screen-glow {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+@keyframes tv-play-pulse {
+  0%, 100% { opacity: 0.8; transform: translateX(0) scale(1); }
+  50% { opacity: 1; transform: translateX(0.5px) scale(1.08); }
+}
+@keyframes tv-antenna-sway-l {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-4deg); }
+}
+@keyframes tv-antenna-sway-r {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(4deg); }
+}
+@keyframes tv-dot-blink-l {
+  0%, 100% { opacity: 0.6; r: 1.5; }
+  50% { opacity: 1; r: 2; }
+}
+@keyframes tv-dot-blink-r {
+  0%, 100% { opacity: 0.6; r: 1.5; }
+  50% { opacity: 1; r: 2; }
+}
+@keyframes tv-knob-turn {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+.hero-new-tv-icon {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: var(--foreground);
+  animation: hero-fade-up 0.6s ease-out 0.1s both;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hero-new-tv-icon:hover {
+  transform: scale(1.08);
+}
+.hero-new-tv-icon svg {
+  width: 72px;
+  height: 72px;
+  animation: tv-icon-float 5s ease-in-out infinite;
+  transition: opacity 0.3s ease;
+}
+/* Screen glow pulse */
+.hero-new-tv-icon .tv-screen {
+  animation: tv-screen-glow 3s ease-in-out infinite;
+}
+/* Play button pulse */
+.hero-new-tv-icon .tv-play {
+  animation: tv-play-pulse 2s ease-in-out infinite;
+  transform-origin: 20px 25px;
+}
+/* Antenna sway */
+.hero-new-tv-icon .tv-antenna-l {
+  transform-origin: 24px 12px;
+  animation: tv-antenna-sway-l 3s ease-in-out infinite;
+}
+.hero-new-tv-icon .tv-antenna-r {
+  transform-origin: 24px 12px;
+  animation: tv-antenna-sway-r 3s ease-in-out infinite;
+}
+/* Antenna dot blink */
+.hero-new-tv-icon .tv-antenna-dot-l {
+  animation: tv-dot-blink-l 2s ease-in-out infinite;
+}
+.hero-new-tv-icon .tv-antenna-dot-r {
+  animation: tv-dot-blink-r 2s ease-in-out 1s infinite;
+}
+/* Knob turn animation */
+.hero-new-tv-icon .tv-knob-1 {
+  animation: tv-knob-turn 2.5s ease-in-out infinite;
+}
+.hero-new-tv-icon .tv-knob-2 {
+  animation: tv-knob-turn 2.5s ease-in-out 1.25s infinite;
+}
+
+/* ===== Fade Slide Transition ===== */
+@keyframes fade-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-slide {
+  animation: fade-slide-in 0.3s ease forwards;
+}
+
+/* ===== Netflix-style Horizontal Scroll ===== */
+.scroll-row {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-row::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== Hide scrollbars (content still scrolls) — for charts & dense lists ===== */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* ===== Hide number input spinners ===== */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HERO SECTION — Clean Apple-style Design
+   ═══════════════════════════════════════════════════════════ */
+
+/* Hero container */
+.hero-new {
+  position: relative;
+  overflow: hidden;
+  min-height: 360px;
+}
+@media (max-width: 767px) {
+  .hero-new {
+    min-height: auto;
+  }
+}
+
+/* Soft gradient background — light blue to pale pink */
+.hero-new-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(124, 140, 248, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 30%, rgba(224, 99, 106, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 80%, rgba(179, 157, 219, 0.08) 0%, transparent 45%),
+    linear-gradient(135deg, #f0f4ff 0%, #f8f0ff 30%, #fff5f7 60%, #fef8f5 100%);
+}
+.dark .hero-new-bg {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(124, 140, 248, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 30%, rgba(224, 99, 106, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 80%, rgba(179, 157, 219, 0.05) 0%, transparent 45%),
+    linear-gradient(135deg, #0D0D12 0%, #111120 30%, #0e0e16 60%, #0D0D12 100%);
+}
+
+/* Decorative floating circles */
+.hero-new-shapes {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hero-new-circle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.15;
+}
+.dark .hero-new-circle {
+  opacity: 0.05;
+}
+.hero-new-circle-1 {
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(135deg, rgba(124, 140, 248, 0.3), rgba(179, 157, 219, 0.2));
+  top: -100px;
+  right: -50px;
+  filter: blur(80px);
+  animation: float-gentle 6s ease-in-out infinite;
+}
+.hero-new-circle-2 {
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, rgba(224, 99, 106, 0.25), rgba(255, 183, 77, 0.15));
+  bottom: -80px;
+  left: -60px;
+  filter: blur(70px);
+  animation: float-gentle 8s ease-in-out 1s infinite;
+}
+.hero-new-circle-3 {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(124, 140, 248, 0.15));
+  top: 40%;
+  left: 40%;
+  filter: blur(60px);
+  animation: float-gentle 5s ease-in-out 2s infinite;
+}
+
+/* Hero content layout */
+.hero-new-content {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px 20px;
+}
+@media (max-width: 767px) {
+  .hero-new-content {
+    flex-direction: column;
+    gap: 20px;
+    padding: 8px 16px 12px;
+  }
+}
+
+/* Text side - hidden on mobile */
+.hero-new-text {
+  flex: 1;
+  min-width: 0;
+  max-width: 560px;
+}
+@media (max-width: 767px) {
+  .hero-new-text {
+    display: none;
+  }
+}
+
+/* Live badge */
+.hero-new-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background: rgba(255, 59, 48, 0.08);
+  color: #FF3B30;
+  border: 1px solid rgba(255, 59, 48, 0.15);
+  margin-bottom: 12px;
+}
+.dark .hero-new-badge {
+  background: rgba(255, 59, 48, 0.15);
+  border-color: rgba(255, 59, 48, 0.2);
+}
+@media (max-width: 767px) {
+  .hero-new-badge {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Title */
+.hero-new-title {
+  font-size: clamp(40px, 8vw, 72px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -2px;
+  margin-bottom: 10px;
+}
+.hero-new-title-brand {
+  background: linear-gradient(135deg, #E11D48 0%, #F97316 30%, #EAB308 60%, #14B8A6 80%, #E11D48 100%);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 5s ease infinite;
+}
+.dark .hero-new-title-brand {
+  background: linear-gradient(135deg, #FB7185 0%, #FDBA74 30%, #FDE047 60%, #5EEAD4 80%, #FB7185 100%);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 5s ease infinite;
+}
+.hero-new-title-tv {
+  color: var(--foreground);
+  display: inline-block;
+  animation: title-pop 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s both, float-gentle 6s ease-in-out 1.5s infinite;
+}
+
+/* Subtitle */
+.hero-new-subtitle {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--muted-foreground);
+  margin-bottom: 20px;
+  max-width: 420px;
+}
+@media (max-width: 767px) {
+  .hero-new-subtitle {
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 15px;
+  }
+}
+
+/* CTA Buttons */
+.hero-new-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 36px;
+}
+@media (max-width: 767px) {
+  .hero-new-actions {
+    justify-content: center;
+  }
+}
+.hero-new-btn-primary {
+  background: linear-gradient(135deg, #1d1d1f 0%, #2d2d30 100%);
+  color: #fff;
+  border: none;
+  height: 48px;
+  padding: 0 28px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 14px;
+  gap: 8px;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+  animation: watch-live-glow 3s ease-in-out infinite;
+}
+.hero-new-btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: none;
+}
+.hero-new-btn-primary:hover::after {
+  animation: btn-shine 0.6s ease forwards;
+}
+.hero-new-btn-primary:hover {
+  background: linear-gradient(135deg, #333 0%, #444 100%);
+  transform: scale(1.04) translateY(-1px);
+  box-shadow: 0 6px 20px rgba(124, 140, 248, 0.2), 0 2px 8px rgba(0,0,0,0.1);
+}
+.hero-new-btn-primary:active {
+  transform: scale(0.97);
+  animation: none;
+}
+.hero-new-btn-primary svg {
+  position: relative;
+  z-index: 1;
+}
+.hero-new-btn-primary:hover svg {
+  animation: play-icon-bounce 0.5s ease;
+}
+.dark .hero-new-btn-primary {
+  background: linear-gradient(135deg, #F5F5F7 0%, #e8e8ea 100%);
+  color: #0D0D12;
+  animation: watch-live-glow-dark 3s ease-in-out infinite;
+}
+.dark .hero-new-btn-primary:hover {
+  background: linear-gradient(135deg, #e8e8ea 0%, #d8d8da 100%);
+  box-shadow: 0 6px 20px rgba(124, 140, 248, 0.12), 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.hero-new-btn-secondary {
+  height: 48px;
+  padding: 0 28px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 14px;
+  gap: 4px;
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid rgba(0,0,0,0.15);
+  background: rgba(255,255,255,0.6);
+  color: #1d1d1f;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+.hero-new-btn-secondary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(124, 140, 248, 0.08), transparent);
+  transition: none;
+}
+.hero-new-btn-secondary:hover::after {
+  animation: btn-shine 0.6s ease forwards;
+}
+.hero-new-btn-secondary:hover {
+  background: rgba(255,255,255,0.9);
+  border-color: rgba(124, 140, 248, 0.3);
+  transform: scale(1.04) translateY(-1px);
+  box-shadow: 0 4px 16px rgba(124, 140, 248, 0.1);
+}
+.hero-new-btn-secondary:active {
+  transform: scale(0.97);
+}
+.dark .hero-new-btn-secondary {
+  border-color: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  color: #F5F5F7;
+}
+.dark .hero-new-btn-secondary:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(124, 140, 248, 0.3);
+  box-shadow: 0 4px 16px rgba(124, 140, 248, 0.08);
+}
+
+/* Stats row */
+.hero-new-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+@media (max-width: 767px) {
+  .hero-new-stats {
+    justify-content: center;
+  }
+}
+.hero-new-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+.hero-new-stat svg {
+  color: var(--foreground);
+  opacity: 0.5;
+}
+.hero-new-stat-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+}
+
+/* Phone Mockup + App Download side */
+.hero-new-visual {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 767px) {
+  .hero-new-visual {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+/* Phone + Download side by side */
+.hero-new-phone-side {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+@media (max-width: 767px) {
+  .hero-new-phone-side {
+    gap: 16px;
+  }
+}
+
+.hero-new-phone-frame {
+  position: relative;
+}
+
+/* Glow behind phone */
+.hero-new-phone-glow {
+  position: absolute;
+  inset: -15%;
+  background: radial-gradient(ellipse at center, rgba(124, 140, 248, 0.12) 0%, rgba(224, 99, 106, 0.06) 40%, transparent 70%);
+  filter: blur(40px);
+  z-index: 1;
+}
+.dark .hero-new-phone-glow {
+  background: radial-gradient(ellipse at center, rgba(124, 140, 248, 0.08) 0%, rgba(224, 99, 106, 0.04) 40%, transparent 70%);
+}
+
+/* Phone mockup image */
+.hero-new-phone-image {
+  width: 140px;
+  height: auto;
+  border-radius: 16px;
+  position: relative;
+  z-index: 2;
+}
+@media (min-width: 768px) {
+  .hero-new-phone-image {
+    width: 200px;
+    border-radius: 20px;
+  }
+}
+
+/* Download section beside phone */
+.hero-new-download {
+  text-align: left;
+  max-width: 240px;
+  animation: hero-fade-up 0.7s ease-out 0.6s both;
+}
+@media (max-width: 767px) {
+  .hero-new-download {
+    max-width: 210px;
+  }
+}
+.hero-new-download-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 8px;
+}
+.hero-new-download-text svg {
+  color: #7C8CF8;
+}
+.hero-new-download-desc {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--muted-foreground);
+  margin-bottom: 18px;
+}
+@media (max-width: 767px) {
+  .hero-new-download-desc {
+    font-size: 11px;
+    margin-bottom: 14px;
+  }
+}
+
+/* Download button - enhanced with beautiful animation */
+.hero-new-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1d1d1f 0%, #2d2d30 100%);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+  animation: btn-breathe 3s ease-in-out infinite;
+}
+/* Gradient overlay on hover */
+.hero-new-download-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(124, 140, 248, 0.35) 0%, rgba(224, 99, 106, 0.35) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+/* Shine sweep effect */
+.hero-new-download-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: none;
+}
+.hero-new-download-btn:hover::after {
+  animation: btn-shine 0.6s ease forwards;
+}
+.hero-new-download-btn:hover::before {
+  opacity: 1;
+}
+.hero-new-download-btn:hover {
+  transform: scale(1.06) translateY(-1px);
+  box-shadow: 0 6px 24px rgba(124, 140, 248, 0.3), 0 2px 8px rgba(0,0,0,0.1);
+}
+.hero-new-download-btn:active {
+  transform: scale(0.97);
+  animation: none;
+}
+.dark .hero-new-download-btn {
+  background: linear-gradient(135deg, #F5F5F7 0%, #e8e8ea 100%);
+  color: #0D0D12;
+}
+.dark .hero-new-download-btn:hover {
+  box-shadow: 0 6px 24px rgba(124, 140, 248, 0.2), 0 2px 8px rgba(0,0,0,0.3);
+}
+.hero-new-android-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  animation: icon-float 3s ease-in-out infinite;
+}
+.hero-new-download-btn span,
+.hero-new-download-btn svg {
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MATCH CARDS — Clean Modern Design
+   ═══════════════════════════════════════════════════════════ */
+.matches-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.match-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  /* NOTE: contain and content-visibility removed — they cause mobile GPU
+     texture overflow during upward scroll */
+}
+.dark .match-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Match card glow animation */
+@keyframes match-card-glow {
+  0%, 100% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 0 0 0 rgba(225, 29, 72, 0); }
+  50% { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08), 0 0 20px 2px rgba(225, 29, 72, 0.08); }
+}
+@keyframes match-card-glow-upcoming {
+  0%, 100% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 0 0 0 rgba(249, 115, 22, 0); }
+  50% { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08), 0 0 20px 2px rgba(249, 115, 22, 0.08); }
+}
+@keyframes match-card-glow-dark {
+  0%, 100% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(225, 29, 72, 0); }
+  50% { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4), 0 0 20px 2px rgba(225, 29, 72, 0.06); }
+}
+@keyframes match-card-glow-upcoming-dark {
+  0%, 100% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(249, 115, 22, 0); }
+  50% { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4), 0 0 20px 2px rgba(249, 115, 22, 0.06); }
+}
+
+/* Live card glow */
+.match-card.is-live {
+  border-color: rgba(225, 29, 72, 0.2);
+  animation: match-card-glow 3s ease-in-out infinite;
+}
+.dark .match-card.is-live {
+  animation: match-card-glow-dark 3s ease-in-out infinite;
+}
+
+/* Upcoming card glow */
+.match-card.is-upcoming {
+  border-color: rgba(249, 115, 22, 0.2);
+  animation: match-card-glow-upcoming 3s ease-in-out infinite;
+}
+.dark .match-card.is-upcoming {
+  animation: match-card-glow-upcoming-dark 3s ease-in-out infinite;
+}
+
+/* Ended card muted */
+.match-card.is-ended {
+  border-color: rgba(0, 0, 0, 0.05);
+  opacity: 0.7;
+}
+.dark .match-card.is-ended {
+  border-color: rgba(255, 255, 255, 0.04);
+}
+
+/* Sport-type card background decoration */
+.match-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+.match-card:hover::after {
+  opacity: 1;
+}
+.match-card.sport-football::after {
+  background: radial-gradient(ellipse at 80% 90%, rgba(255, 183, 77, 0.06) 0%, transparent 70%);
+}
+.match-card.sport-cricket::after {
+  background: radial-gradient(ellipse at 80% 90%, rgba(124, 140, 248, 0.05) 0%, transparent 70%);
+}
+
+/* Hover effect — desktop only */
+@media (hover: hover) and (pointer: fine) {
+  .match-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+  .dark .match-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+  .match-card.is-live:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1), 0 0 20px rgba(255, 59, 48, 0.08);
+  }
+  .match-card:active {
+    transform: translateY(-1px);
+  }
+}
+
+/* ─── Match Card Header ─── */
+.match-card-header {
+  padding: 14px 18px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+  gap: 8px;
+}
+
+/* Sport badge + league name grouped on the left of the header.
+   The badge makes it instantly obvious whether a card is cricket or
+   football; the league name sits beside it, bolder/darker than before. */
+.match-league-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  flex: 1;
+}
+
+.match-sport-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  line-height: 1;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.match-sport-badge-icon {
+  font-size: 11px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.18));
+}
+.match-sport-badge.sport-cricket {
+  background: rgba(34, 197, 94, 0.14);
+  color: #15803d;
+}
+.dark .match-sport-badge.sport-cricket {
+  background: rgba(34, 197, 94, 0.18);
+  color: #4ade80;
+}
+.match-sport-badge.sport-football {
+  background: rgba(249, 115, 22, 0.14);
+  color: #c2410c;
+}
+.dark .match-sport-badge.sport-football {
+  background: rgba(249, 115, 22, 0.18);
+  color: #fb923c;
+}
+.match-sport-badge.sport-other {
+  background: rgba(124, 140, 248, 0.14);
+  color: #4f46e5;
+}
+.dark .match-sport-badge.sport-other {
+  background: rgba(124, 140, 248, 0.18);
+  color: #a5b4fc;
+}
+
+.match-league {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--foreground);
+  opacity: 0.88;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.match-status {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.match-status.live {
+  background: rgba(255, 59, 48, 0.1);
+  color: #FF3B30;
+  animation: match-status-pulse 2s ease-in-out infinite;
+}
+.dark .match-status.live {
+  background: rgba(255, 59, 48, 0.15);
+  color: #FF5252;
+}
+.match-status.live::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #FF3B30;
+  animation: match-live-dot 1s ease-in-out infinite;
+}
+.match-status.upcoming {
+  background: rgba(124, 140, 248, 0.1);
+  color: #7C8CF8;
+}
+.dark .match-status.upcoming {
+  background: rgba(124, 140, 248, 0.15);
+  color: #9BA6FC;
+}
+.match-status.ended {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--muted-foreground);
+}
+.dark .match-status.ended {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ─── Match header actions (status badge + bell, grouped right) ─── */
+.match-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* ─── Bell button (upcoming matches) ───
+   No background — just a red bell icon that subscribes to push
+   notifications when clicked. Shows a subtle red tint on hover/focus
+   so it's clearly tappable, but stays visually quiet at rest. */
+.match-bell-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #EF4444;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.18s ease, color 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.match-bell-btn:hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #DC2626;
+  transform: scale(1.08);
+}
+.match-bell-btn:active {
+  transform: scale(0.92);
+}
+.match-bell-btn:focus-visible {
+  outline: 2px solid #EF4444;
+  outline-offset: 2px;
+}
+.dark .match-bell-btn {
+  color: #F87171;
+}
+.dark .match-bell-btn:hover {
+  background: rgba(239, 68, 68, 0.18);
+  color: #FCA5A5;
+}
+
+@keyframes match-status-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.1); }
+  50% { box-shadow: 0 0 0 3px rgba(255, 59, 48, 0); }
+}
+@keyframes match-live-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* ─── Match Teams Section ─── */
+.match-teams {
+  padding: 6px 18px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.match-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+}
+
+.team-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--foreground);
+  border: 2.5px solid var(--border);
+  flex-shrink: 0;
+  transition: border-color 0.22s ease;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+}
+@media (hover: hover) and (pointer: fine) {
+  .match-card:hover .team-logo {
+    border-color: rgba(124, 140, 248, 0.2);
+  }
+}
+
+.team-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+.team-logo-flag {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+.team-logo-emoji {
+  font-size: 36px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+}
+
+.team-logo-fallback {
+  font-size: 20px;
+  font-weight: 800;
+  color: #7C8CF8;
+  background: linear-gradient(135deg, #7C8CF8, #B39DDB);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.team-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  letter-spacing: -0.1px;
+  color: var(--foreground);
+}
+
+/* ─── Decorative Concentric Circles on Card ─── */
+.match-card-circles {
+  position: absolute;
+  right: -100px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 320px;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 0;
+}
+.match-card-circle-outer {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  border: 2.5px solid currentColor;
+  opacity: 0.06;
+  animation: card-circle-pulse 4s ease-in-out infinite;
+}
+.match-card-circle-inner {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 2.5px solid currentColor;
+  opacity: 0.08;
+  animation: card-circle-pulse 4s ease-in-out 1s infinite;
+}
+.is-live .match-card-circle-outer {
+  border-color: #FB7185;
+  opacity: 0.09;
+}
+.is-live .match-card-circle-inner {
+  border-color: #FB7185;
+  opacity: 0.11;
+}
+.is-upcoming .match-card-circle-outer {
+  border-color: #F97316;
+  opacity: 0.1;
+}
+.is-upcoming .match-card-circle-inner {
+  border-color: #F97316;
+  opacity: 0.12;
+}
+@keyframes card-circle-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.06; }
+  50% { transform: scale(1.04); opacity: 0.12; }
+}
+@keyframes card-circle-pulse-live {
+  0%, 100% { transform: scale(1); opacity: 0.08; }
+  50% { transform: scale(1.04); opacity: 0.14; }
+}
+.is-live .match-card-circle-outer,
+.is-live .match-card-circle-inner {
+  animation-name: card-circle-pulse-live;
+}
+
+/* ─── Match Center (VS / Score) ─── */
+.match-center {
+  text-align: center;
+  flex-shrink: 0;
+  min-width: 50px;
+}
+
+.match-score {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  background: linear-gradient(135deg, #E0636A 0%, #FF3B30 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.match-vs {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--muted-foreground);
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+/* ─── Match Footer ─── */
+.match-footer {
+  padding: 10px 18px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--foreground);
+  letter-spacing: -0.1px;
+  position: relative;
+  z-index: 1;
+}
+
+.match-time {
+  opacity: 0.88;
+  font-weight: 700;
+  font-size: 11.5px;
+  color: var(--foreground);
+}
+
+.match-stream-count {
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: var(--secondary);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+
+/* Right-side action group in the footer: live elapsed timer sits to
+   the LEFT of the Watch Now button, both vertically centered. */
+.match-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+/* Live elapsed timer — counts up from match start, red mono digits with
+   a pulsing dot, so users can see how long a live match has been running. */
+.live-elapsed-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: #FF3B30;
+  line-height: 1;
+  letter-spacing: 0.2px;
+}
+.dark .live-elapsed-timer {
+  color: #FF5252;
+}
+.live-elapsed-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #FF3B30;
+  animation: match-live-dot 1s ease-in-out infinite;
+  flex-shrink: 0;
+}
+.dark .live-elapsed-dot {
+  background: #FF5252;
+}
+.live-elapsed-value {
+  white-space: nowrap;
+}
+
+.watch-now-btn {
+  padding: 7px 15px;
+  border-radius: 20px;
+  background: #F43F5E;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  border: none;
+  transition: background 0.22s ease, transform 0.15s ease, box-shadow 0.22s ease;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(244, 63, 94, 0.28);
+}
+.watch-now-btn:hover {
+  background: #E11D48;
+}
+.watch-now-btn:active {
+  transform: scale(0.96);
+}
+.dark .watch-now-btn {
+  background: #F43F5E;
+  color: #fff;
+}
+.dark .watch-now-btn:hover {
+  background: #E11D48;
+}
+
+/* "Notify Me" — red variant for upcoming matches (bell icon) */
+.watch-now-btn.is-upcoming {
+  background: #EF4444;
+  color: #fff;
+}
+.watch-now-btn.is-upcoming:hover {
+  background: #DC2626;
+}
+.dark .watch-now-btn.is-upcoming {
+  background: #EF4444;
+  color: #fff;
+}
+.dark .watch-now-btn.is-upcoming:hover {
+  background: #DC2626;
+}
+
+/* "Watch Replay" — muted variant for ended matches */
+.watch-now-btn.is-ended {
+  background: var(--secondary);
+  color: var(--foreground);
+}
+.watch-now-btn.is-ended:hover {
+  background: var(--muted);
+}
+.dark .watch-now-btn.is-ended {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--foreground);
+}
+.dark .watch-now-btn.is-ended:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* Icon-only button variant (e.g. the bell-only "Notify Me" button on
+   upcoming match cards). Square-ish padding instead of pill text padding,
+   so a single icon looks balanced. */
+.watch-now-btn.is-icon-only {
+  padding: 6px 8px;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  justify-content: center;
+  gap: 0;
+}
+.watch-now-btn.is-icon-only svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Video Player Loading Spinner
+   ═══════════════════════════════════════════════════════════
+   Uses the same simple Tailwind border-arc spinner as the site's
+   entry loading screen (animate-spin rounded-full border-b-2).
+   No custom CSS needed — see video-player.tsx for the markup.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — Match Cards
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .matches-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .matches-grid {
+    grid-template-columns: 1fr;
+  }
+  .team-logo {
+    width: 44px;
+    height: 44px;
+  }
+  .team-logo-emoji {
+    font-size: 24px;
+  }
+  .match-score {
+    font-size: 22px;
+  }
+  .match-vs {
+    font-size: 14px;
+  }
+  .match-card-header {
+    padding: 12px 14px 8px;
+  }
+  .match-teams {
+    padding: 4px 14px 12px;
+  }
+  .match-footer {
+    padding: 8px 14px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   VIDEO PLAYER — Fullscreen Immersive Mode
+   ═══════════════════════════════════════════════════════════ */
+
+/* Fullscreen player styling */
+:fullscreen {
+  background: #000 !important;
+}
+
+/* Force landscape-friendly layout in fullscreen */
+:fullscreen .video-player-fullscreen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+}
+
+/* Fullscreen video fills entire screen */
+:fullscreen video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+:fullscreen iframe {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Show cursor when controls are visible in fullscreen */
+:fullscreen .group.cursor-none:hover {
+  cursor: default;
+}
+
+/* Fullscreen control bar styling */
+:fullscreen .player-controls-bottom {
+  padding: 8px 16px 12px;
+}
+
+/* Landscape orientation hint for mobile */
+@media (orientation: portrait) and (max-width: 768px) {
+  :fullscreen .landscape-hint {
+    display: flex !important;
+  }
+}
+
+@media (orientation: landscape) {
+  :fullscreen .landscape-hint {
+    display: none !important;
+  }
+}
+
+/* Smooth cursor hide/show in fullscreen */
+:fullscreen * {
+  cursor: inherit;
+}
+
+:fullscreen .show-cursor,
+:fullscreen .group:hover {
+  cursor: default !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE GPU SCROLL GLITCH FIX — v2
+   ═══════════════════════════════════════════════════════════
+   Strategy: Proper GPU layer promotion + solid backgrounds.
+   Instead of stripping visual effects (which made cards ugly
+   and didn't fix the glitch), we now properly promote
+   scrollable items to their own GPU compositing layers
+   and use solid backgrounds instead of backdrop-filter.
+
+   1. Remove backdrop-filter → solid semi-transparent bg
+   2. GPU layer promotion (translateZ(0), backface-visibility)
+   3. -webkit-overflow-scrolling: touch on scroll containers
+   4. Fixed topbar instead of sticky (handled in component)
+   5. Replace box-shadow with border on cards (keep border-radius!)
+   6. -webkit-font-smoothing: antialiased (in * selector above)
+   7. Remove will-change from hover on touch devices
+   8. isolation: isolate on overflow:hidden + transform elements
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Fix 1: Remove all backdrop-filter on mobile ── */
+@media (max-width: 768px) {
+  .glass {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: var(--background) !important;
+  }
+  [class*="backdrop-blur"],
+  [style*="backdrop-filter"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* ── Fix 2: GPU layer promotion for animated/transformed elements ── */
+  .channel-card,
+  .match-card,
+  .card-hover,
+  .hero-new-tv-icon,
+  .hero-new-tv-icon svg,
+  .hero-new-phone-image,
+  .hero-new-btn-primary,
+  .hero-new-download-btn,
+  .hero-new-circle-1,
+  .hero-new-circle-2,
+  .hero-new-circle-3,
+  .match-card-circle-outer,
+  .match-card-circle-inner,
+  .team-logo {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform;
+  }
+
+  /* ── Fix 3: Smooth scroll on mobile ── */
+  body {
+    -webkit-overflow-scrolling: touch !important;
+    overflow-scrolling: touch !important;
+  }
+  main {
+    -webkit-overflow-scrolling: touch !important;
+    overflow-scrolling: touch !important;
+  }
+
+  /* ── Fix 5: Replace box-shadow with border on cards, keep border-radius ── */
+  .channel-card {
+    box-shadow: none !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+  }
+  .match-card {
+    box-shadow: none !important;
+    border: 1px solid var(--border) !important;
+  }
+  .match-card.is-live {
+    box-shadow: none !important;
+    border: 1px solid rgba(225, 29, 72, 0.2) !important;
+  }
+  .match-card.is-upcoming {
+    box-shadow: none !important;
+    border: 1px solid rgba(249, 115, 22, 0.2) !important;
+  }
+  /* Channel card hover — no transform on mobile */
+  .channel-card:hover {
+    transform: translateZ(0) !important;
+    box-shadow: none !important;
+  }
+  .card-hover:hover {
+    transform: translateZ(0) !important;
+    box-shadow: none !important;
+  }
+  .match-card:hover {
+    transform: translateZ(0) !important;
+    box-shadow: none !important;
+  }
+
+  /* ── Fix 7: Remove will-change from hover effects on touch devices ── */
+  @media (hover: none) {
+    .card-hover:hover {
+      will-change: auto !important;
+      transform: none !important;
+    }
+    .match-card:hover {
+      will-change: auto !important;
+      transform: none !important;
+    }
+    .channel-card:hover {
+      will-change: auto !important;
+      transform: none !important;
+    }
+  }
+
+  /* ── Fix 8: isolation: isolate on overflow:hidden + transform elements ── */
+  .match-card {
+    isolation: isolate;
+  }
+  .channel-card {
+    isolation: isolate;
+  }
+  .hero-new {
+    isolation: isolate;
+  }
+}
+
+/* ===== Maintenance Mode Animations ===== */
+@keyframes maintenanceWrench {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  15% {
+    transform: rotate(-20deg) scale(1.05);
+  }
+  30% {
+    transform: rotate(15deg) scale(1);
+  }
+  45% {
+    transform: rotate(-10deg) scale(1.02);
+  }
+  60% {
+    transform: rotate(5deg) scale(1);
+  }
+  75% {
+    transform: rotate(-3deg) scale(1.01);
+  }
+  90% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+@keyframes maintenanceFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.15;
+  }
+  25% {
+    transform: translateY(-20px) scale(1.2);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-10px) scale(1.1);
+    opacity: 0.2;
+  }
+  75% {
+    transform: translateY(-25px) scale(1.3);
+    opacity: 0.25;
+  }
+}
+
+@keyframes maintenanceSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== Admin Panel — Sidebar Layout ===== */
+
+/* Admin layout wrapper */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.admin-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 240px;
+  background: var(--sidebar);
+  border-right: 1px solid var(--sidebar-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Sidebar: hidden on mobile, always visible on desktop */
+@media (max-width: 1023px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+  }
+  .admin-sidebar.admin-sidebar-open {
+    transform: translateX(0);
+  }
+}
+
+/* Sidebar header */
+.admin-sidebar-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--sidebar-border);
+}
+
+/* Sidebar nav */
+.admin-sidebar-nav {
+  flex: 1;
+  padding: 16px 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Sidebar nav item */
+.admin-sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--sidebar-foreground);
+  transition: all 0.15s ease;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+
+.admin-sidebar-nav-item:hover {
+  background: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
+}
+
+/* Active nav item */
+.admin-sidebar-nav-item-active {
+  background: var(--sidebar-primary) !important;
+  color: var(--sidebar-primary-foreground) !important;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.dark .admin-sidebar-nav-item-active {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.admin-sidebar-nav-item-active:hover {
+  background: var(--sidebar-primary) !important;
+  color: var(--sidebar-primary-foreground) !important;
+}
+
+/* Sidebar footer */
+.admin-sidebar-footer {
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--sidebar-border);
+}
+
+/* Content area */
+.admin-content {
+  flex: 1;
+  margin-left: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+  min-width: 0; /* allow flex item to shrink below content width so wide tables scroll instead of pushing the layout */
+}
+
+/* Desktop: content pushed right by sidebar width */
+@media (min-width: 1024px) {
+  .admin-content {
+    margin-left: 240px;
+  }
+}
+
+/* Header bar — mobile only (hamburger + title) */
+.admin-mobile-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+@media (min-width: 1024px) {
+  .admin-mobile-header {
+    display: none !important;
+  }
+}
+
+/* Page content */
+.admin-page-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  min-width: 0; /* prevent wide children (tables, button rows) from forcing horizontal overflow on mobile */
+  overflow-x: hidden; /* safety net — any residual overflow is clipped, never reaches the viewport */
+}
+
+.admin-page-content-with-bottom-nav {
+  padding-bottom: 72px;
+}
+
+@media (min-width: 1024px) {
+  .admin-page-content {
+    padding: 24px 48px 24px 48px;
+  }
+  .admin-page-content-with-bottom-nav {
+    padding-bottom: 24px;
+  }
+}
+
+/* ─── Bottom Tab Navigation (mobile only) ─── */
+.admin-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: none; /* hidden by default */
+  align-items: center;
+  justify-content: space-around;
+  height: 56px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Show only on mobile */
+@media (max-width: 1023px) {
+  .admin-bottom-nav {
+    display: flex !important;
+  }
+}
+
+/* Extra safety: hide on desktop */
+@media (min-width: 1024px) {
+  .admin-bottom-nav {
+    display: none !important;
+  }
+}
+
+.admin-bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex: 1;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: color 0.15s ease, transform 0.1s ease;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.admin-bottom-nav-item:active {
+  transform: scale(0.88);
+}
+
+.admin-bottom-nav-item:hover {
+  color: var(--foreground);
+}
+
+.admin-bottom-nav-item-active {
+  color: var(--primary) !important;
+  position: relative;
+}
+
+.admin-bottom-nav-item-active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  border-radius: 0 0 2px 2px;
+  background: var(--primary);
+}
+
+/* Admin table header styling */
+.admin-content table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* ─── Channel List Box (Watch Page) ─── */
+
+/* Custom scrollbar for channel list */
+.channel-list-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.channel-list-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.channel-list-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.channel-list-scroll::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+.channel-list-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* Active channel item — colorful shimmer animation */
+.channel-list-item-active {
+  position: relative;
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.08), hsl(var(--primary) / 0.03));
+  border-left: 3px solid hsl(var(--primary));
+  overflow: hidden;
+}
+
+.channel-list-item-active::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(var(--primary) / 0.12) 25%,
+    hsl(var(--primary) / 0.06) 50%,
+    transparent 100%
+  );
+  animation: channel-shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes channel-shimmer {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Active channel item hover glow */
+.channel-list-item-active:hover {
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.14), hsl(var(--primary) / 0.06));
+  box-shadow: inset 0 0 16px hsl(var(--primary) / 0.06);
+}
+
+
+/* ── Continue Watching horizontal scroll ── */
+.continue-watching-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+  scroll-snap-type: x proximity;
+}
+.continue-watching-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.continue-watching-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.continue-watching-scroll::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.25);
+  border-radius: 3px;
+}
+.continue-watching-scroll::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.4);
+}
+.continue-watching-scroll > * {
+  scroll-snap-align: start;
+}
+
+/* ── StreamPlayer host override — fill parent, don't add own aspect ratio ── */
+/* The parent video-player container already sets aspect-ratio: 16/9.
+   StreamPlayer's .sp-ratio adds padding-top: 56.25% which would create a
+   second 16:9 box inside → player appears too small. Override it to fill
+   the host container directly. */
+.stream-player-host .sp-wrapper {
+  height: 100%;
+}
+.stream-player-host .sp-ratio {
+  padding-top: 0 !important;
+  height: 100%;
+}
+.stream-player-host .sp-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
