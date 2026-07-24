@@ -1,5 +1,5 @@
 name = "genztv-cf-pages"
-compatibility_date = "2025-07-18"
+compatibility_date = "2026-07-24"
 compatibility_flags = ["nodejs_compat"]
 
 # OpenNext output — Worker entry point + static assets
@@ -12,7 +12,7 @@ directory = ".open-next/assets"
 [[d1_databases]]
 binding = "DB"
 database_name = "genztv-db"
-database_id = "YOUR_D1_DATABASE_ID"  # Replace after creating D1 database
+database_id = "3f64ead4-83ea-4224-a01b-810f807ffaf8"
 
 # Pages project config
 [placement]
