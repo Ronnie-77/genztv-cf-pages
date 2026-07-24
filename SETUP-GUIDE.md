@@ -48,11 +48,12 @@
 3. **Private** বা **Public** সিলেক্ট করুন
 4. লোকাল প্রজেক্ট push করুন:
    ```bash
-   git init
-   git add .
-   git commit -m "Initial commit: GenZ TV for CF Pages"
-   git remote add origin https://github.com/YOUR_USERNAME/genztv-cf-pages.git
-   git push -u origin main
+    git init
+    git add -A
+    git commit -m "Initial commit: GenZ TV for Cloudflare Pages"
+    git remote add origin https://github.com/Ronnie-77/genztv-cf-pages.git
+    git branch -M main
+    git push -u origin main
    ```
 
 ### ধাপ ২: Cloudflare Pages প্রজেক্ট তৈরি
