@@ -1,23 +1,25 @@
 export const runtime = 'nodejs'
 
-import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/next-auth'
+import { NextRequest, NextResponse } from 'next/server'
+import { isAdminAuthenticated } from '@/lib/auth'
 
-export async function GET() {
+// In CF Pages deployment: only admin auth exists (no NextAuth/Google login)
+// This route returns admin user info if authenticated, or null for regular visitors
+export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
-    if (!session?.user) {
-      return NextResponse.json({ user: null })
+    const isAdmin = await isAdminAuthenticated(req)
+    if (isAdmin) {
+      return NextResponse.json({
+        user: {
+          id: 'admin',
+          name: 'Admin',
+          email: 'admin@genztv.local',
+          image: null,
+          role: 'admin',
+        },
+      })
     }
-    return NextResponse.json({
-      user: {
-        id: session.user.id || '',
-        name: session.user.name || null,
-        email: session.user.email || '',
-        image: session.user.image || null,
-      },
-    })
+    return NextResponse.json({ user: null })
   } catch (error) {
     console.error('[User Session] Error:', error)
     return NextResponse.json({ user: null })
