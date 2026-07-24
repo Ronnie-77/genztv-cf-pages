@@ -1,8 +1,10 @@
 'use client'
 
 import { useEffect, useCallback } from 'react'
-import { useAppStore, type User } from '@/lib/store'
-import { signOut } from 'next-auth/react'
+import { useAppStore } from '@/lib/store'
+
+// CF Pages deployment: no NextAuth (Google login not available in edge runtime)
+// Uses simple session API + custom admin auth
 
 export function useAuth() {
   const { user, setUser, isLoggedIn, setComingSoonOpen } = useAppStore()
@@ -28,20 +30,19 @@ export function useAuth() {
     fetchSession()
   }, [setUser])
 
-  // Google Sign-in is not yet wired up in this deployment. Instead of
-  // triggering a broken sign-in redirect, show a friendly "Coming Soon"
-  // popup (managed via the global store so the dialog rendered in AppShell
-  // opens from any call site: sidebar, account page, more menu).
+  // Google Sign-in is not available on CF Pages — show "Coming Soon" popup
   const login = useCallback(() => {
     setComingSoonOpen(true)
   }, [setComingSoonOpen])
 
+  // Logout: clear admin cookie via API, then clear local state
   const logout = useCallback(async () => {
     try {
-      await signOut({ redirect: false })
+      await fetch('/api/auth/logout', { method: 'POST' })
       setUser(null)
     } catch (error) {
       console.error('[useAuth] Error signing out:', error)
+      setUser(null) // Clear local state even if API fails
     }
   }, [setUser])
 

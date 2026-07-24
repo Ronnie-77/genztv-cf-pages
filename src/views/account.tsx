@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useAppStore } from '@/lib/store'
-import { signOut, useSession } from 'next-auth/react'
+// No next-auth in CF Pages deployment
 import {
   Shield,
   ChevronRight,
@@ -24,38 +24,21 @@ import { Button } from '@/components/ui/button'
 
 export function AccountPage() {
   const { setCurrentPage, user, setUser } = useAppStore()
-  const { login } = useAuth()
-  const { data: session } = useSession()
+  const { login, logout } = useAuth()
   const { permission, isSubscribed, toggleSubscription, subscribe, isLoading } = useNotifications()
   const [feedbackOpen, setFeedbackOpen] = useState(false)
 
-  // Sync session to Zustand store
+  // Fetch session on mount
   useEffect(() => {
-    if (session?.user) {
-      setUser({
-        id: session.user.id || '',
-        name: session.user.name || null,
-        email: session.user.email || '',
-        image: session.user.image || null,
+    fetch('/api/user/session')
+      .then(res => res.json())
+      .then(data => {
+        if (data.user) {
+          setUser(data.user)
+        }
       })
-    } else if (session === null) {
-      setUser(null)
-    }
-  }, [session, setUser])
-
-  // Also fetch from session API on mount (for initial hydration)
-  useEffect(() => {
-    if (!session) {
-      fetch('/api/user/session')
-        .then(res => res.json())
-        .then(data => {
-          if (data.user) {
-            setUser(data.user)
-          }
-        })
-        .catch(() => {})
-    }
-  }, [session, setUser])
+      .catch(() => {})
+  }, [setUser])
 
   const handleNotificationToggle = async () => {
     if (permission === 'granted') {
@@ -78,8 +61,7 @@ export function AccountPage() {
   }
 
   const handleSignOut = async () => {
-    await signOut()
-    setUser(null)
+    await logout()
   }
 
   return (
