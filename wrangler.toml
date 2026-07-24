@@ -11,7 +11,7 @@ directory = ".open-next/assets"
 # D1 Database binding
 [[d1_databases]]
 binding = "DB"
-database_name = "genztv-db"
+database_name = "my-binding"
 database_id = "3f64ead4-83ea-4224-a01b-810f807ffaf8"
 
 # Pages project config
