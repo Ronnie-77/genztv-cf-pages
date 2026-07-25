@@ -1,6 +1,7 @@
 export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
+import { getEnvAsync, getEnv } from '@/lib/env'
 
 // GET /api/db-health — Database diagnostic endpoint (no auth required for debugging)
 export async function GET() {
@@ -9,13 +10,16 @@ export async function GET() {
     checks: {} as Record<string, unknown>,
   }
 
-  // 1. Check DATABASE_URL exists
-  const dbUrl = process.env.DATABASE_URL
+  // 1. Check DATABASE_URL / env vars (async for CF Workers compat)
+  const dbUrl = await getEnvAsync('DATABASE_URL')
+  const hostname = await getEnvAsync('HOSTNAME') || 'not set'
+  const nodeEnv = await getEnvAsync('NODE_ENV') || 'not set'
+
   results.checks = {
     ...results.checks as object,
     env_DATABASE_URL: dbUrl ? `${dbUrl.substring(0, 20)}...${dbUrl.includes('postgresql') || dbUrl.includes('neon') ? '(postgresql)' : dbUrl.includes('mysql') ? '(mysql)' : dbUrl.includes('sqlite') ? '(sqlite)' : '(unknown)'}` : 'MISSING!',
-    env_HOSTNAME: process.env.HOSTNAME || 'not set',
-    env_NODE_ENV: process.env.NODE_ENV || 'not set',
+    env_HOSTNAME: hostname,
+    env_NODE_ENV: nodeEnv,
   }
 
   // 2. Check Prisma client import

@@ -8,6 +8,7 @@
 // This avoids the "db = undefined" bug that breaks all API routes.
 
 import { PrismaClient } from '@prisma/client'
+import { getEnv } from '@/lib/env'
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
@@ -36,7 +37,9 @@ async function getDb(): Promise<PrismaClient> {
   if (globalForPrisma.prisma) return globalForPrisma.prisma
 
   // Dev mode: use local SQLite (DATABASE_URL=file:./dev.db)
-  if (process.env.NODE_ENV !== 'production') {
+  // Use env helper for NODE_ENV (CF Workers compatible)
+  const nodeEnv = getEnv('NODE_ENV') || process.env.NODE_ENV || 'development'
+  if (nodeEnv !== 'production') {
     globalForPrisma.prisma = createLocalClient()
     return globalForPrisma.prisma
   }

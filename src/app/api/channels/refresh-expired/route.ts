@@ -3,6 +3,7 @@ export const runtime = 'nodejs'
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { requireAdminAuth } from '@/lib/auth'
+import { getEnvAsync } from '@/lib/env'
 import { refreshStreamUrl, parseTokenExpiry, isTokenExpiringSoon } from '@/lib/token-refresh'
 
 /**
@@ -26,11 +27,15 @@ import { refreshStreamUrl, parseTokenExpiry, isTokenExpiringSoon } from '@/lib/t
  */
 export const maxDuration = 300 // 5 min — batch refresh can take a while
 
-const CRON_SECRET = process.env.CRON_REFRESH_SECRET || ''
+// CRON_SECRET is read lazily (async for CF Workers compat)
+async function getCronSecret(): Promise<string> {
+  return await getEnvAsync('CRON_REFRESH_SECRET') || ''
+}
 
 export async function POST(req: NextRequest) {
   // Auth: either admin OR valid cron secret
   const cronSecret = req.headers.get('x-cron-secret')
+  const CRON_SECRET = await getCronSecret()
   const isCron = CRON_SECRET && cronSecret === CRON_SECRET
 
   if (!isCron) {

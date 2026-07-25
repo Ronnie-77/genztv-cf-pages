@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  // External packages that should NOT be bundled by Turbopack.
+  // These use dynamic import() and are resolved at runtime on Workers.
+  serverExternalPackages: [
+    '@opennextjs/cloudflare',
+    '@prisma/adapter-d1',
+    'web-push',
+  ],
   experimental: {
     serverActions: {
       bodySizeLimit: '10mb', // Workers have lower memory limits
