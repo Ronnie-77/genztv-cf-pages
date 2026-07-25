@@ -1,9 +1,37 @@
--- GenZ TV — Complete D1 SQL Schema
+-- GenZ TV — Complete D1 SQL Schema (FIXED)
 -- Run this in Cloudflare Dashboard → D1 → genztv-db → Console
 -- This creates ALL tables matching the Prisma schema exactly
+--
+-- FIXES:
+--   1. DROP old tables first (so CREATE TABLE IF NOT EXISTS gets full schema)
+--   2. "order" is a SQL reserved keyword → quoted as "order"
+--
+-- Usage: wrangler d1 execute genztv-db --file=./d1-schema.sql --remote
+
+-- ============================================================
+-- STEP 1: Drop all existing tables (clean slate)
+-- ============================================================
+DROP TABLE IF EXISTS ChatMessage;
+DROP TABLE IF EXISTS Notice;
+DROP TABLE IF EXISTS AppNotification;
+DROP TABLE IF EXISTS Notification;
+DROP TABLE IF EXISTS PushSubscription;
+DROP TABLE IF EXISTS VisitorSession;
+DROP TABLE IF EXISTS DailyStat;
+DROP TABLE IF EXISTS PageView;
+DROP TABLE IF EXISTS Feedback;
+DROP TABLE IF EXISTS AppSetting;
+DROP TABLE IF EXISTS Category;
+DROP TABLE IF EXISTS MatchStream;
+DROP TABLE IF EXISTS Match;
+DROP TABLE IF EXISTS Channel;
+
+-- ============================================================
+-- STEP 2: Create all tables
+-- ============================================================
 
 -- Channel table
-CREATE TABLE IF NOT EXISTS Channel (
+CREATE TABLE Channel (
   id TEXT PRIMARY KEY NOT NULL,
   name TEXT NOT NULL,
   logo TEXT NOT NULL DEFAULT '',
@@ -27,12 +55,12 @@ CREATE TABLE IF NOT EXISTS Channel (
   refreshError TEXT NOT NULL DEFAULT ''
 );
 
-CREATE INDEX IF NOT EXISTS Channel_isActive_idx ON Channel(isActive);
-CREATE INDEX IF NOT EXISTS Channel_isActive_category_idx ON Channel(isActive, category);
-CREATE INDEX IF NOT EXISTS Channel_autoRefresh_isActive_idx ON Channel(autoRefresh, isActive);
+CREATE INDEX Channel_isActive_idx ON Channel(isActive);
+CREATE INDEX Channel_isActive_category_idx ON Channel(isActive, category);
+CREATE INDEX Channel_autoRefresh_isActive_idx ON Channel(autoRefresh, isActive);
 
 -- Match table
-CREATE TABLE IF NOT EXISTS Match (
+CREATE TABLE Match (
   id TEXT PRIMARY KEY NOT NULL,
   title TEXT NOT NULL,
   sport TEXT NOT NULL DEFAULT 'football',
@@ -51,12 +79,12 @@ CREATE TABLE IF NOT EXISTS Match (
   updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS Match_status_idx ON Match(status);
-CREATE INDEX IF NOT EXISTS Match_status_startTime_idx ON Match(status, startTime);
-CREATE INDEX IF NOT EXISTS Match_status_endTime_idx ON Match(status, endTime);
+CREATE INDEX Match_status_idx ON Match(status);
+CREATE INDEX Match_status_startTime_idx ON Match(status, startTime);
+CREATE INDEX Match_status_endTime_idx ON Match(status, endTime);
 
 -- MatchStream table
-CREATE TABLE IF NOT EXISTS MatchStream (
+CREATE TABLE MatchStream (
   id TEXT PRIMARY KEY NOT NULL,
   matchId TEXT NOT NULL,
   name TEXT NOT NULL DEFAULT 'Stream 1',
@@ -66,22 +94,23 @@ CREATE TABLE IF NOT EXISTS MatchStream (
   FOREIGN KEY (matchId) REFERENCES Match(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS MatchStream_matchId_idx ON MatchStream(matchId);
+CREATE INDEX MatchStream_matchId_idx ON MatchStream(matchId);
 
 -- Category table
-CREATE TABLE IF NOT EXISTS Category (
+-- NOTE: "order" is a SQL reserved keyword, must be quoted
+CREATE TABLE Category (
   id TEXT PRIMARY KEY NOT NULL,
   name TEXT NOT NULL,
   icon TEXT NOT NULL DEFAULT '',
   color TEXT NOT NULL DEFAULT '',
-  order INTEGER NOT NULL DEFAULT 0,
+  "order" INTEGER NOT NULL DEFAULT 0,
   channelCount INTEGER NOT NULL DEFAULT 0,
   createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- AppSetting table (single row, id = 'app')
-CREATE TABLE IF NOT EXISTS AppSetting (
+CREATE TABLE AppSetting (
   id TEXT PRIMARY KEY NOT NULL DEFAULT 'app',
   appName TEXT NOT NULL DEFAULT 'GenZ TV',
   logoUrl TEXT NOT NULL DEFAULT '',
@@ -108,7 +137,7 @@ CREATE TABLE IF NOT EXISTS AppSetting (
 );
 
 -- Feedback table
-CREATE TABLE IF NOT EXISTS Feedback (
+CREATE TABLE Feedback (
   id TEXT PRIMARY KEY NOT NULL,
   category TEXT NOT NULL DEFAULT 'other',
   email TEXT NOT NULL DEFAULT '',
@@ -125,7 +154,7 @@ CREATE TABLE IF NOT EXISTS Feedback (
 );
 
 -- PageView table
-CREATE TABLE IF NOT EXISTS PageView (
+CREATE TABLE PageView (
   id TEXT PRIMARY KEY NOT NULL,
   sessionId TEXT NOT NULL,
   page TEXT NOT NULL,
@@ -140,13 +169,13 @@ CREATE TABLE IF NOT EXISTS PageView (
   createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS PageView_sessionId_idx ON PageView(sessionId);
-CREATE INDEX IF NOT EXISTS PageView_sessionId_createdAt_idx ON PageView(sessionId, createdAt);
-CREATE INDEX IF NOT EXISTS PageView_createdAt_idx ON PageView(createdAt);
-CREATE INDEX IF NOT EXISTS PageView_channelId_idx ON PageView(channelId);
+CREATE INDEX PageView_sessionId_idx ON PageView(sessionId);
+CREATE INDEX PageView_sessionId_createdAt_idx ON PageView(sessionId, createdAt);
+CREATE INDEX PageView_createdAt_idx ON PageView(createdAt);
+CREATE INDEX PageView_channelId_idx ON PageView(channelId);
 
 -- DailyStat table
-CREATE TABLE IF NOT EXISTS DailyStat (
+CREATE TABLE DailyStat (
   id TEXT PRIMARY KEY NOT NULL,
   date TEXT NOT NULL UNIQUE,
   totalViews INTEGER NOT NULL DEFAULT 0,
@@ -162,7 +191,7 @@ CREATE TABLE IF NOT EXISTS DailyStat (
 );
 
 -- VisitorSession table
-CREATE TABLE IF NOT EXISTS VisitorSession (
+CREATE TABLE VisitorSession (
   id TEXT PRIMARY KEY NOT NULL,
   sessionId TEXT NOT NULL UNIQUE,
   firstSeen DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -177,12 +206,12 @@ CREATE TABLE IF NOT EXISTS VisitorSession (
   currentMatchId TEXT
 );
 
-CREATE INDEX IF NOT EXISTS VisitorSession_lastSeen_idx ON VisitorSession(lastSeen);
-CREATE INDEX IF NOT EXISTS VisitorSession_currentChannelId_idx ON VisitorSession(currentChannelId);
-CREATE INDEX IF NOT EXISTS VisitorSession_currentMatchId_idx ON VisitorSession(currentMatchId);
+CREATE INDEX VisitorSession_lastSeen_idx ON VisitorSession(lastSeen);
+CREATE INDEX VisitorSession_currentChannelId_idx ON VisitorSession(currentChannelId);
+CREATE INDEX VisitorSession_currentMatchId_idx ON VisitorSession(currentMatchId);
 
 -- PushSubscription table
-CREATE TABLE IF NOT EXISTS PushSubscription (
+CREATE TABLE PushSubscription (
   id TEXT PRIMARY KEY NOT NULL,
   endpoint TEXT NOT NULL UNIQUE,
   p256dh TEXT NOT NULL,
@@ -191,7 +220,7 @@ CREATE TABLE IF NOT EXISTS PushSubscription (
 );
 
 -- Notification table (for push notifications)
-CREATE TABLE IF NOT EXISTS Notification (
+CREATE TABLE Notification (
   id TEXT PRIMARY KEY NOT NULL,
   title TEXT NOT NULL,
   body TEXT NOT NULL DEFAULT '',
@@ -207,7 +236,7 @@ CREATE TABLE IF NOT EXISTS Notification (
 );
 
 -- AppNotification table (in-app bell notifications)
-CREATE TABLE IF NOT EXISTS AppNotification (
+CREATE TABLE AppNotification (
   id TEXT PRIMARY KEY NOT NULL,
   type TEXT NOT NULL DEFAULT 'notice',
   title TEXT NOT NULL,
@@ -222,7 +251,7 @@ CREATE TABLE IF NOT EXISTS AppNotification (
 );
 
 -- Notice table (popup/push notices on site entry)
-CREATE TABLE IF NOT EXISTS Notice (
+CREATE TABLE Notice (
   id TEXT PRIMARY KEY NOT NULL,
   type TEXT NOT NULL DEFAULT 'popup',
   title TEXT NOT NULL,
@@ -236,7 +265,7 @@ CREATE TABLE IF NOT EXISTS Notice (
 );
 
 -- ChatMessage table
-CREATE TABLE IF NOT EXISTS ChatMessage (
+CREATE TABLE ChatMessage (
   id TEXT PRIMARY KEY NOT NULL,
   username TEXT NOT NULL,
   avatar TEXT NOT NULL DEFAULT 'male',
@@ -247,8 +276,10 @@ CREATE TABLE IF NOT EXISTS ChatMessage (
   FOREIGN KEY (replyToId) REFERENCES ChatMessage(id)
 );
 
-CREATE INDEX IF NOT EXISTS ChatMessage_createdAt_idx ON ChatMessage(createdAt);
-CREATE INDEX IF NOT EXISTS ChatMessage_replyToId_idx ON ChatMessage(replyToId);
+CREATE INDEX ChatMessage_createdAt_idx ON ChatMessage(createdAt);
+CREATE INDEX ChatMessage_replyToId_idx ON ChatMessage(replyToId);
 
--- Insert default AppSetting row (required for settings to work)
+-- ============================================================
+-- STEP 3: Insert default data
+-- ============================================================
 INSERT OR IGNORE INTO AppSetting (id) VALUES ('app');
