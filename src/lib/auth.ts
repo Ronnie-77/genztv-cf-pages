@@ -1,21 +1,22 @@
 // ═══════════════════════════════════════════════════════════
 // Server-side Admin Authentication
 // Uses simple signed tokens — no crypto module dependency
+// All env reads are async for Cloudflare Workers compatibility
 // ═══════════════════════════════════════════════════════════
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getEnvAsync, getEnv } from '@/lib/env'
+import { getEnvAsync } from '@/lib/env'
 
 const COOKIE_NAME = 'zeng-admin-session'
 const SESSION_MAX_AGE = 24 * 60 * 60 // 24 hours in seconds
 
-/** Get the admin password from environment (async — CF Workers compatible) */
+/** Get the admin password from environment (async for CF Workers) */
 async function getAdminPassword(): Promise<string> {
-  const envValue = await getEnvAsync('ADMIN_PASSWORD')
-  return envValue || 'Ronnie7700'
+  const envPassword = await getEnvAsync('ADMIN_PASSWORD')
+  return envPassword || 'Ronnie7700'
 }
 
-/** Get signing secret — derived from admin password */
+/** Get signing secret — derived from admin password (async) */
 async function getSigningSecret(): Promise<string> {
   return `zeng-secret-${await getAdminPassword()}`
 }
@@ -37,14 +38,15 @@ function simpleHash(str: string): string {
   return combined.toString(36).padStart(12, '0')
 }
 
-/** Create a signed session token (timestamp + signature) — async */
+/** Create a signed session token (async — needs signing secret from env) */
 async function createSignedToken(): Promise<string> {
   const timestamp = Math.floor(Date.now() / 1000).toString(36)
-  const signature = simpleHash(`${timestamp}:${await getSigningSecret()}`)
+  const secret = await getSigningSecret()
+  const signature = simpleHash(`${timestamp}:${secret}`)
   return `${timestamp}.${signature}`
 }
 
-/** Verify a signed session token — async (needs signing secret) */
+/** Verify a signed session token (async — needs signing secret from env) */
 async function verifySignedToken(token: string): Promise<boolean> {
   try {
     const parts = token.split('.')
@@ -58,7 +60,8 @@ async function verifySignedToken(token: string): Promise<boolean> {
     if (now - timestamp > SESSION_MAX_AGE) return false
 
     // Verify signature
-    const expectedSignature = simpleHash(`${timestampB36}:${await getSigningSecret()}`)
+    const secret = await getSigningSecret()
+    const expectedSignature = simpleHash(`${timestampB36}:${secret}`)
 
     // Constant-time comparison
     if (signature.length !== expectedSignature.length) return false
@@ -85,10 +88,9 @@ export function getSessionToken(req: NextRequest): string | null {
 
 /** Set session cookie on response */
 export function setSessionCookie(response: NextResponse, token: string): NextResponse {
-  const nodeEnv = getEnv('NODE_ENV') || process.env.NODE_ENV || 'development'
   response.cookies.set(COOKIE_NAME, token, {
     httpOnly: true,
-    secure: nodeEnv === 'production',
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
     maxAge: SESSION_MAX_AGE,
@@ -98,10 +100,9 @@ export function setSessionCookie(response: NextResponse, token: string): NextRes
 
 /** Clear session cookie on response */
 export function clearSessionCookie(response: NextResponse): NextResponse {
-  const nodeEnv = getEnv('NODE_ENV') || process.env.NODE_ENV || 'development'
   response.cookies.set(COOKIE_NAME, '', {
     httpOnly: true,
-    secure: nodeEnv === 'production',
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
     maxAge: 0,

@@ -1,7 +1,6 @@
 export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
-import { getEnvAsync, getEnv } from '@/lib/env'
 
 // GET /api/db-health — Database diagnostic endpoint (no auth required for debugging)
 export async function GET() {
@@ -10,19 +9,37 @@ export async function GET() {
     checks: {} as Record<string, unknown>,
   }
 
-  // 1. Check DATABASE_URL / env vars (async for CF Workers compat)
-  const dbUrl = await getEnvAsync('DATABASE_URL')
-  const hostname = await getEnvAsync('HOSTNAME') || 'not set'
-  const nodeEnv = await getEnvAsync('NODE_ENV') || 'not set'
+  const isProduction = process.env.NODE_ENV === 'production'
 
+  // 1. Environment info
   results.checks = {
     ...results.checks as object,
-    env_DATABASE_URL: dbUrl ? `${dbUrl.substring(0, 20)}...${dbUrl.includes('postgresql') || dbUrl.includes('neon') ? '(postgresql)' : dbUrl.includes('mysql') ? '(mysql)' : dbUrl.includes('sqlite') ? '(sqlite)' : '(unknown)'}` : 'MISSING!',
-    env_HOSTNAME: hostname,
-    env_NODE_ENV: nodeEnv,
+    env_NODE_ENV: process.env.NODE_ENV || 'not set',
+    env_HOSTNAME: process.env.HOSTNAME || 'not set',
+    env_ADMIN_PASSWORD_SET: !!process.env.ADMIN_PASSWORD,
+    database_mode: isProduction ? 'D1 (Cloudflare binding)' : 'SQLite (local file)',
+    env_DATABASE_URL: isProduction ? 'NOT NEEDED (D1 binding used)' : (process.env.DATABASE_URL ? 'SET' : 'MISSING — needed for local dev'),
   }
 
-  // 2. Check Prisma client import
+  // 2. Try D1 binding check (production only)
+  if (isProduction) {
+    try {
+      const { getCloudflareContext } = await import('@opennextjs/cloudflare')
+      const { env } = await getCloudflareContext()
+      const d1Binding = env.DB
+      results.checks = {
+        ...results.checks as object,
+        d1_binding: d1Binding ? 'OK — D1 binding found' : 'MISSING — DB binding not found in env',
+      }
+    } catch (e: unknown) {
+      results.checks = {
+        ...results.checks as object,
+        d1_binding: `FAILED: ${e instanceof Error ? e.message : String(e)}`,
+      }
+    }
+  }
+
+  // 3. Check Prisma client import
   try {
     const { PrismaClient } = await import('@prisma/client')
     results.checks = {
@@ -38,7 +55,7 @@ export async function GET() {
     return NextResponse.json(results, { status: 500 })
   }
 
-  // 3. Try to connect and query
+  // 4. Try to connect and query via db.ts
   try {
     const { db } = await import('@/lib/db')
 

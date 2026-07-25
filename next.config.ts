@@ -10,18 +10,18 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
-  // External packages that should NOT be bundled by Turbopack.
-  // These use dynamic import() and are resolved at runtime on Workers.
-  serverExternalPackages: [
-    '@opennextjs/cloudflare',
-    '@prisma/adapter-d1',
-    'web-push',
-  ],
   experimental: {
     serverActions: {
       bodySizeLimit: '10mb', // Workers have lower memory limits
     },
   },
+  // These packages use Node.js APIs that need special handling on CF Workers
+  // They must be listed here so OpenNext/CF adapter bundles them correctly
+  serverExternalPackages: [
+    '@opennextjs/cloudflare',
+    '@prisma/adapter-d1',
+    'web-push',
+  ],
   async redirects() {
     return [
       {
