@@ -33,7 +33,7 @@ NODE_ENV = "production"
 # Without the correct DATABASE_URL, the Neon adapter can't connect and
 # the app falls back to PrismaClient which needs the Query Engine binary
 # (not available on Workers) → 500 errors on ALL API routes.
-DATABASE_URL = "postgresql://neondb_owner:npg_LD5oQt1wIZGx@ep-bold-brook-azp6jwl9-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+DATABASE_URL = "postgresql://neondb_owner:npg_LD5oQt1wIZGx@ep-bold-brook-azp6jwl9-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
 
 # ── Admin Authentication ──
 # Replace with your actual admin password. For better security, consider

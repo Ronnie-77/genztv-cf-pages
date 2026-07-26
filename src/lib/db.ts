@@ -8,18 +8,26 @@
 // not at module import time. This prevents build errors when DATABASE_URL is
 // unavailable during OpenNext's second build pass.
 //
-// STATIC IMPORTS: We use import (not require) for Neon packages. On Workers,
-// there's no node_modules at runtime — all code must be in the single
-// worker.js bundle. Static imports ensure Next.js/Turbopack bundles them
-// correctly. The `neon()` function is only called inside createPrismaClient()
-// which is lazy, so no connection is made at module-load/build time.
+// HTTP MODE: On Cloudflare Workers, neon() MUST use HTTP (fetch) mode, NOT
+// WebSocket. We set neonConfig.fetchConnectionCache = true to force HTTP mode.
+// WebSocket connections are unreliable on Workers and may fail silently.
 //
-// BUILD TIME: No real queries are executed — the Proxy just sits idle.
-// RUNTIME: process.env.DATABASE_URL from wrangler.toml [vars] is available.
+// channel_binding=require: Incompatible with Neon HTTP mode. We strip it
+// from DATABASE_URL at runtime so the HTTP connection works properly.
+//
+// NO FALLBACK: If the Neon adapter fails on Workers, there is NO working
+// fallback — standard PrismaClient needs the Query Engine binary which
+// also fails on Workers. So we throw instead of silently falling back,
+// giving a clear error message instead of a confusing OpenSSL mismatch.
 
 import { PrismaClient } from '@prisma/client'
-import { neon } from '@neondatabase/serverless'
+import { neon, neonConfig } from '@neondatabase/serverless'
 import { PrismaNeon } from '@prisma/adapter-neon'
+
+// ── Force HTTP mode for Cloudflare Workers ──
+// WebSocket mode doesn't work reliably on Workers runtime.
+// HTTP mode uses fetch() which is fully supported on Workers.
+neonConfig.fetchConnectionCache = true
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined }
 
@@ -31,24 +39,36 @@ function createPrismaClient(): PrismaClient {
     // ── Production (Cloudflare Pages / Workers): Neon adapter ──
     // Bypasses the Query Engine binary entirely — uses Neon HTTP driver
     // which works on Workers runtime. No OpenSSL binary needed.
+
+    // Strip channel_binding=require — incompatible with Neon HTTP mode.
+    // HTTP connections use fetch() and don't support channel binding.
+    let cleanUrl = databaseUrl
+    if (cleanUrl.includes('channel_binding=require')) {
+      cleanUrl = cleanUrl.replace(/&?channel_binding=require/, '')
+      // Also remove if it's the first param (after ? instead of &)
+      cleanUrl = cleanUrl.replace(/\?channel_binding=require&/, '?')
+      cleanUrl = cleanUrl.replace(/\?channel_binding=require$/, '')
+      console.log('[db] Stripped channel_binding=require from DATABASE_URL for HTTP mode')
+    }
+
     try {
-      const neonClient = neon(databaseUrl)
+      const neonClient = neon(cleanUrl)
       const adapter = new PrismaNeon(neonClient)
       const client = new PrismaClient({ adapter })
-      console.log('[db] ✅ Neon adapter created successfully — bypassing Query Engine')
+      console.log('[db] ✅ Neon adapter created successfully — bypassing Query Engine (HTTP mode)')
       return client
     } catch (err) {
-      // Neon adapter failed — log clearly instead of silently falling back
-      // to the Query Engine binary (which would also fail on Workers).
+      // NO fallback to standard PrismaClient — it will ALSO fail on Workers
+      // because the Query Engine binary doesn't work (OpenSSL mismatch).
+      // Throw a clear error instead of silently failing with a confusing message.
       console.error('[db] ❌ Neon adapter creation failed:', err)
-      console.error('[db] DATABASE_URL starts with:', databaseUrl.substring(0, 30) + '...')
-      // Fall back to standard PrismaClient as last resort
-      // This WILL fail on Workers (Query Engine binary mismatch)
-      // but at least the error message will be clearer
-      return new PrismaClient({
-        datasourceUrl: databaseUrl,
-        log: ['error'],
-      })
+      console.error('[db] DATABASE_URL starts with:', cleanUrl.substring(0, 30) + '...')
+      throw new Error(
+        `[db] Neon adapter failed on Workers runtime. This is fatal — ` +
+        `standard PrismaClient also fails on Workers (Query Engine binary mismatch). ` +
+        `Check: DATABASE_URL is correct, Neon HTTP mode is enabled, ` +
+        `channel_binding=require is removed. Original error: ${err}`
+      )
     }
   } else {
     // ── Local dev: standard PrismaClient ──
@@ -60,7 +80,7 @@ function createPrismaClient(): PrismaClient {
         const separator = finalUrl.includes('?') ? '&' : '?'
         finalUrl = `${finalUrl}${separator}connection_limit=5&pool_timeout=30`
       }
-      // Neon URLs — limit connections for serverless
+      // Neon URLs — limit connections for serverless (only for non-Workers dev)
       if (finalUrl.includes('neon.tech') && !finalUrl.includes('connection_limit')) {
         const separator = finalUrl.includes('?') ? '&' : '?'
         finalUrl = `${finalUrl}${separator}connection_limit=1&pool_timeout=20`
