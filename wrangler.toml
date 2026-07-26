@@ -11,3 +11,32 @@ directory = ".open-next/assets"
 # Pages project config
 [placement]
 mode = "smart"
+
+# ── Environment Variables ──
+# These vars are available via process.env on Workers (nodejs_compat).
+# Dashboard-set vars are NOT available via process.env — only via env parameter.
+# So ALL vars needed by the app must be listed here.
+#
+# ⚠️ IMPORTANT: Replace placeholder values with your actual values before deploying!
+# For better security, consider using `wrangler secret put <KEY>` for sensitive values.
+[vars]
+NODE_ENV = "production"
+
+# ── Neon PostgreSQL ──
+# ⚠️ Replace with your actual Neon connection string
+DATABASE_URL = "postgresql://neondb_owner:npg_LD5oQt1wIZGx@ep-bold-brook-azp6jwl9-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+
+# ── Admin Authentication ──
+# ⚠️ Replace with your actual admin password (or use wrangler secret put ADMIN_PASSWORD)
+ADMIN_PASSWORD = "Ronnie7700???"
+
+# ── Web Push VAPID Keys ──
+# ⚠️ Replace with your actual VAPID keys (or use wrangler secret put for private key)
+VAPID_PUBLIC_KEY = "=BBhUWUKqYA_re_uOKmOMKfwKxaH2KLHeOThN_vvFF7xoYADht9NROraQ1f3AUM1XiWduaLVZSWnzsnaOiYAo4ww"
+VAPID_PRIVATE_KEY = "cJ4fNAp7X0gAPlfPXMD7pNg4pYtcwcs9JQMA0piKk4w"
+VAPID_SUBJECT = "mailto:suport@genztv.com"
+NEXT_PUBLIC_VAPID_PUBLIC_KEY = "=BBhUWUKqYA_re_uOKmOMKfwKxaH2KLHeOThN_vvFF7xoYADht9NROraQ1f3AUM1XiWduaLVZSWnzsnaOiYAo4ww"
+
+# ── Cron Security ──
+CRON_SECRET = ""
+CRON_REFRESH_SECRET = ""

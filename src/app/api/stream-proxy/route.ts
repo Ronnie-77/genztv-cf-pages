@@ -210,10 +210,19 @@ export async function GET(req: NextRequest) {
       responseHeaders['Accept-Ranges'] = acceptRanges
     }
 
-    // Cache segments briefly, no-cache for live streams
+    // ── Cache strategy for high-traffic live streams ──
+    // When 2000-3000 viewers watch the same match, the proxy fetches each
+    // segment from upstream ONCE and caches it at the Cloudflare edge.
+    // Next viewer requests the same segment → served from edge cache →
+    // no upstream hit. This reduces upstream bandwidth by 10-100x.
+    //
+    // m3u8 manifests: always no-cache (live playlists change every few seconds)
+    // .ts/.m4s/.mp4 segments: cached for 5min at edge (s-maxage=300),
+    //   stale-while-revalidate=600 → if cache >5min old, serve stale content
+    //   while refetching in background (viewer never sees buffering)
     const isSegment = upstreamUrl.match(/\.(ts|m4s|mp4)(\?|$)/i)
     responseHeaders['Cache-Control'] = isSegment
-      ? 'public, max-age=60'
+      ? 'public, max-age=300, s-maxage=300, stale-while-revalidate=600'
       : 'no-cache, no-store'
 
     return new Response(stream, {

@@ -62,15 +62,15 @@ export function TopNav() {
           </div>
         </div>
 
-        {/* Right: Notification Bell + Timezone (mobile) + Theme (PC) */}
+        {/* Right: Timezone + Notification Bell + Theme */}
         <div className="flex items-center gap-1.5 shrink-0">
-          {/* Notification Bell */}
-          <NotificationBell />
-
-          {/* Timezone selector - mobile only */}
-          <div className="lg:hidden flex items-center [&_button]:px-2 [&_button]:py-2 [&_button]:rounded-lg [&_button]:bg-secondary/60 [&_button]:min-h-[36px] [&_button]:min-w-[44px]">
+          {/* Timezone selector — all screen sizes, left of bell */}
+          <div className="flex items-center [&_button]:px-2 [&_button]:py-2 [&_button]:rounded-lg [&_button]:bg-secondary/60 [&_button]:min-h-[36px] [&_button]:min-w-[44px]">
             <TimezoneSelector />
           </div>
+
+          {/* Notification Bell */}
+          <NotificationBell />
 
           {/* Theme Dropdown - PC */}
           <div className="hidden lg:block relative">
