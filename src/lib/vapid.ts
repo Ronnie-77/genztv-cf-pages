@@ -2,56 +2,27 @@
 // These keys are used for push notification subscription and delivery
 //
 // On Cloudflare Pages (Workers runtime), VAPID keys are accessed via
-// getCloudflareContext().env or process.env. We use getEnv/getEnvAsync
-// from env.ts for CF Workers compatibility.
+// environment bindings (getRequestContext().env) or process.env.
 
-import { getEnvAsync, getEnv } from '@/lib/env'
+const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY || 'BEo3FbUU9D05DYUErcTr6koKy47enYJ8qbMVxX5YxDSgqCrQw5HEqbGxmaSnIPhAwiMb5jRLjpB_0OEZb4r-FqY'
+const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || '4eswudxYwRulpGBUesmZCen3YgcLrPPG7uJqPdEsG8A'
+const VAPID_SUBJECT = process.env.VAPID_SUBJECT || 'mailto:admin@genztv.app'
 
-// Default VAPID keys (fallback for dev / unconfigured environments)
-const DEFAULT_VAPID_PUBLIC_KEY = 'BEo3FbUU9D05DYUErcTr6koKy47enYJ8qbMVxX5YxDSgqCrQw5HEqbGxmaSnIPhAwiMb5jRLjpB_0OEZb4r-FqY'
-const DEFAULT_VAPID_PRIVATE_KEY = '4eswudxYwRulpGBUesmZCen3YgcLrPPG7uJqPdEsG8A'
-const DEFAULT_VAPID_SUBJECT = 'mailto:admin@genztv.app'
-
-/** Get VAPID public key — sync version (uses cached env or fallback) */
 export function getVapidPublicKey(): string {
-  return getEnv('VAPID_PUBLIC_KEY') || getEnv('NEXT_PUBLIC_VAPID_PUBLIC_KEY') || DEFAULT_VAPID_PUBLIC_KEY
+  return VAPID_PUBLIC_KEY
 }
 
-/** Get VAPID public key — async version (always accurate on CF Workers) */
-export async function getVapidPublicKeyAsync(): Promise<string> {
-  const envValue = await getEnvAsync('VAPID_PUBLIC_KEY')
-  const nextPublic = await getEnvAsync('NEXT_PUBLIC_VAPID_PUBLIC_KEY')
-  return envValue || nextPublic || DEFAULT_VAPID_PUBLIC_KEY
-}
-
-/** Get full VAPID config — async (needed for push setup on CF Workers) */
-export async function getVapidConfigAsync() {
-  return {
-    subject: await getEnvAsync('VAPID_SUBJECT') || DEFAULT_VAPID_SUBJECT,
-    publicKey: await getVapidPublicKeyAsync(),
-    privateKey: await getEnvAsync('VAPID_PRIVATE_KEY') || DEFAULT_VAPID_PRIVATE_KEY,
-  }
-}
-
-/** Get full VAPID config — sync fallback (uses cached env) */
 export function getVapidConfig() {
   return {
-    subject: getEnv('VAPID_SUBJECT') || DEFAULT_VAPID_SUBJECT,
-    publicKey: getVapidPublicKey(),
-    privateKey: getEnv('VAPID_PRIVATE_KEY') || DEFAULT_VAPID_PRIVATE_KEY,
+    subject: VAPID_SUBJECT,
+    publicKey: VAPID_PUBLIC_KEY,
+    privateKey: VAPID_PRIVATE_KEY,
   }
 }
 
-/** Check if VAPID is properly configured with all required keys — async */
-export async function isVapidConfiguredAsync(): Promise<boolean> {
-  const config = await getVapidConfigAsync()
-  return !!(config.publicKey && config.privateKey && config.subject)
-}
-
-/** Check if VAPID is properly configured — sync (uses cached env) */
+/** Check if VAPID is properly configured with all required keys */
 export function isVapidConfigured(): boolean {
-  const config = getVapidConfig()
-  return !!(config.publicKey && config.privateKey && config.subject)
+  return !!(VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY && VAPID_SUBJECT)
 }
 
 /** Convert base64 string to Uint8Array for pushManager.subscribe()

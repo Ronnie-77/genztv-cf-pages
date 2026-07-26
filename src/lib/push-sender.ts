@@ -7,22 +7,21 @@
 // gracefully — the rest of the app works fine without push.
 //
 // Import web-push lazily so the module doesn't crash at import time
-// if the crypto polyfill isn't fully functional on Workers runtime.
+// if the crypto polyfill isn't fully functional on Workers.
 
 import { db } from '@/lib/db'
-import { getVapidConfigAsync, isVapidConfiguredAsync } from '@/lib/vapid'
-import { getEnvAsync } from '@/lib/env'
+import { getVapidConfig, isVapidConfigured } from '@/lib/vapid'
 
 // Lazy-load web-push to avoid import-time crashes on Workers runtime
 let webpush: typeof import('web-push') | null = null
 let webPushInitialized = false
 
 async function ensureWebPush(): Promise<boolean> {
-  if (!await isVapidConfiguredAsync()) return false
+  if (!isVapidConfigured()) return false
   if (webPushInitialized) return webpush !== null
 
   try {
-    const vapidConfig = await getVapidConfigAsync()
+    const vapidConfig = getVapidConfig()
     webpush = await import('web-push')
     if (vapidConfig.publicKey && vapidConfig.privateKey && vapidConfig.subject) {
       webpush.setVapidDetails(
@@ -31,9 +30,8 @@ async function ensureWebPush(): Promise<boolean> {
         vapidConfig.privateKey
       )
     }
-    const fcmKey = await getEnvAsync('FCM_SERVER_KEY')
-    if (fcmKey) {
-      webpush.setGCMAPIKey(fcmKey)
+    if (process.env.FCM_SERVER_KEY) {
+      webpush.setGCMAPIKey(process.env.FCM_SERVER_KEY)
     }
     webPushInitialized = true
     return true
@@ -58,7 +56,7 @@ export interface PushPayload {
  * Gracefully returns {sent:0, failed:0} if web-push is not available.
  */
 export async function sendPushToAll(payload: PushPayload): Promise<{ sent: number; failed: number }> {
-  if (!await isVapidConfiguredAsync()) {
+  if (!isVapidConfigured()) {
     return { sent: 0, failed: 0 }
   }
 
@@ -138,7 +136,7 @@ export async function sendPushToSubscription(
   subscription: { endpoint: string; p256dh: string; auth: string },
   payload: PushPayload
 ): Promise<boolean> {
-  if (!await isVapidConfiguredAsync()) {
+  if (!isVapidConfigured()) {
     return false
   }
 
