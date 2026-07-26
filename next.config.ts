@@ -16,10 +16,11 @@ const nextConfig: NextConfig = {
     },
   },
   // These packages use Node.js APIs that need special handling on CF Workers
-  // They must be listed here so OpenNext/CF adapter bundles them correctly
+  // Neon serverless driver + Prisma adapter bypasses Query Engine
   serverExternalPackages: [
+    '@neondatabase/serverless',
+    '@prisma/adapter-neon',
     '@opennextjs/cloudflare',
-    '@prisma/adapter-d1',
     'web-push',
   ],
   async redirects() {

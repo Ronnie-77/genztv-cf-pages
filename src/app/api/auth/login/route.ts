@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const token = await authenticateAdmin(password)
+    const token = authenticateAdmin(password)
     if (!token) {
       // Increment failed attempt count
       currentAttempt.count++

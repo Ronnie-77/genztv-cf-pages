@@ -12,34 +12,17 @@ export async function GET() {
   const isProduction = process.env.NODE_ENV === 'production'
 
   // 1. Environment info
+  const dbUrl = process.env.DATABASE_URL || ''
   results.checks = {
     ...results.checks as object,
     env_NODE_ENV: process.env.NODE_ENV || 'not set',
     env_HOSTNAME: process.env.HOSTNAME || 'not set',
     env_ADMIN_PASSWORD_SET: !!process.env.ADMIN_PASSWORD,
-    database_mode: isProduction ? 'D1 (Cloudflare binding)' : 'SQLite (local file)',
-    env_DATABASE_URL: isProduction ? 'NOT NEEDED (D1 binding used)' : (process.env.DATABASE_URL ? 'SET' : 'MISSING — needed for local dev'),
+    database_mode: isProduction ? 'Neon PostgreSQL (serverless)' : 'Local PostgreSQL',
+    env_DATABASE_URL: dbUrl ? `${dbUrl.substring(0, 30)}...${dbUrl.includes('neon') ? '(Neon)' : dbUrl.includes('localhost') ? '(local)' : '(unknown)'}` : 'MISSING!',
   }
 
-  // 2. Try D1 binding check (production only)
-  if (isProduction) {
-    try {
-      const { getCloudflareContext } = await import('@opennextjs/cloudflare')
-      const { env } = await getCloudflareContext()
-      const d1Binding = env.DB
-      results.checks = {
-        ...results.checks as object,
-        d1_binding: d1Binding ? 'OK — D1 binding found' : 'MISSING — DB binding not found in env',
-      }
-    } catch (e: unknown) {
-      results.checks = {
-        ...results.checks as object,
-        d1_binding: `FAILED: ${e instanceof Error ? e.message : String(e)}`,
-      }
-    }
-  }
-
-  // 3. Check Prisma client import
+  // 2. Check Prisma client import
   try {
     const { PrismaClient } = await import('@prisma/client')
     results.checks = {
@@ -55,7 +38,7 @@ export async function GET() {
     return NextResponse.json(results, { status: 500 })
   }
 
-  // 4. Try to connect and query via db.ts
+  // 3. Try to connect and query
   try {
     const { db } = await import('@/lib/db')
 

@@ -8,19 +8,6 @@ main = ".open-next/worker.js"
 [assets]
 directory = ".open-next/assets"
 
-# Non-secret environment variables (available via process.env on Workers)
-# Secrets (ADMIN_PASSWORD, CRON_SECRET, CRON_REFRESH_SECRET, VAPID_PRIVATE_KEY,
-# FCM_SERVER_KEY) must be set via: wrangler secret put <KEY>
-# or in Cloudflare Pages dashboard → Settings → Environment variables
-[vars]
-NODE_ENV = "production"
-
-# D1 Database binding
-[[d1_databases]]
-binding = "DB"
-database_name = "genztv-db"
-database_id = "3f64ead4-83ea-4224-a01b-810f807ffaf8"
-
 # Pages project config
 [placement]
 mode = "smart"

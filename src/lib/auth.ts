@@ -1,24 +1,22 @@
 // ═══════════════════════════════════════════════════════════
 // Server-side Admin Authentication
 // Uses simple signed tokens — no crypto module dependency
-// All env reads are async for Cloudflare Workers compatibility
+// With Neon PostgreSQL, process.env works on CF Pages (nodejs_compat)
 // ═══════════════════════════════════════════════════════════
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getEnvAsync } from '@/lib/env'
 
 const COOKIE_NAME = 'zeng-admin-session'
 const SESSION_MAX_AGE = 24 * 60 * 60 // 24 hours in seconds
 
-/** Get the admin password from environment (async for CF Workers) */
-async function getAdminPassword(): Promise<string> {
-  const envPassword = await getEnvAsync('ADMIN_PASSWORD')
-  return envPassword || 'Ronnie7700'
+/** Get the admin password from environment */
+function getAdminPassword(): string {
+  return process.env.ADMIN_PASSWORD || 'Ronnie7700'
 }
 
-/** Get signing secret — derived from admin password (async) */
-async function getSigningSecret(): Promise<string> {
-  return `zeng-secret-${await getAdminPassword()}`
+/** Get signing secret — derived from admin password */
+function getSigningSecret(): string {
+  return `zeng-secret-${getAdminPassword()}`
 }
 
 /** Simple hash function — avoids importing crypto module which uses significant memory */
@@ -38,16 +36,15 @@ function simpleHash(str: string): string {
   return combined.toString(36).padStart(12, '0')
 }
 
-/** Create a signed session token (async — needs signing secret from env) */
-async function createSignedToken(): Promise<string> {
+/** Create a signed session token (timestamp + signature) */
+function createSignedToken(): string {
   const timestamp = Math.floor(Date.now() / 1000).toString(36)
-  const secret = await getSigningSecret()
-  const signature = simpleHash(`${timestamp}:${secret}`)
+  const signature = simpleHash(`${timestamp}:${getSigningSecret()}`)
   return `${timestamp}.${signature}`
 }
 
-/** Verify a signed session token (async — needs signing secret from env) */
-async function verifySignedToken(token: string): Promise<boolean> {
+/** Verify a signed session token */
+function verifySignedToken(token: string): boolean {
   try {
     const parts = token.split('.')
     if (parts.length !== 2) return false
@@ -60,8 +57,7 @@ async function verifySignedToken(token: string): Promise<boolean> {
     if (now - timestamp > SESSION_MAX_AGE) return false
 
     // Verify signature
-    const secret = await getSigningSecret()
-    const expectedSignature = simpleHash(`${timestampB36}:${secret}`)
+    const expectedSignature = simpleHash(`${timestampB36}:${getSigningSecret()}`)
 
     // Constant-time comparison
     if (signature.length !== expectedSignature.length) return false
@@ -75,9 +71,9 @@ async function verifySignedToken(token: string): Promise<boolean> {
   }
 }
 
-/** Validate password and create session — returns token or null (async) */
-export async function authenticateAdmin(password: string): Promise<string | null> {
-  if (password !== await getAdminPassword()) return null
+/** Validate password and create session — returns token or null */
+export function authenticateAdmin(password: string): string | null {
+  if (password !== getAdminPassword()) return null
   return createSignedToken()
 }
 
@@ -110,19 +106,19 @@ export function clearSessionCookie(response: NextResponse): NextResponse {
   return response
 }
 
-/** Check if request is from authenticated admin — returns true/false (async) */
-export async function isAdminAuthenticated(req: NextRequest): Promise<boolean> {
+/** Check if request is from authenticated admin — returns true/false */
+export function isAdminAuthenticated(req: NextRequest): boolean {
   const token = getSessionToken(req)
   if (!token) return false
   return verifySignedToken(token)
 }
 
-/** Middleware helper: require admin auth for API routes (async) */
+/** Middleware helper: require admin auth for API routes */
 export async function requireAdminAuth(
   req: NextRequest,
   handler: () => Promise<NextResponse>
 ): Promise<NextResponse> {
-  const authenticated = await isAdminAuthenticated(req)
+  const authenticated = isAdminAuthenticated(req)
   if (!authenticated) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
