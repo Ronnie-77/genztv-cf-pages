@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "prisma generate && next build",
-    "build:cf": "DATABASE_URL=\"postgresql://placeholder:placeholder@ep-placeholder.region.neon.tech/placeholder?sslmode=require\" npm run build && npx opennextjs-cloudflare build",
+    "build:cf": "export DATABASE_URL=\"postgresql://placeholder:placeholder@ep-placeholder.region.neon.tech/placeholder?sslmode=require\" && npm run build && npx opennextjs-cloudflare build",
     "lint": "eslint .",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
