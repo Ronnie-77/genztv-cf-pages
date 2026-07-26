@@ -16,12 +16,15 @@ const nextConfig: NextConfig = {
     },
     proxyClientMaxBodySize: '100mb',
   },
-  // These packages use Node.js APIs that need special handling on CF Workers.
-  // Neon serverless driver + Prisma adapter bypasses Query Engine binary
-  // (critical for Cloudflare Workers which doesn't support the native binary).
+  // Packages that use Node.js APIs needing special handling.
+  // NOTE: Neon packages (@neondatabase/serverless, @prisma/adapter-neon) MUST
+  // NOT be listed here! On Cloudflare Workers, there's NO node_modules at
+  // runtime — all code must be in the single worker.js bundle. Marking Neon
+  // packages as "external" means they're NOT bundled → require() fails at
+  // runtime → falls back to PrismaClient Query Engine binary → OpenSSL
+  // mismatch error. Let Next.js bundle them normally so they're included in
+  // the OpenNext worker.js bundle.
   serverExternalPackages: [
-    '@neondatabase/serverless',
-    '@prisma/adapter-neon',
     '@opennextjs/cloudflare',
     'web-push',
   ],

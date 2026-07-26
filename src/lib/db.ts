@@ -8,41 +8,62 @@
 // not at module import time. This prevents build errors when DATABASE_URL is
 // unavailable during OpenNext's second build pass.
 //
+// STATIC IMPORTS: We use import (not require) for Neon packages. On Workers,
+// there's no node_modules at runtime — all code must be in the single
+// worker.js bundle. Static imports ensure Next.js/Turbopack bundles them
+// correctly. The `neon()` function is only called inside createPrismaClient()
+// which is lazy, so no connection is made at module-load/build time.
+//
 // BUILD TIME: No real queries are executed — the Proxy just sits idle.
 // RUNTIME: process.env.DATABASE_URL from wrangler.toml [vars] is available.
 
 import { PrismaClient } from '@prisma/client'
+import { neon } from '@neondatabase/serverless'
+import { PrismaNeon } from '@prisma/adapter-neon'
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined }
 
 function createPrismaClient(): PrismaClient {
   const isProduction = process.env.NODE_ENV === 'production'
+  const databaseUrl = process.env.DATABASE_URL
 
-  if (isProduction) {
+  if (isProduction && databaseUrl) {
     // ── Production (Cloudflare Pages / Workers): Neon adapter ──
     // Bypasses the Query Engine binary entirely — uses Neon HTTP driver
     // which works on Workers runtime. No OpenSSL binary needed.
-    const { neon } = require('@neondatabase/serverless')
-    const { PrismaNeon } = require('@prisma/adapter-neon')
-    const neonClient = neon(process.env.DATABASE_URL!)
-    const adapter = new PrismaNeon(neonClient)
-    return new PrismaClient({ adapter })
+    try {
+      const neonClient = neon(databaseUrl)
+      const adapter = new PrismaNeon(neonClient)
+      const client = new PrismaClient({ adapter })
+      console.log('[db] ✅ Neon adapter created successfully — bypassing Query Engine')
+      return client
+    } catch (err) {
+      // Neon adapter failed — log clearly instead of silently falling back
+      // to the Query Engine binary (which would also fail on Workers).
+      console.error('[db] ❌ Neon adapter creation failed:', err)
+      console.error('[db] DATABASE_URL starts with:', databaseUrl.substring(0, 30) + '...')
+      // Fall back to standard PrismaClient as last resort
+      // This WILL fail on Workers (Query Engine binary mismatch)
+      // but at least the error message will be clearer
+      return new PrismaClient({
+        datasourceUrl: databaseUrl,
+        log: ['error'],
+      })
+    }
   } else {
     // ── Local dev: standard PrismaClient ──
     // Works with SQLite or local PostgreSQL
-    const url = process.env.DATABASE_URL
-
-    let finalUrl = url
-    if (url) {
+    let finalUrl = databaseUrl
+    if (finalUrl) {
       // Render internal URLs — add connection_limit for safety
-      if (url.includes('render.com') && !url.includes('connection_limit')) {
-        const separator = url.includes('?') ? '&' : '?'
-        finalUrl = `${url}${separator}connection_limit=5&pool_timeout=30`
+      if (finalUrl.includes('render.com') && !finalUrl.includes('connection_limit')) {
+        const separator = finalUrl.includes('?') ? '&' : '?'
+        finalUrl = `${finalUrl}${separator}connection_limit=5&pool_timeout=30`
       }
       // Neon URLs — limit connections for serverless
-      if (url.includes('neon.tech') && !url.includes('connection_limit')) {
-        const separator = url.includes('?') ? '&' : '?'
-        finalUrl = `${url}${separator}connection_limit=1&pool_timeout=20`
+      if (finalUrl.includes('neon.tech') && !finalUrl.includes('connection_limit')) {
+        const separator = finalUrl.includes('?') ? '&' : '?'
+        finalUrl = `${finalUrl}${separator}connection_limit=1&pool_timeout=20`
       }
     }
 
