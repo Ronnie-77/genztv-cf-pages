@@ -7,6 +7,7 @@ import { requireAdminAuth } from '@/lib/auth'
 import { apiCache } from '@/lib/cache'
 
 // GET /api/matches — list all matches (auto-syncs statuses based on time)
+// Falls back to empty array when database is unavailable
 export async function GET(req: NextRequest) {
   try {
     // Auto-sync match statuses based on current time.
@@ -57,8 +58,11 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(matches)
   } catch (error) {
-    console.error('Error fetching matches:', error)
-    return NextResponse.json({ error: 'Failed to fetch matches' }, { status: 500 })
+    console.error('[Matches] Database error, returning empty matches:', error)
+
+    // ── Fallback to empty array when DB is unavailable ──
+    // No hardcoded match data — matches are time-sensitive and change frequently
+    return NextResponse.json([])
   }
 }
 

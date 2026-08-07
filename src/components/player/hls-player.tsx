@@ -245,77 +245,77 @@ export function HlsPlayer({
     }
 
     // ── Our custom overrides on top of demo defaults ──
-    // Tuned for IPTV live streaming with thousands of concurrent viewers.
-    // ABR ensures smooth playback: quality drops on slow networks, rises on fast ones.
-    // Proxy mode uses conservative timeouts to handle added latency.
+    // Only override what we genuinely need for our app's fallback chain,
+    // iOS support, and proxy mode. DO NOT override hls.js defaults that
+    // we previously set too aggressively (retries, timeouts, ABR).
     const ourOverrides: Record<string, unknown> = {
       // ── iOS / Managed Media Source ──
+      // These only affect iOS 17.1+ and are harmless on other platforms.
       preferManagedMediaSource: true,
       useMMS: true,
       enableSoftKfKey: true,
 
-      // ── ABR (Adaptive Bitrate) — Core for buffer-free live streaming ──
-      // When 2000-3000 viewers watch the same stream, ABR is critical:
-      //   - Slow network → auto-drop to 480p/360p → smooth playback, no buffering
-      //   - Fast network → auto-rise to 720p/1080p → sharp picture
-      //   - startLevel: -1 → hls.js auto-picks best initial level based on bandwidth
-      //
-      // DIRECT mode (CDN streams): Optimized for fast upswitch.
-      //   abrBandWidthUpFactor: 0.8 → ABR rises quality when 80% of current level
-      //     bitrate is available (faster than default 0.75, reduces "stuck at low quality")
-      //   abrBandWidthFactor: 0.7 → ABR drops quality when bandwidth falls below 70%
-      //     of current level bitrate (default value, safe margin)
-      //
-      // PROXY mode (through /api/stream-proxy): More conservative.
-      //   abrBandWidthUpFactor: 0.6 → slower upswitch (proxy adds latency, bandwidth
-      //     estimates are inflated by proxy overhead, so we need a higher threshold)
-      //   abrMaxWithRealBitrate: true → use ACTUAL segment bitrate for ABR decisions,
-      //     not the declared bitrate from manifest (manifest declared bitrate can be
-      //     wrong for IPTV streams; this prevents quality oscillation)
-      //   fragLoadingTimeOut: 12000 → proxy adds round-trip time, 6s was too short,
-      //     causing duplicate concurrent fetches and more buffering
-      ...(isDirect ? {
-        // ── DIRECT mode ABR (fast upswitch, responsive) ──
-        startLevel: -1,
-        abrBandWidthFactor: 0.7,
-        abrBandWidthUpFactor: 0.8,
-        abrEwmaDefaultEstimate: 1000000, // 1Mbps — starts higher so ABR picks better initial quality
-        startFragPrefetch: true, // Download first fragment before manifest parsing = faster first frame
-      } : {
-        // ── PROXY mode ABR (conservative, proxy-aware) ──
-        startLevel: -1,
-        abrBandWidthFactor: 0.7,
-        abrBandWidthUpFactor: 0.6,
-        abrEwmaDefaultEstimate: 500000, // 500kbps — proxy adds latency, start conservative
-        abrMaxWithRealBitrate: true, // Use real bitrate to prevent oscillation through proxy
-        startFragPrefetch: true,
-        // ── Proxy timeouts (increased from 6s → 12s) ──
-        // Proxy adds round-trip: browser → CF Pages → upstream CDN → CF Pages → browser
-        // 6s timeout caused premature retries → duplicate concurrent upstream fetches
-        // → 2-3x bandwidth waste → more buffering for ALL viewers
-        fragLoadingMaxRetry: 3,
-        fragLoadingMaxRetryTimeout: 64000,
-        fragLoadingTimeOut: 12000, // 12s — enough for proxy round-trip
-        manifestLoadingMaxRetry: 2,
-        manifestLoadingMaxRetryTimeout: 64000,
-        manifestLoadingTimeOut: 8000,
-        levelLoadingMaxRetry: 2,
-        levelLoadingMaxRetryTimeout: 64000,
-        levelLoadingTimeOut: 8000,
-      }),
-
       // ── Live sync — tuned for smooth m3u8 playback ──
+      // liveSyncDurationCount: 3 (hls.js default) — start after 3 segments.
+      //   Lower values (1) cause frequent rebuffering on slow CDNs because
+      //   the player tries to start before enough data is buffered.
+      // liveMaxLatencyDurationCount: Infinity — MUST stay Infinity!
+      //   Any finite value causes hls.js to forcefully seek the playhead
+      //   forward when latency exceeds the threshold, creating the "আগে
+      //   পিছে হওয়া" (stutter/jump) symptom the user reported for m3u8.
       liveSyncDurationCount: 3,
-      liveMaxLatencyDurationCount: Infinity, // MUST be Infinity — prevents forced seek-forward stutters
+      liveMaxLatencyDurationCount: Infinity, // MUST be Infinity — any finite value causes forced seek-forward stutters
       liveDurationInfinity: true,
       progressive: true,
+      startLevel: -1,
 
-      // ── Buffer management ──
-      // maxBufferLength: 30 — 30s forward buffer, absorbs CDN jitter
-      // maxMaxBufferLength: 600 — allows buffer growth on good bandwidth
-      // backBufferLength: 90 — 90s backward buffer for seeking
+      // ── Buffer management for m3u8 streams ──
+      // These help reduce buffering on CDN streams with variable latency.
+      // maxBufferLength: 30 — 30s forward buffer, enough to absorb CDN jitter.
+      //   hls.js default is 30s which is fine, but we make it explicit.
+      // maxMaxBufferLength: 600 — allows the buffer to grow when bandwidth
+      //   is good, preventing the "buffer spinner during high-bitrate segments"
+      //   issue. hls.js default is 600s.
+      // backBufferLength: 90 — keeps 90s of backward buffer for seeking,
+      //   auto-cleans anything older (same as demo page).
       maxBufferLength: 30,
       maxMaxBufferLength: 600,
+
+      // ── ABR (Adaptive Bitrate) — tuned for live sports streaming ──
+      // These settings make hls.js react faster to network changes:
+      //   • Start at lower quality and up-switch (prevents initial buffering)
+      //   • Down-switch quickly when bandwidth drops (prevents buffering pauses)
+      //   • Up-switch quickly when bandwidth improves (better quality)
+      //   • Cap quality to screen size on mobile (don't waste bandwidth)
+      //   • Conservative bandwidth estimate to favor smooth playback over quality
+      abrEwmaDefaultEstimate: 500000,  // Start at 0.5Mbps estimate — forces low quality start, then up-switches
+      // This is KEY: on slow 3G/4G, starting at a high estimate causes ABR to
+      // pick 1080p immediately → buffer → painful downswitch. Starting low means
+      // ABR picks 480p first, then up-switches to 720p/1080p in ~5-10s as it
+      // measures actual bandwidth. Result: ZERO initial buffering.
+      abrEwmaFastLatency: 2,  // Fast EWMA window: 2s (default 3s) — reacts faster to bandwidth drops
+      abrEwmaSlowLatency: 5,  // Slow EWMA window: 5s (default 9s) — reacts faster to bandwidth improvements
+      abrBandWidthFactor: 0.6,  // More conservative than default 0.7 — picks quality lower than measured bandwidth
+      abrBandWidthSafeFactor: 0.8,  // More conservative than default 0.95 — wider safety margin
+      capLevelToPlayerSize: true,  // Auto-cap quality to video element dimensions — mobile gets 480p max
+      startFragPrefetch: true,  // Pre-fetch first fragment before ABR decision — smoother start
+
+      // ── Proxy mode: faster timeouts for fallback chain ──
+      // In PROXY mode only, we reduce retries/timeouts because the proxy adds
+      // latency and we want to fail-fast to mpegts fallback.
+      // In DIRECT mode, we use hls.js BUILT-IN defaults (6 retries, 32s timeout)
+      // which match the demo page and give CDN streams the best chance.
+      ...(isDirect ? {} : {
+        fragLoadingMaxRetry: 2,
+        fragLoadingMaxRetryTimeout: 6000,
+        fragLoadingTimeOut: 6000,
+        manifestLoadingMaxRetry: 0,
+        manifestLoadingMaxRetryTimeout: 5000,
+        manifestLoadingTimeOut: 5000,
+        levelLoadingMaxRetry: 1,
+        levelLoadingMaxRetryTimeout: 5000,
+        levelLoadingTimeOut: 5000,
+      }),
     }
 
     return new Hls({ ...demoDefaults, ...ourOverrides })

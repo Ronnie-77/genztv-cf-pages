@@ -8,9 +8,6 @@ export async function POST(req: NextRequest) {
   return requireAdminAuth(req, async () => {
     try {
       // Delete all data in correct order (respect foreign keys)
-      await db.pageView.deleteMany()
-      await db.dailyStat.deleteMany()
-      await db.visitorSession.deleteMany()
       await db.matchStream.deleteMany()
       await db.match.deleteMany()
       await db.channel.deleteMany()

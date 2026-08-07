@@ -8,23 +8,21 @@ import { apiCache } from '@/lib/cache'
 // GET /api/categories
 export async function GET() {
   try {
-    // Check cache first
     const cached = apiCache.getCategories()
-    if (cached) {
-      return NextResponse.json(cached)
-    }
+    if (cached) return NextResponse.json(cached)
 
-    const categories = await db.category.findMany({
-      orderBy: { order: 'asc' },
-    })
-
-    // Cache the result
+    const categories = await db.category.findMany({ orderBy: { order: 'asc' } })
     apiCache.setCategories(categories)
-
     return NextResponse.json(categories)
   } catch (error) {
-    console.error('Error fetching categories:', error)
-    return NextResponse.json({ error: 'Failed to fetch categories' }, { status: 500 })
+    console.error('[Categories] DB error, falling back to default data:', error)
+    try {
+      const { DEFAULT_CATEGORIES } = await import('@/lib/default-data')
+      return NextResponse.json(DEFAULT_CATEGORIES)
+    } catch (fallbackErr) {
+      console.error('[Categories] Fallback also failed:', fallbackErr)
+      return NextResponse.json({ error: 'Failed to fetch categories' }, { status: 500 })
+    }
   }
 }
 
@@ -42,10 +40,7 @@ export async function POST(req: NextRequest) {
         channelCount: body.channelCount || 0,
       },
     })
-
-    // Invalidate categories cache
     apiCache.invalidateCategories()
-
     return NextResponse.json(category, { status: 201 })
   } catch (error) {
     console.error('Error creating category:', error)

@@ -8,24 +8,19 @@ import {
   ChevronRight,
   ExternalLink,
   Heart,
-  Bell,
-  BellOff,
   Sparkles,
   History,
   MessageCircle,
   LogOut,
   User as UserIcon,
 } from 'lucide-react'
-import { useNotifications } from '@/lib/use-notifications'
 import { useAuth } from '@/lib/use-auth'
 import { FeedbackDialog } from '@/components/feedback/feedback-dialog'
-import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 
 export function AccountPage() {
   const { setCurrentPage, user, setUser } = useAppStore()
   const { login, logout } = useAuth()
-  const { permission, isSubscribed, toggleSubscription, subscribe, isLoading } = useNotifications()
   const [feedbackOpen, setFeedbackOpen] = useState(false)
 
   // Fetch session on mount
@@ -39,26 +34,6 @@ export function AccountPage() {
       })
       .catch(() => {})
   }, [setUser])
-
-  const handleNotificationToggle = async () => {
-    if (permission === 'granted') {
-      const success = await toggleSubscription()
-      if (success !== false) {
-        toast(isSubscribed ? 'Notifications disabled' : 'Notifications enabled', {
-          duration: 2000,
-        })
-      }
-    } else if (permission === 'default') {
-      const success = await subscribe()
-      if (success) {
-        toast('Notifications enabled!', { duration: 2000 })
-      }
-    } else if (permission === 'denied') {
-      toast('Notifications are blocked. Enable them in browser settings.', {
-        duration: 3000,
-      })
-    }
-  }
 
   const handleSignOut = async () => {
     await logout()
@@ -138,46 +113,6 @@ export function AccountPage() {
             </button>
           </div>
         )}
-      </section>
-
-      {/* Notification Toggle */}
-      <section>
-        <button
-          onClick={handleNotificationToggle}
-          disabled={isLoading}
-          className="w-full flex items-center gap-4 p-4 rounded-2xl bg-card border border-border hover:border-foreground/15 transition-all duration-200 group text-left active:scale-[0.98]"
-        >
-          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300 ${
-            isSubscribed
-              ? 'bg-emerald-500 shadow-lg shadow-emerald-500/20'
-              : 'bg-secondary'
-          }`}>
-            {isSubscribed ? (
-              <Bell className="h-5 w-5 text-white" />
-            ) : (
-              <BellOff className="h-5 w-5 text-muted-foreground" />
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold">
-              {isSubscribed ? 'Notifications Enabled' : 'Notifications Disabled'}
-            </p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {permission === 'denied'
-                ? 'Blocked by browser — enable in settings'
-                : isSubscribed
-                  ? 'Tap to disable push notifications'
-                  : 'Tap to enable push notifications'}
-            </p>
-          </div>
-          <div className={`w-11 h-[26px] rounded-full transition-all duration-300 relative shrink-0 ${
-            isSubscribed ? 'bg-emerald-500' : 'bg-muted-foreground/30'
-          }`}>
-            <div className={`absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-300 ${
-              isSubscribed ? 'left-[22px]' : 'left-[3px]'
-            }`} />
-          </div>
-        </button>
       </section>
 
       {/* Social Links — Premium Cards */}

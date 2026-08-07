@@ -4,33 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
 import { apiCache } from '@/lib/cache'
-
-// Default settings returned when the DB query fails
-const DEFAULT_SETTINGS = {
-  id: 'app',
-  appName: 'GenZ TV',
-  logoUrl: '',
-  maintenanceMode: false,
-  featuredChannelId: '',
-  heroBannerText: '',
-  defaultQuality: 'auto',
-  bannerAdScript: null,
-  socialBarAdScript: null,
-  customAdScripts: null,
-  adsEnabled: true,
-  homeAdsEnabled: true,
-  videoAdsEnabled: true,
-  apkUrl: '',
-  ga4MeasurementId: '',
-  firebaseConfig: null,
-  securityEnabled: true,
-  redirectAdUrl: '',
-  redirectAdEnabled: false,
-  redirectAdIntervalMinutes: 5,
-  monetagEnabled: false,
-  monetagZoneId: '',
-  monetagDomain: '5gvci.com',
-}
+import { DEFAULT_SETTINGS } from '@/lib/default-data'
 
 // GET /api/settings — public read (needed for maintenance mode check, app name, etc.)
 export async function GET() {

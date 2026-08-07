@@ -16,15 +16,10 @@ export type PageName =
   | 'history'
 
 export type AdminPage =
-  | 'dashboard'
-  | 'analytics'
   | 'channels'
   | 'matches'
-  | 'categories'
-  | 'feedback'
-  | 'notifications'
-  | 'settings'
   | 'data'
+  | 'settings'
 
 interface AppState {
   // Navigation
@@ -189,7 +184,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
   
   // Admin
-  adminPage: 'dashboard',
+  adminPage: 'channels',
   setAdminPage: (page) => set({ adminPage: page }),
   isAdminAuth: false,
   setIsAdminAuth: (auth) => set({ isAdminAuth: auth }),

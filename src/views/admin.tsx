@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, lazy, Suspense } from 'react'
 import { useAppStore } from '@/lib/store'
-import { Shield, Eye, EyeOff, LogOut, AlertCircle, Loader2, Tv, BarChart3, Radio, FolderOpen, Settings, Menu, X, Activity, Database, Home, MessageCircle, Bell } from 'lucide-react'
+import { Shield, Eye, EyeOff, LogOut, AlertCircle, Loader2, Tv, Radio, Settings, Menu, X, Database } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -30,37 +30,25 @@ function lazyWithRetry<T extends React.ComponentType<unknown>>(
   })
 }
 
-const AdminDashboard = lazyWithRetry(() => import('@/views/admin/dashboard').then(m => ({ default: m.AdminDashboard })))
 const AdminChannels = lazyWithRetry(() => import('@/views/admin/channels').then(m => ({ default: m.AdminChannels })))
 const AdminMatches = lazyWithRetry(() => import('@/views/admin/matches').then(m => ({ default: m.AdminMatches })))
-const AdminCategories = lazyWithRetry(() => import('@/views/admin/categories').then(m => ({ default: m.AdminCategories })))
 const AdminSettings = lazyWithRetry(() => import('@/views/admin/settings').then(m => ({ default: m.AdminSettings })))
-const AdminAnalytics = lazyWithRetry(() => import('@/views/admin/analytics').then(m => ({ default: m.AdminAnalytics })))
 const AdminData = lazyWithRetry(() => import('@/views/admin/data').then(m => ({ default: m.AdminData })))
-const AdminFeedback = lazyWithRetry(() => import('@/views/admin/feedback').then(m => ({ default: m.AdminFeedback })))
-const AdminNotifications = lazyWithRetry(() => import('@/views/admin/notifications').then(m => ({ default: m.AdminNotifications })))
 
-// Bottom nav items (mobile) — icons only, no labels
+// Bottom nav items (mobile) — icons only
 const bottomNavItems = [
-  { id: 'dashboard' as const, label: 'Home', icon: Home },
-  { id: 'analytics' as const, label: 'Stats', icon: Activity },
   { id: 'channels' as const, label: 'Channels', icon: Tv },
   { id: 'matches' as const, label: 'Matches', icon: Radio },
-  { id: 'notifications' as const, label: 'Notify', icon: Bell },
+  { id: 'data' as const, label: 'Data', icon: Database },
   { id: 'settings' as const, label: 'Settings', icon: Settings },
 ]
 
-// Sidebar nav items (all pages, for hamburger menu + desktop sidebar)
+// Sidebar nav items
 const sidebarNavItems = [
-  { id: 'dashboard' as const, label: 'Dashboard', icon: BarChart3 },
-  { id: 'analytics' as const, label: 'Analytics', icon: Activity },
   { id: 'channels' as const, label: 'Channels', icon: Tv },
   { id: 'matches' as const, label: 'Matches', icon: Radio },
-  { id: 'categories' as const, label: 'Categories', icon: FolderOpen },
-  { id: 'feedback' as const, label: 'Feedback', icon: MessageCircle },
-  { id: 'notifications' as const, label: 'Notifications', icon: Bell },
-  { id: 'settings' as const, label: 'Settings', icon: Settings },
   { id: 'data' as const, label: 'Data', icon: Database },
+  { id: 'settings' as const, label: 'Settings', icon: Settings },
 ]
 
 export function AdminPage() {
@@ -279,26 +267,16 @@ export function AdminPage() {
   const renderAdminContent = () => {
     const content = (() => {
       switch (adminPage) {
-        case 'dashboard':
-          return <AdminDashboard />
-        case 'analytics':
-          return <AdminAnalytics />
         case 'channels':
           return <AdminChannels />
         case 'matches':
           return <AdminMatches />
-        case 'categories':
-          return <AdminCategories />
-        case 'feedback':
-          return <AdminFeedback />
-        case 'notifications':
-          return <AdminNotifications />
-        case 'settings':
-          return <AdminSettings />
         case 'data':
           return <AdminData />
+        case 'settings':
+          return <AdminSettings />
         default:
-          return <AdminDashboard />
+          return <AdminChannels />
       }
     })()
     return (

@@ -7,7 +7,6 @@ import { Search, Menu, Tv, Moon, Sun, Monitor, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { TimezoneSelector } from '@/components/timezone/timezone-selector'
-import { NotificationBell } from '@/components/push/notification-bell'
 import { cn } from '@/lib/utils'
 
 export function TopNav() {
@@ -62,15 +61,12 @@ export function TopNav() {
           </div>
         </div>
 
-        {/* Right: Timezone + Notification Bell + Theme */}
+        {/* Right: Timezone + Theme */}
         <div className="flex items-center gap-1.5 shrink-0">
-          {/* Timezone selector — all screen sizes, left of bell */}
+          {/* Timezone selector — all screen sizes */}
           <div className="flex items-center [&_button]:px-2 [&_button]:py-2 [&_button]:rounded-lg [&_button]:bg-secondary/60 [&_button]:min-h-[36px] [&_button]:min-w-[44px]">
             <TimezoneSelector />
           </div>
-
-          {/* Notification Bell */}
-          <NotificationBell />
 
           {/* Theme Dropdown - PC */}
           <div className="hidden lg:block relative">
