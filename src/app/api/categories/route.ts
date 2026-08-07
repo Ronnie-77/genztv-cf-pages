@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { requireAdminAuth } from '@/lib/auth'
 import { apiCache } from '@/lib/cache'
+import { DEFAULT_CATEGORIES } from '@/lib/default-data'
 
 // GET /api/categories
 export async function GET() {
@@ -16,13 +17,7 @@ export async function GET() {
     return NextResponse.json(categories)
   } catch (error) {
     console.error('[Categories] DB error, falling back to default data:', error)
-    try {
-      const { DEFAULT_CATEGORIES } = await import('@/lib/default-data')
-      return NextResponse.json(DEFAULT_CATEGORIES)
-    } catch (fallbackErr) {
-      console.error('[Categories] Fallback also failed:', fallbackErr)
-      return NextResponse.json({ error: 'Failed to fetch categories' }, { status: 500 })
-    }
+    return NextResponse.json(DEFAULT_CATEGORIES)
   }
 }
 

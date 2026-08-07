@@ -10,10 +10,6 @@
 //
 // HTTP MODE: On Cloudflare Workers, neon() MUST use HTTP (fetch) mode, NOT
 // WebSocket. fetchConnectionCache is now always true (deprecated option removed).
-// WebSocket connections are unreliable on Workers and may fail silently.
-//
-// channel_binding=require: Incompatible with Neon HTTP mode. We strip it
-// from DATABASE_URL at runtime so the HTTP connection works properly.
 //
 // GRACEFUL FALLBACK: If the database is unavailable (missing URL, invalid URL,
 // connection failure), the db proxy throws a clear error. API routes catch
@@ -28,24 +24,33 @@ const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefi
 
 function createPrismaClient(): PrismaClient {
   const isProduction = process.env.NODE_ENV === 'production'
-  const databaseUrl = process.env.DATABASE_URL
+  const databaseUrl = process.env.DATABASE_URL || ''
 
   // ── No DATABASE_URL at all ──
   if (!databaseUrl) {
-    console.warn('[db] ⚠️ No DATABASE_URL — database unavailable. API routes will use default data fallback.')
+    console.warn('[db] ⚠️ No DATABASE_URL — database unavailable. Using default data fallback.')
     throw new Error('[db] DATABASE_URL is not set. Database unavailable.')
   }
 
-  // ── Validate URL protocol ──
+  // ── SQLite URL (file:./dev.db) — not compatible with postgresql schema ──
+  // In local dev, if someone has an old .env with SQLite URL, skip DB entirely
+  // so the app works with default data fallback instead of crashing.
+  if (databaseUrl.startsWith('file:')) {
+    console.warn('[db] ⚠️ SQLite URL detected (file:) but schema uses postgresql provider.')
+    console.warn('[db] ⚠️ For local dev with Neon: set DATABASE_URL to your Neon pooler URL.')
+    console.warn('[db] ⚠️ App will use default data fallback (no database).')
+    throw new Error('[db] SQLite URL not compatible with PostgreSQL schema. Using default data fallback.')
+  }
+
+  // ── Non-PostgreSQL URL ──
   if (!databaseUrl.startsWith('postgresql://') && !databaseUrl.startsWith('postgres://')) {
-    console.warn('[db] ⚠️ DATABASE_URL does not start with postgresql:// — database unavailable.')
-    throw new Error(`[db] DATABASE_URL must start with postgresql:// or postgres://. Got: ${databaseUrl.substring(0, 20)}...`)
+    console.warn(`[db] ⚠️ DATABASE_URL must start with postgresql:// — got: ${databaseUrl.substring(0, 30)}...`)
+    throw new Error(`[db] Invalid DATABASE_URL protocol. Expected postgresql:// or postgres://`)
   }
 
   if (isProduction) {
     // ── Production (Cloudflare Pages / Workers): Neon adapter ──
-    // Bypasses the Query Engine binary entirely — uses Neon HTTP driver
-    // which works on Workers runtime. No OpenSSL binary needed.
+    // Bypasses the Query Engine binary entirely — uses Neon HTTP driver.
 
     // Strip channel_binding=require — incompatible with Neon HTTP mode.
     let cleanUrl = databaseUrl
@@ -71,7 +76,7 @@ function createPrismaClient(): PrismaClient {
       )
     }
   } else {
-    // ── Local dev: standard PrismaClient ──
+    // ── Local dev: standard PrismaClient with PostgreSQL ──
     let finalUrl = databaseUrl
     // Render internal URLs — add connection_limit for safety
     if (finalUrl.includes('render.com') && !finalUrl.includes('connection_limit')) {
@@ -97,19 +102,13 @@ function createPrismaClient(): PrismaClient {
 // DATABASE_URL from wrangler.toml [vars] is available.
 //
 // If createPrismaClient() throws (no URL, invalid URL, adapter failure),
-// the error is stored and re-thrown on every subsequent access so API routes
-// can catch it and fall back to default data.
+// the error is re-thrown on every access so API routes can catch it and
+// fall back to default data.
 export const db: PrismaClient = new Proxy({} as PrismaClient, {
   get(_target, prop: string | symbol) {
     // Lazily create the real PrismaClient on first access
     if (!globalForPrisma.prisma) {
-      try {
-        globalForPrisma.prisma = createPrismaClient()
-      } catch (err) {
-        // Store the error so it's thrown on every access attempt
-        // This allows API routes to catch it and fall back to default data
-        throw err
-      }
+      globalForPrisma.prisma = createPrismaClient()
     }
     const value = globalForPrisma.prisma[prop as keyof PrismaClient]
     // Bind methods to the real client so `this` works correctly

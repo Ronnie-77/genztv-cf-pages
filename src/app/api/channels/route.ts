@@ -5,6 +5,7 @@ import { db } from '@/lib/db'
 import { requireAdminAuth } from '@/lib/auth'
 import { parseTokenExpiry } from '@/lib/token-refresh'
 import { apiCache } from '@/lib/cache'
+import { DEFAULT_CHANNELS } from '@/lib/default-data'
 
 // GET /api/channels — list all channels (with optional filters)
 export async function GET(req: NextRequest) {
@@ -44,7 +45,6 @@ export async function GET(req: NextRequest) {
 
     // ── Fallback to default channels when DB is unavailable ──
     try {
-      const { DEFAULT_CHANNELS } = await import('@/lib/default-data')
       const { searchParams } = new URL(req.url)
       const category = searchParams.get('category')
       const search = searchParams.get('search')

@@ -5,6 +5,7 @@ import { db } from '@/lib/db'
 import { requireAdminAuth } from '@/lib/auth'
 import { parseTokenExpiry } from '@/lib/token-refresh'
 import { apiCache } from '@/lib/cache'
+import { DEFAULT_CHANNELS } from '@/lib/default-data'
 
 // GET /api/channels/[id]
 export async function GET(
@@ -17,12 +18,23 @@ export async function GET(
     if (!channel) {
       return NextResponse.json({ error: 'Channel not found' }, { status: 404 })
     }
-    // Increment view count
-    await db.channel.update({ where: { id }, data: { viewCount: { increment: 1 } } })
+    // Increment view count (fire-and-forget, don't block response)
+    db.channel.update({ where: { id }, data: { viewCount: { increment: 1 } } }).catch(() => {})
     return NextResponse.json(channel)
   } catch (error) {
-    console.error('Error fetching channel:', error)
-    return NextResponse.json({ error: 'Failed to fetch channel' }, { status: 500 })
+    // DB unavailable — fallback to default data
+    console.error('[Channel] DB error, falling back to default data:', error)
+    try {
+      const { id } = await params
+      const defaultChannel = DEFAULT_CHANNELS.find(ch => ch.id === id)
+      if (defaultChannel) {
+        return NextResponse.json(defaultChannel)
+      }
+      return NextResponse.json({ error: 'Channel not found' }, { status: 404 })
+    } catch (fallbackErr) {
+      console.error('[Channel] Fallback also failed:', fallbackErr)
+      return NextResponse.json({ error: 'Failed to fetch channel' }, { status: 500 })
+    }
   }
 }
 
@@ -53,12 +65,9 @@ export async function PUT(
         ...(body.sourcePageUrl !== undefined && { sourcePageUrl: body.sourcePageUrl }),
         ...(body.refreshPattern !== undefined && { refreshPattern: body.refreshPattern }),
         ...(body.autoRefresh !== undefined && { autoRefresh: body.autoRefresh }),
-        // tokenExpiresAt + lastRefreshedAt + refreshError are managed by the
-        // refresh endpoints — but allow admin to clear them (null/'') manually.
         ...(body.tokenExpiresAt === null && { tokenExpiresAt: null }),
         ...(body.lastRefreshedAt === null && { lastRefreshedAt: null }),
         ...(body.refreshError !== undefined && { refreshError: body.refreshError }),
-        // When streamUrl changes, auto-parse the new token expiry (if any).
         ...(body.streamUrl !== undefined && {
           tokenExpiresAt: parseTokenExpiry(body.streamUrl).expiresAt
             ? new Date(parseTokenExpiry(body.streamUrl).expiresAt as number)

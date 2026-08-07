@@ -20,7 +20,8 @@ export async function GET(
     }
     return NextResponse.json(match)
   } catch (error) {
-    console.error('Error fetching match:', error)
+    // DB unavailable — match data is time-sensitive, just return 404
+    console.error('[Match] DB error:', error)
     return NextResponse.json({ error: 'Failed to fetch match' }, { status: 500 })
   }
 }
