@@ -164,6 +164,10 @@ export function proxy(request: NextRequest) {
 // Default export — safety net for stale .next caches / Turbopack edge cases
 export default proxy
 
+// Edge runtime — required for Cloudflare Workers compatibility
+// (OpenNext/@opennextjs/cloudflare does not support Node.js middleware)
+export const runtime = 'edge'
+
 export const config = {
   matcher: [
     /*
