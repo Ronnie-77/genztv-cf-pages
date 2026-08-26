@@ -16,6 +16,7 @@ node_modules
 # next.js
 /.next/
 /out/
+next-env.d.ts
 
 # production
 /build
@@ -30,37 +31,40 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
-!.env.example
+# env files — copy .env.example to .env and fill in real values
+.env
+.env.local
+.env*.local
 
 # vercel
 .vercel
 
-# open-next (Cloudflare Pages build output)
-.open-next/
-
-
 # typescript
 *.tsbuildinfo
-next-env.d.ts
-local-*
-.claude
-.z-ai-config
+
+# ── Cloudflare / OpenNext ──
+.wrangler/
+.open-next/
+.dev.vars
+
+# ── Local SQLite database (D1 is used in production) ──
+db/*.db
+db/*.db-journal
+prisma/*.db
+prisma/*.db-journal
+
+# ── Logs ──
 *.log
 dev.log
-dev.out.log
-test
-prompt
-
 server.log
-# Skills directory
-/skills/
 
-# Database (SQLite local storage)
-db/
-*.db
-*.db-journal
-
-# Uploaded files (user content / backups — not part of source)
+# ── Internal / sandbox-only ──
 upload/
+download/
+tests/
+examples/
+mini-services/
+skills/
+.zscripts/
+worklog.md
+PROJECT_MEMORY.md

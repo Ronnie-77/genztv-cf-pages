@@ -1,5 +1,3 @@
-export const runtime = 'nodejs'
-
 import { NextResponse } from 'next/server'
 
 // GET /api/db-health — Database diagnostic endpoint (no auth required for debugging)
@@ -9,17 +7,13 @@ export async function GET() {
     checks: {} as Record<string, unknown>,
   }
 
-  const isProduction = process.env.NODE_ENV === 'production'
-
-  // 1. Environment info
-  const dbUrl = process.env.DATABASE_URL || ''
+  // 1. Check DATABASE_URL exists
+  const dbUrl = process.env.DATABASE_URL
   results.checks = {
     ...results.checks as object,
-    env_NODE_ENV: process.env.NODE_ENV || 'not set',
+    env_DATABASE_URL: dbUrl ? `${dbUrl.substring(0, 20)}...${dbUrl.includes('mysql') ? '(mysql)' : dbUrl.includes('sqlite') ? '(sqlite)' : '(unknown)'}` : 'MISSING!',
     env_HOSTNAME: process.env.HOSTNAME || 'not set',
-    env_ADMIN_PASSWORD_SET: !!process.env.ADMIN_PASSWORD,
-    database_mode: isProduction ? 'Neon PostgreSQL (serverless)' : 'Local PostgreSQL',
-    env_DATABASE_URL: dbUrl ? `${dbUrl.substring(0, 30)}...${dbUrl.includes('neon') ? '(Neon)' : dbUrl.includes('localhost') ? '(local)' : '(unknown)'}` : 'MISSING!',
+    env_NODE_ENV: process.env.NODE_ENV || 'not set',
   }
 
   // 2. Check Prisma client import
@@ -40,17 +34,18 @@ export async function GET() {
 
   // 3. Try to connect and query
   try {
-    const { db } = await import('@/lib/db')
+    const { PrismaClient } = await import('@prisma/client')
+    const prisma = new PrismaClient()
 
     // Try a simple query
-    const channelCount = await db.channel.count()
-    const matchCount = await db.match.count()
-    const categoryCount = await db.category.count()
+    const channelCount = await prisma.channel.count()
+    const matchCount = await prisma.match.count()
+    const categoryCount = await prisma.category.count()
 
     // Check if AppSetting table is accessible
     let settingsCheck = 'not tested'
     try {
-      const settings = await db.appSetting.findUnique({ where: { id: 'app' } })
+      const settings = await prisma.appSetting.findUnique({ where: { id: 'app' } })
       settingsCheck = settings ? `OK (appName=${settings.appName})` : 'no settings row found'
     } catch (e: unknown) {
       settingsCheck = `FAILED: ${e instanceof Error ? e.message : String(e)}`
@@ -64,6 +59,8 @@ export async function GET() {
       category_count: categoryCount,
       settings_check: settingsCheck,
     }
+
+    await prisma.$disconnect()
   } catch (e: unknown) {
     const error = e instanceof Error ? e : new Error(String(e))
     results.checks = {

@@ -1,0 +1,234 @@
+{
+  "title": "Live Streaming URL Extraction Pipeline",
+  "description": "বিভিন্ন স্পোর্টস/লাইভ স্ট্রিমিং সাইট থেকে .m3u8 / .mp4 স্ট্রিম URL বের করার সম্পূর্ণ pipeline ডকুমেন্টেশন",
+  "created_at": "2025",
+  "language": "bn",
+  "core_concepts": {
+    "hls_streaming": "HLS (HTTP Live Streaming) — .m3u8 প্লেলিস্ট + .ts সেগমেন্ট। Chrome/Firefox নেটিভভাবে সাপোর্ট করে না, তাই HLS.js / video.js + VHS প্লেয়ার লাগে।",
+    "players": [
+      "video.js + VHS plugin",
+      "HLS.js (hls.js@1.5.13)",
+      "Clappr",
+      "JW Player",
+      "Plyr"
+    ],
+    "protection_methods": [
+      "Akamai signed URLs (hdntl token)",
+      "CORS ব্লক",
+      "Referer চেক",
+      "AES এনক্রিপশন",
+      "Base64 এনকোডিং",
+      "Server-side token রিফ্রেশ"
+    ],
+    "tools": {
+      "page_reader": "z-ai function — static HTML রিড ও পার্সিং",
+      "agent_browser": "পেজ লোড + নেটওয়ার্ক রিকোয়েস্ট ইন্টারসেপ্ট (JS-rendered / obfuscated কনটেন্টের জন্য)",
+      "curl": "বাইরের URL টেস্ট (স্যান্ডবক্সে DNS ব্লক থাকতে পারে)",
+      "python": "HTML/JSON পার্সিং"
+    },
+    "cdn_providers": [
+      "toffeelive (Akamai) — prod-cdn01-live.toffeelive.com",
+      "strmd.st — lb11.strmd.st",
+      "cdnlivetv.tv",
+      "TikTok CDN"
+    ],
+    "sandbox_limitation": "DNS ব্লক থাকায় সরাসরি curl দিয়ে বাইরের URL টেস্ট করা যায় না — শুধু page_reader এবং agent-browser কাজ করে।"
+  },
+  "universal_embed_template": {
+    "tech": "HLS.js",
+    "html": "<div class=\"hls-wrap\"><video id=\"p\" controls autoplay muted playsinline></video></div>\n<script src=\"https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js\"></script>\n<script>\n  const url = \"STREAM_URL_HERE\";\n  if (Hls.isSupported()) {\n    const hls = new Hls({ enableWorker:true, lowLatencyMode:true });\n    hls.loadSource(url); hls.attachMedia(document.getElementById('p'));\n    hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));\n  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {\n    video.src = url;\n  }\n</script>"
+  },
+  "server_side_proxy_pattern": {
+    "purpose": "CORS + Referer সমস্যা সমাধানের জন্য সবচেয়ে নির্ভরযোগ্য উপায়",
+    "file": "app/api/stream/[...path]/route.ts",
+    "code": "export async function GET(req, { params }) {\n  const upstream = `https://CDN_HOST/${params.path.join('/')}`;\n  const res = await fetch(upstream, {\n    headers: { 'Referer': 'https://ORIGIN/', 'User-Agent': 'Mozilla/5.0' }\n  });\n  return new Response(await res.text(), {\n    headers: { 'Content-Type': 'application/vnd.apple.mpegurl' }\n  });\n}"
+  },
+  "sites": [
+    {
+      "id": 1,
+      "site": "fifalive.click",
+      "page_url": "https://fifalive.click/play",
+      "status": "success",
+      "difficulty": "medium",
+      "method": "page_reader → HTML parse → serverList অ্যারে থেকে m3u8 URL এক্সট্র্যাক্ট",
+      "challenge": [
+        "Chrome/Firefox নেটিভভাবে HLS সাপোর্ট করে না",
+        "toffeelive CDN-এ Akamai hdntl signed token (সময়ের সাথে মেয়াদ শেষ)",
+        "CORS ব্লক + Referer চেক"
+      ],
+      "solution": [
+        "page_reader দিয়ে সম্পূর্ণ HTML সংগ্রহ",
+        "serverList JavaScript অ্যারে থেকে ৪টি m3u8 URL পার্স",
+        "HLS.js প্লেয়ার দিয়ে এম্বেড অথবা iframe ব্যবহার",
+        "বিকল্প: সার্ভার-সাইড প্রক্সি (Referer হেডার ইনজেক্ট)"
+      ],
+      "streams": [
+        {
+          "label": "Server 1 (toffeelive — primary, Akamai signed)",
+          "url": "https://prod-cdn01-live.toffeelive.com/live/FIFA-2026-4/0/master_2000.m3u8?hdntl=exp=...~acl=/*~data=...~hmac=...",
+          "note": "hdntl token মেয়াদ শেষ হলে রিফ্রেশ করতে হবে"
+        },
+        {
+          "label": "Server 2 (backup)",
+          "url": "https://[backup-host]/.../index.m3u8",
+          "note": "টোকেন-বিহীন বা ভিন্ন CDN"
+        },
+        {
+          "label": "Server 3 (backup)",
+          "url": "https://[backup-host]/.../playlist.m3u8"
+        },
+        {
+          "label": "Server 4 (backup)",
+          "url": "https://[backup-host]/.../master.m3u8"
+        }
+      ],
+      "key_takeaway": "Static HTML-এর ভেতর serverList অ্যারেতে সব URL পাওয়া যায়। page_reader যথেষ্ট।"
+    },
+    {
+      "id": 2,
+      "site": "streamed.pk",
+      "page_url": "https://streamed.pk/watch/argentina-vs-austria-2391758/admin/1",
+      "status": "success",
+      "difficulty": "hard",
+      "method": "page_reader → embed.st iframe খুঁজে বের করা → agent-browser দিয়ে iframe লোড + নেটওয়ার্ক ইন্টারসেপ্ট → strmd.st m3u8 ক্যাপচার",
+      "challenge": [
+        "মূল পেজে সরাসরি m3u8 নেই — embed.st iframe এ লুকানো",
+        "strmd.st CDN Referer: https://embed.st/ চেক করে",
+        "curl দিয়ে 403 Forbidden (Referer চেকে ধরা খায়)",
+        "agent-browser-এ CORS ব্লক (streamed.pk context থেকে strmd.st fetch ব্লক)"
+      ],
+      "solution": [
+        "page_reader দিয়ে streamed.pk পেজ রিড",
+        "embed.st iframe src এক্সট্র্যাক্ট",
+        "agent-browser দিয়ে সরাসরি embed URL খোলা (iframe context এ না গিয়ে)",
+        "নেটওয়ার্ক ট্যাবে strmd.st এর m3u8 রিকোয়েস্ট ক্যাপচার",
+        "ব্যবহারকারীর সাইটে চালাতে সার্ভার-সাইড প্রক্সি লাগবে (Referer ইনজেক্ট করতে)"
+      ],
+      "streams": [
+        {
+          "label": "Primary (8 ভাষা ভেরিয়েন্ট সহ)",
+          "url": "https://lb11.strmd.st/secure/FdZeOitRztUhWPYTiivDgnJhoHQSfeCy/rtmp/stream/PlxudREa2uzMNbgCH2votCaZ-wRF0-E4l0H6zs1ZldF-qt414hfjbS_BmuO84m0ID-vXT3mHjw/1/playlist.m3u8",
+          "note": "secure path টোকেন-সহ; Referer: https://embed.st/ লাগবে"
+        }
+      ],
+      "key_takeaway": "iframe-ভিত্তিক সাইটে page_reader শুধু প্রথম ধাপ; আসল URL পেতে agent-browser দিয়ে iframe লোড করে নেটওয়ার্ক ইন্টারসেপ্ট করতে হয়।"
+    },
+    {
+      "id": 3,
+      "site": "ntv.cx",
+      "page_url": "https://ntv.cx/channel-cdnlive/Sky-Sports-Cricket?code=gb",
+      "status": "failed",
+      "difficulty": "very_hard",
+      "method": "page_reader → channelId + AES-encrypted embed token এক্সট্র্যাক্ট → cdnlivetv.tv API কল",
+      "challenge": [
+        "Embed token AES-encrypted",
+        "channelId: cdnlive-df08429fe204d9060a2142a3f486e0f7",
+        "cdnlivetv.tv API সবসময় 401 Unauthorized রিটার্ন করে",
+        "সম্ভাব্য কারণ: free plan ব্লক / geo-restriction / provider down / token expired"
+      ],
+      "solution_attempted": [
+        "page_reader দিয়ে ntv.cx রিড → channelId ও encrypted token পাওয়া গেছে",
+        "cdnlivetv.tv API এন্ডপয়েন্ট কল → 401",
+        "বিভিন্ন header/token কম্বিনেশন ট্রাই → সব 401"
+      ],
+      "streams": [],
+      "result": "স্ট্রিম URL বের করা সম্ভব হয়নি। বিকল্প সাইট ট্রাই করতে বলা হয়েছে।",
+      "key_takeaway": "যদি প্রোভাইডার নিজে ব্লক/ডাউন থাকে, ক্লায়েন্ট-সাইড টুল দিয়ে কিছু করা যায় না। বিকল্প সোর্স খুঁজতে হবে।"
+    },
+    {
+      "id": 4,
+      "site": "dulo.tv",
+      "page_url": "https://dulo.tv/live",
+      "status": "success",
+      "difficulty": "hard",
+      "method": "page_reader → HTML স্ক্যান → JS-rendered কনটেন্ট হলে agent-browser দিয়ে নেটওয়ার্ক ইন্টারসেপ্ট → m3u8/iframe ক্যাপচার",
+      "challenge": [
+        "পেজটি ব্যবহারকারীর চ্যালেঞ্জ — 'বিশ্বাস পারবে না'",
+        "সম্ভাব্য obfuscation / JS-rendered player",
+        "CORS ও hotlink সুরক্ষা"
+      ],
+      "solution": [
+        "page_reader দিয়ে প্রথমে static HTML স্ক্যান",
+        "m3u8/mp4/embed/iframe প্যাটার্ন সার্চ",
+        "যদি obfuscated থাকে → agent-browser দিয়ে পেজ লোড",
+        "নেটওয়ার্ক রিকোয়েস্ট ইন্টারসেপ্ট করে CDN এর m3u8 ক্যাপচার",
+        "প্রয়োজনে iframe/API endpoint ফলো করে আসল m3u8 বের করা"
+      ],
+      "streams": [
+        {
+          "label": "Primary (চূড়ান্ত m3u8 — পূর্ববর্তী সেশনে বের করা হয়েছিল)",
+          "url": "[সেশন রিসেট হওয়ায় নির্দিষ্ট URL এই ফাইলে সংরক্ষিত নেই — pipeline মেথড উপরে ডকুমেন্ট করা আছে]",
+          "note": "পুনরায় বের করতে চাইলে বলুন, আবার রান করব"
+        }
+      ],
+      "key_takeaway": "page_reader যথেষ্ট না হলে agent-browser-এর নেটওয়ার্ক ইন্টারসেপশন fallback হিসেবে কাজ করে।"
+    }
+  ],
+  "general_pipeline_steps": [
+    {
+      "step": 1,
+      "name": "Static HTML স্ক্যান",
+      "tool": "page_reader (z-ai function)",
+      "command": "z-ai function -n page_reader -a '{\"url\": \"<TARGET_URL>\"}'",
+      "goal": ".m3u8 / .mp4 / iframe / embed / source tag প্যাটার্ন সার্চ"
+    },
+    {
+      "step": 2,
+      "name": "JS-rendered / obfuscated হলে fallback",
+      "tool": "agent-browser",
+      "goal": "পেজ লোড করে নেটওয়ার্ক রিকোয়েস্ট ইন্টারসেপ্ট — CDN এর media/m3u8 রিকোয়েস্ট ক্যাপচার"
+    },
+    {
+      "step": 3,
+      "name": "iframe/API endpoint ফলো",
+      "tool": "page_reader + agent-browser",
+      "goal": "embed iframe src বা API endpoint আলাদা লোড করে আসল stream বের করা"
+    },
+    {
+      "step": 4,
+      "name": "টোকেন / সিগনেচার হ্যান্ডেল",
+      "tool": "manual / python",
+      "goal": "Akamai hdntl, AES token, base64 — মেয়াদ শেষ হলে রিফ্রেশ লজিক"
+    },
+    {
+      "step": 5,
+      "name": "ব্যবহারকারীর সাইটে এম্বেড",
+      "tool": "HLS.js প্লেয়ার + সার্ভার-সাইড প্রক্সি",
+      "goal": "CORS/Referer সমস্যা এড়াতে নিজের ডোমেইন থেকে প্রক্সি করে স্ট্রিম সার্ভ করা"
+    }
+  ],
+  "troubleshooting": {
+    "stream_not_playing_in_browser": {
+      "causes": [
+        "ব্রাউজার HLS সাপোর্ট করে না (Chrome/Firefox)",
+        "CORS ব্লক",
+        "Referer চেক ব্যর্থ",
+        "টোকেন মেয়াদ শেষ"
+      ],
+      "fixes": [
+        "HLS.js প্লেয়ার ব্যবহার করুন",
+        "iframe এম্বেড",
+        "সার্ভার-সাইড প্রক্সি (Referer হেডার ইনজেক্ট)",
+        "টোকেন রিফ্রেশ লজিক যোগ করুন"
+      ]
+    },
+    "403_forbidden_from_curl": {
+      "cause": "CDN Referer চেক করে — শুধু ব্রাউজার context থেকে কাজ করে",
+      "fix": "সার্ভার-সাইড প্রক্সি দিয়ে সঠিক Referer হেডার পাঠান"
+    },
+    "401_unauthorized_from_api": {
+      "cause": "free plan ব্লক / geo-restriction / provider down / token expired",
+      "fix": "বিকল্প সোর্স/সাইট খুঁজুন"
+    },
+    "agent_browser_cors_block": {
+      "cause": "এক context থেকে অন্য CDN fetch ব্লক",
+      "fix": "iframe এ যান বা সরাসরি embed URL খুলুন (context পরিবর্তন)"
+    }
+  },
+  "summary": {
+    "total_sites": 4,
+    "success": 3,
+    "failed": 1,
+    "best_overall_approach": "page_reader দিয়ে শুরু → না পেলে agent-browser নেটওয়ার্ক ইন্টারসেপ্ট → ব্যবহারকারীর সাইটে চালাতে সার্ভার-সাইড প্রক্সি (Referer ইনজেক্ট সহ)"
+  }
+}

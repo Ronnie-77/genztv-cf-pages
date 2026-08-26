@@ -1,4 +1,5 @@
 // GenZ TV Service Worker
+// - Handles push notifications
 // - Provides offline app-shell caching (network-first, cache fallback)
 //   so the PWA can be installed and launched on Smart TVs / phones / PCs.
 // - Monetag ad network integration (service worker verification + push ads)
@@ -12,13 +13,14 @@
 // after a fix ships.
 //
 // DEV MODE: When running on localhost / 127.0.0.1 (development), the SW does
-// NOT intercept or cache ANY fetch requests. This prevents the #1 dev
-// headache: a stale cached JS bundle surviving code edits and making the
-// admin's security toggle appear non-functional on localhost:3000 even though
-// the server serves fresh code. In dev, every request goes straight to the
-// network = always fresh code. The activate handler also wipes ALL caches on
-// localhost so any previously cached stale bundle is purged the moment this
-// SW takes over.
+// NOT intercept or cache ANY fetch requests — it only handles push
+// notifications. This prevents the #1 dev headache: a stale cached JS bundle
+// (e.g. an old SecurityProvider without the runtime `securityEnabled` guard)
+// surviving code edits and making the admin's security toggle appear
+// non-functional on localhost:3000 even though the server serves fresh code.
+// In dev, every request goes straight to the network = always fresh code.
+// The activate handler also wipes ALL caches on localhost so any previously
+// cached stale bundle is purged the moment this SW takes over.
 
 const CACHE_NAME = 'genztv-v5'
 const IS_DEV =
@@ -141,34 +143,40 @@ self.addEventListener('fetch', (event) => {
   )
 })
 
-// ─── Push Notification Handler ───
+// Push event — handle incoming push notifications
 self.addEventListener('push', (event) => {
   let data = {
     title: 'GenZ TV',
-    body: 'New notification',
-    url: '/',
+    body: 'New update available!',
     icon: '/logo.svg',
+    url: '/',
+    tag: 'genztv-notification',
   }
 
   if (event.data) {
     try {
       data = { ...data, ...event.data.json() }
-    } catch {
-      data.body = event.data.text()
+    } catch (e) {
+      data.body = event.data.text() || data.body
     }
   }
 
   const options = {
     body: data.body,
-    icon: data.icon || '/logo.svg',
+    icon: data.icon,
+    // `image` is a larger banner shown below the title/body on most
+    // platforms. We surface the team logo here too so that on Android
+    // (which shows both icon and image) the team branding is prominent.
+    image: data.image || data.icon,
     badge: '/logo.svg',
-    vibrate: [100, 50, 100],
+    tag: data.tag,
     data: {
-      url: data.url || '/',
+      url: data.url,
     },
+    vibrate: [100, 50, 100],
     actions: [
-      { action: 'open', title: 'Open' },
-      { action: 'close', title: 'Dismiss' },
+      { action: 'open', title: 'Watch Now' },
+      { action: 'dismiss', title: 'Dismiss' },
     ],
   }
 
@@ -177,17 +185,17 @@ self.addEventListener('push', (event) => {
   )
 })
 
-// Handle notification click
+// Notification click event
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
 
   const urlToOpen = event.notification.data?.url || '/'
 
-  if (event.action === 'close') return
+  if (event.action === 'dismiss') return
 
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      // If a window is already open, focus it and navigate
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      // If there's already a window open, focus it and navigate
       for (const client of clientList) {
         if (client.url.includes(self.location.origin) && 'focus' in client) {
           client.navigate(urlToOpen)
@@ -195,7 +203,20 @@ self.addEventListener('notificationclick', (event) => {
         }
       }
       // Otherwise open a new window
-      return clients.openWindow(urlToOpen)
+      return self.clients.openWindow(urlToOpen)
     })
   )
 })
+
+// ─── Monetag Ad Network Integration ───
+// Monetag requires this service worker configuration for domain verification
+// and push ad delivery. When monetagEnabled is true in admin settings, the
+// MonetagAd component also registers /sw-monetag.js as a separate service
+// worker. This block ensures Monetag verification works even if only the
+// main PWA service worker is registered.
+self.options = {
+  "domain": "5gvci.com",
+  "zoneId": 11223169
+}
+self.lary = ""
+importScripts('https://5gvci.com/act/files/service-worker.min.js?r=sw')

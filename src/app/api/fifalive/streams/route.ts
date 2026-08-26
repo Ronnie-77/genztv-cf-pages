@@ -1,5 +1,3 @@
-export const runtime = 'nodejs'
-
 // /api/fifalive/streams — Lists all available streams from fifalive.click
 //
 // Fetches the fifalive.click page, extracts stream URLs (Toffee CDN + workers.dev),

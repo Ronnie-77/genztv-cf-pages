@@ -1,13 +1,13 @@
-export const runtime = 'nodejs'
-
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db'
 import { requireAdminAuth } from '@/lib/auth'
 
 // GET /api/channels/export — Export channels only (admin only)
 // Returns a JSON file with all channel data, suitable for importing
 // on another GenZTV instance or for backup purposes.
 export async function GET(req: NextRequest) {
+
+      const db = await getDb()
   return requireAdminAuth(req, async () => {
     try {
       const channels = await db.channel.findMany({

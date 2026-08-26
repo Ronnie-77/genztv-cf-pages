@@ -1,7 +1,5 @@
-export const runtime = 'nodejs'
-
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db'
 import { refreshStreamUrl, parseTokenExpiry } from '@/lib/token-refresh'
 
 /**
@@ -83,6 +81,8 @@ export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+
+      const db = await getDb()
   try {
     const { id } = await params
 

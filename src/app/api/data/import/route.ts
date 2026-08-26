@@ -1,7 +1,5 @@
-export const runtime = 'nodejs'
-
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db'
 import { requireAdminAuth } from '@/lib/auth'
 
 // POST /api/data/import — Import data from JSON (admin only)
@@ -9,11 +7,14 @@ import { requireAdminAuth } from '@/lib/auth'
 // Restores a GenZ TV backup file produced by GET /api/data. Merges with
 // existing data: same-ID records are updated, new-ID records are created.
 // No data is deleted. All schema fields are preserved including the
-// GA4 / Firebase settings — so a hosting change via
+// analytics enrichment fields (device, browser, peakVisitors, topDevices,
+// topBrowsers) and the GA4 / Firebase settings — so a hosting change via
 // export → import loses nothing.
 //
 // Also supports channels-only imports (type: "channels-only" in _meta).
 export async function POST(req: NextRequest) {
+
+      const db = await getDb()
   return requireAdminAuth(req, async () => {
     try {
       // Check content-length to reject obviously too-large payloads early
@@ -41,6 +42,9 @@ export async function POST(req: NextRequest) {
         matches: { imported: 0, skipped: 0 },
         categories: { imported: 0, skipped: 0 },
         settings: false,
+        dailyStats: { imported: 0, skipped: 0 },
+        visitorSessions: { imported: 0, skipped: 0 },
+        pageViews: { imported: 0, skipped: 0 },
       }
 
       // ── Channels-Only Import Path ──
@@ -161,6 +165,101 @@ export async function POST(req: NextRequest) {
             console.error('[Data Import] Match error:', (err as Error).message)
             r.matches.skipped++
           }
+        }
+      }
+
+      // Daily Stats — ALL fields including peakVisitors / topDevices / topBrowsers
+      if (Array.isArray(body.dailyStats)) {
+        for (const d of body.dailyStats as Record<string, unknown>[]) {
+          try {
+            await db.dailyStat.upsert({
+              where: { date: d.date as string },
+              update: {
+                totalViews: (d.totalViews as number) ?? 0,
+                uniqueVisitors: (d.uniqueVisitors as number) ?? 0,
+                peakVisitors: (d.peakVisitors as number) ?? 0,
+                topPages: (d.topPages as string) ?? '{}',
+                topChannels: (d.topChannels as string) ?? '{}',
+                topCountries: (d.topCountries as string) ?? '{}',
+                topDevices: (d.topDevices as string) ?? '{}',
+                topBrowsers: (d.topBrowsers as string) ?? '{}',
+              },
+              create: {
+                date: d.date as string,
+                totalViews: (d.totalViews as number) ?? 0,
+                uniqueVisitors: (d.uniqueVisitors as number) ?? 0,
+                peakVisitors: (d.peakVisitors as number) ?? 0,
+                topPages: (d.topPages as string) ?? '{}',
+                topChannels: (d.topChannels as string) ?? '{}',
+                topCountries: (d.topCountries as string) ?? '{}',
+                topDevices: (d.topDevices as string) ?? '{}',
+                topBrowsers: (d.topBrowsers as string) ?? '{}',
+              },
+            })
+            r.dailyStats.imported++
+          } catch { r.dailyStats.skipped++ }
+        }
+      }
+
+      // Visitor Sessions — ALL fields including device / browser
+      if (Array.isArray(body.visitorSessions)) {
+        for (const v of body.visitorSessions as Record<string, unknown>[]) {
+          try {
+            const firstSeen = v.firstSeen ? new Date(v.firstSeen as string) : new Date()
+            const lastSeen = v.lastSeen ? new Date(v.lastSeen as string) : new Date()
+            if (isNaN(firstSeen.getTime()) || isNaN(lastSeen.getTime())) {
+              r.visitorSessions.skipped++
+              continue
+            }
+            await db.visitorSession.upsert({
+              where: { sessionId: v.sessionId as string },
+              update: {
+                lastSeen, pageCount: (v.pageCount as number) ?? 0, country: (v.country as string) ?? '',
+                userAgent: (v.userAgent as string) ?? '', ip: (v.ip as string) ?? '',
+                device: (v.device as string) ?? '', browser: (v.browser as string) ?? '',
+              },
+              create: {
+                sessionId: v.sessionId as string, firstSeen, lastSeen,
+                pageCount: (v.pageCount as number) ?? 0, country: (v.country as string) ?? '',
+                userAgent: (v.userAgent as string) ?? '', ip: (v.ip as string) ?? '',
+                device: (v.device as string) ?? '', browser: (v.browser as string) ?? '',
+              },
+            })
+            r.visitorSessions.imported++
+          } catch { r.visitorSessions.skipped++ }
+        }
+      }
+
+      // Page Views — upsert by id (avoids duplicates on re-import) + device / browser
+      if (Array.isArray(body.pageViews)) {
+        const pageViews = (body.pageViews as Record<string, unknown>[]).slice(0, 50000)
+        for (const p of pageViews) {
+          try {
+            const createdAt = p.createdAt ? new Date(p.createdAt as string) : new Date()
+            if (isNaN(createdAt.getTime())) {
+              r.pageViews.skipped++
+              continue
+            }
+            await db.pageView.upsert({
+              where: { id: p.id as string },
+              update: {
+                sessionId: (p.sessionId as string) ?? '', page: (p.page as string) ?? '',
+                channelId: (p.channelId as string) || null, referrer: (p.referrer as string) ?? '',
+                userAgent: (p.userAgent as string) ?? '', country: (p.country as string) ?? '',
+                ip: (p.ip as string) ?? '', device: (p.device as string) ?? '',
+                browser: (p.browser as string) ?? '', createdAt,
+              },
+              create: {
+                id: p.id as string, sessionId: (p.sessionId as string) ?? '',
+                page: (p.page as string) ?? '', channelId: (p.channelId as string) || null,
+                referrer: (p.referrer as string) ?? '', userAgent: (p.userAgent as string) ?? '',
+                country: (p.country as string) ?? '', ip: (p.ip as string) ?? '',
+                device: (p.device as string) ?? '', browser: (p.browser as string) ?? '',
+                createdAt,
+              },
+            })
+            r.pageViews.imported++
+          } catch { r.pageViews.skipped++ }
         }
       }
 

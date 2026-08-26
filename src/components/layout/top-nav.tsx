@@ -61,10 +61,10 @@ export function TopNav() {
           </div>
         </div>
 
-        {/* Right: Timezone + Theme */}
+        {/* Right: Timezone (mobile) + Theme (PC) */}
         <div className="flex items-center gap-1.5 shrink-0">
-          {/* Timezone selector — all screen sizes */}
-          <div className="flex items-center [&_button]:px-2 [&_button]:py-2 [&_button]:rounded-lg [&_button]:bg-secondary/60 [&_button]:min-h-[36px] [&_button]:min-w-[44px]">
+          {/* Timezone selector - mobile only */}
+          <div className="lg:hidden flex items-center [&_button]:px-2 [&_button]:py-2 [&_button]:rounded-lg [&_button]:bg-secondary/60 [&_button]:min-h-[36px] [&_button]:min-w-[44px]">
             <TimezoneSelector />
           </div>
 

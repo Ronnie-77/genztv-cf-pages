@@ -1,7 +1,6 @@
 // ═══════════════════════════════════════════════════════════
 // Server-side Admin Authentication
 // Uses simple signed tokens — no crypto module dependency
-// With Neon PostgreSQL, process.env works on CF Pages (nodejs_compat)
 // ═══════════════════════════════════════════════════════════
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -31,7 +30,7 @@ function simpleHash(str: string): string {
   h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507)
   h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909)
   h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507)
-  h2 ^= Math.imul(h1 ^ (h2 >>> 13), 3266489909)
+  h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909)
   const combined = 4294967296 * (2097151 & h2) + (h1 >>> 0)
   return combined.toString(36).padStart(12, '0')
 }
@@ -107,7 +106,7 @@ export function clearSessionCookie(response: NextResponse): NextResponse {
 }
 
 /** Check if request is from authenticated admin — returns true/false */
-export function isAdminAuthenticated(req: NextRequest): boolean {
+export async function isAdminAuthenticated(req: NextRequest): Promise<boolean> {
   const token = getSessionToken(req)
   if (!token) return false
   return verifySignedToken(token)
@@ -118,7 +117,7 @@ export async function requireAdminAuth(
   req: NextRequest,
   handler: () => Promise<NextResponse>
 ): Promise<NextResponse> {
-  const authenticated = isAdminAuthenticated(req)
+  const authenticated = await isAdminAuthenticated(req)
   if (!authenticated) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }

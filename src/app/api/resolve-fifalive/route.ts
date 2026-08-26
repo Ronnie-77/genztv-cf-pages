@@ -1,5 +1,3 @@
-export const runtime = 'nodejs'
-
 // /api/resolve-fifalive — resolves the live m3u8 URL (with Akamai hdntl
 // token) for the fifalive.click/play stream.
 //

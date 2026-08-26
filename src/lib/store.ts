@@ -18,8 +18,8 @@ export type PageName =
 export type AdminPage =
   | 'channels'
   | 'matches'
-  | 'data'
   | 'settings'
+  | 'data'
 
 interface AppState {
   // Navigation

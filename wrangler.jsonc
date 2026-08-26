@@ -1,0 +1,35 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "genztv",
+	"main": ".open-next/worker.js",
+	"compatibility_date": "2025-01-01",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"assets": {
+		"directory": ".open-next/assets",
+		"binding": "ASSETS"
+	},
+	"observability": {
+		"enabled": true
+	},
+	"vars": {
+		"CF_DEPLOY": "true",
+		"ADMIN_PASSWORD": "Ronnie7700???",
+		"NEXTAUTH_SECRET": "change-me-in-production"
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "genztv",
+			"database_id": "78225397-a93f-4bee-8d99-468cac43692b",
+			"migrations_dir": "prisma/migrations-d1"
+		},
+		{
+			"binding": "genztv",
+			"database_name": "genztv",
+			"database_id": "78225397-a93f-4bee-8d99-468cac43692b",
+			"remote": true
+		}
+	]
+}

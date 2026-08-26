@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { Plus, Tv, Edit, Trash2, Search, X, Check, RefreshCw, Eye, Star, ToggleLeft, ToggleRight, Upload, Github, FileUp, FileText, FileJson, CheckSquare, Square, KeyRound, Clock, AlertCircle, Zap, Link2 } from 'lucide-react'
+import { Plus, Tv, Edit, Trash2, Search, X, Check, RefreshCw, Eye, Star, ToggleLeft, ToggleRight, Upload, Github, FileUp, FileText, FileJson, CheckSquare, Square, Users, KeyRound, Clock, AlertCircle, Zap, Link2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -163,6 +163,11 @@ export function AdminChannels() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [bulkDeleting, setBulkDeleting] = useState(false)
 
+  // Live viewer counts per channel. Refreshed every 5s by polling
+  // /api/admin/live-viewers. REAL counts only (no demo data) — a channel
+  // shows 0 if no one is currently watching it.
+  const [channelViewers, setChannelViewers] = useState<Record<string, number>>({})
+
   // Ref for scrolling to form on edit
   const formRef = useRef<HTMLDivElement>(null)
 
@@ -185,6 +190,41 @@ export function AdminChannels() {
   useEffect(() => {
     loadChannels()
   }, [loadChannels])
+
+  // Poll /api/admin/live-viewers every 5s to keep the "Live" column as close
+  // to real-time as possible. Sends the current list of channel ids so the
+  // server can return counts for exactly those channels (no demo data — a
+  // channel with no viewers shows 0). The poll stops when the component
+  // unmounts (admin navigates away from the channels tab).
+  useEffect(() => {
+    if (channels.length === 0) return
+    const controller = new AbortController()
+
+    const fetchLiveViewers = async () => {
+      try {
+        const res = await fetch('/api/admin/live-viewers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ channelIds: channels.map((c) => c.id) }),
+          signal: controller.signal,
+        })
+        if (!res.ok) return
+        const data = await res.json()
+        if (data && typeof data.channelViewers === 'object') {
+          setChannelViewers(data.channelViewers)
+        }
+      } catch {
+        // Silent — analytics must never break the admin panel.
+      }
+    }
+
+    fetchLiveViewers()
+    const timer = setInterval(fetchLiveViewers, 5_000)
+    return () => {
+      controller.abort()
+      clearInterval(timer)
+    }
+  }, [channels])
 
   const handleSave = async () => {
     if (!form.name.trim()) {
@@ -1173,7 +1213,7 @@ export function AdminChannels() {
                   <th className="text-left p-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Type</th>
                   <th className="text-left p-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Token</th>
                   <th className="text-left p-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Status</th>
-
+                  <th className="text-left p-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Live</th>
                   <th className="text-left p-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Views</th>
                   <th className="text-right p-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Actions</th>
                 </tr>
@@ -1242,7 +1282,22 @@ export function AdminChannels() {
                         </span>
                       </div>
                     </td>
-
+                    <td className="p-3 text-sm">
+                      <div
+                        className={`flex items-center gap-1 text-xs ${
+                          (channelViewers[ch.id] || 0) > 0
+                            ? 'text-emerald-600 dark:text-emerald-400 font-semibold'
+                            : 'text-muted-foreground'
+                        }`}
+                        title="Real-time viewers watching this channel right now"
+                      >
+                        <Users className="h-3 w-3" />
+                        {(channelViewers[ch.id] || 0).toLocaleString()}
+                        {(channelViewers[ch.id] || 0) > 0 && (
+                          <span className="ml-0.5 inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        )}
+                      </div>
+                    </td>
                     <td className="p-3 text-sm">
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Eye className="h-3 w-3" />

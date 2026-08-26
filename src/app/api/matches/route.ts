@@ -1,14 +1,13 @@
-export const runtime = 'nodejs'
-
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db'
 import { syncMatchStatuses } from '@/lib/match-sync'
 import { requireAdminAuth } from '@/lib/auth'
 import { apiCache } from '@/lib/cache'
 
 // GET /api/matches — list all matches (auto-syncs statuses based on time)
-// Falls back to empty array when database is unavailable
 export async function GET(req: NextRequest) {
+
+      const db = await getDb()
   try {
     // Auto-sync match statuses based on current time.
     // Fire-and-forget so the list response isn't blocked.
@@ -58,16 +57,15 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(matches)
   } catch (error) {
-    console.error('[Matches] Database error, returning empty matches:', error)
-
-    // ── Fallback to empty array when DB is unavailable ──
-    // No hardcoded match data — matches are time-sensitive and change frequently
-    return NextResponse.json([])
+    console.error('Error fetching matches:', error)
+    return NextResponse.json({ error: 'Failed to fetch matches' }, { status: 500 })
   }
 }
 
 // POST /api/matches — create a new match (admin only)
 export async function POST(req: NextRequest) {
+
+      const db = await getDb()
   return requireAdminAuth(req, async () => {
   try {
     const body = await req.json()

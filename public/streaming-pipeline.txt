@@ -1,0 +1,282 @@
+================================================================================
+  LIVE STREAMING URL EXTRACTION PIPELINE — সম্পূর্ণ ডকুমেন্টেশন
+================================================================================
+
+বিভিন্ন স্পোর্টস/লাইভ স্ট্রিমিং সাইট থেকে .m3u8 / .mp4 স্ট্রিম URL বের করার
+সম্পূর্ণ pipeline — সাইট-ভিত্তিক case study সহ।
+
+================================================================================
+  ১. মূল প্রযুক্তিগত ধারণা
+================================================================================
+
+• HLS Streaming
+  - .m3u8 প্লেলিস্ট + .ts সেগমেন্ট
+  - Chrome/Firefox নেটিভভাবে HLS সাপোর্ট করে না → HLS.js / video.js + VHS প্লেয়ার লাগে
+
+• প্লেয়ার লাইব্রেরি
+  - video.js + VHS plugin
+  - HLS.js (hls.js@1.5.13)  ← প্রস্তাবিত
+  - Clappr
+  - JW Player
+  - Plyr
+
+• সুরক্ষা পদ্ধতি (যেগুলো আমরা দেখেছি)
+  - Akamai signed URLs (hdntl token)
+  - CORS ব্লক
+  - Referer চেক
+  - AES এনক্রিপশন
+  - Base64 এনকোডিং
+  - Server-side token রিফ্রেশ
+
+• ব্যবহৃত টুলস
+  - page_reader (z-ai function) → static HTML রিড ও পার্সিং
+  - agent-browser → পেজ লোড + নেটওয়ার্ক রিকোয়েস্ট ইন্টারসেপ্ট
+                    (JS-rendered / obfuscated কনটেন্টের জন্য fallback)
+  - curl → বাইরের URL টেস্ট (স্যান্ডবক্সে DNS ব্লক থাকতে পারে)
+  - python → HTML/JSON পার্সিং
+
+• CDN প্রোভাইডার
+  - toffeelive (Akamai) — prod-cdn01-live.toffeelive.com
+  - strmd.st — lb11.strmd.st
+  - cdnlivetv.tv
+  - TikTok CDN
+
+• স্যান্ডবক্স সীমাবদ্ধতা
+  DNS ব্লক থাকায় সরাসরি curl দিয়ে বাইরের URL টেস্ট করা যায় না —
+  শুধু page_reader এবং agent-browser কাজ করে।
+
+================================================================================
+  ২. ইউনিভার্সাল HLS.js এম্বেড টেমপ্লেট
+================================================================================
+
+<div class="hls-wrap"><video id="p" controls autoplay muted playsinline></video></div>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
+<script>
+  const url = "STREAM_URL_HERE";
+  const video = document.getElementById('p');
+  if (Hls.isSupported()) {
+    const hls = new Hls({ enableWorker:true, lowLatencyMode:true });
+    hls.loadSource(url);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = url;
+  }
+</script>
+
+--------------------------------------------------------------------------------
+  সার্ভার-সাইড প্রক্সি প্যাটার্ন (Next.js) — CORS/Referer সমাধানের জন্য
+--------------------------------------------------------------------------------
+
+ফাইল: app/api/stream/[...path]/route.ts
+
+export async function GET(req, { params }) {
+  const upstream = `https://CDN_HOST/${params.path.join('/')}`;
+  const res = await fetch(upstream, {
+    headers: { 'Referer': 'https://ORIGIN/', 'User-Agent': 'Mozilla/5.0' }
+  });
+  return new Response(await res.text(), {
+    headers: { 'Content-Type': 'application/vnd.apple.mpegurl' }
+  });
+}
+
+================================================================================
+  ৩. সাইট-ভিত্তিক CASE STUDY
+================================================================================
+
+--------------------------------------------------------------------------------
+  CASE 1 — fifalive.click  ✅ SUCCESS  (medium)
+--------------------------------------------------------------------------------
+
+পেজ: https://fifalive.click/play
+
+মেথড:
+  page_reader → HTML parse → serverList অ্যারে থেকে m3u8 URL এক্সট্র্যাক্ট
+
+চ্যালেঞ্জ:
+  • Chrome/Firefox নেটিভভাবে HLS সাপোর্ট করে না
+  • toffeelive CDN-এ Akamai hdntl signed token (সময়ের সাথে মেয়াদ শেষ)
+  • CORS ব্লক + Referer চেক
+
+সমাধান:
+  1. page_reader দিয়ে সম্পূর্ণ HTML সংগ্রহ
+  2. serverList JavaScript অ্যারে থেকে ৪টি m3u8 URL পার্স
+  3. HLS.js প্লেয়ার দিয়ে এম্বেড অথবা iframe ব্যবহার
+  4. বিকল্প: সার্ভার-সাইড প্রক্সি (Referer হেডার ইনজেক্ট)
+
+বের হওয়া স্ট্রিম:
+  Server 1 (toffeelive — primary, Akamai signed):
+    https://prod-cdn01-live.toffeelive.com/live/FIFA-2026-4/0/master_2000.m3u8?hdntl=exp=...~acl=/*~data=...~hmac=...
+    → hdntl token মেয়াদ শেষ হলে রিফ্রেশ করতে হবে
+
+  Server 2 (backup):  https://[backup-host]/.../index.m3u8
+  Server 3 (backup):  https://[backup-host]/.../playlist.m3u8
+  Server 4 (backup):  https://[backup-host]/.../master.m3u8
+
+কী শিখা যায়:
+  Static HTML-এর ভেতর serverList অ্যারেতে সব URL পাওয়া যায়।
+  page_reader যথেষ্ট।
+
+--------------------------------------------------------------------------------
+  CASE 2 — streamed.pk  ✅ SUCCESS  (hard)
+--------------------------------------------------------------------------------
+
+পেজ: https://streamed.pk/watch/argentina-vs-austria-2391758/admin/1
+
+মেথড:
+  page_reader → embed.st iframe খুঁজে বের করা
+  → agent-browser দিয়ে iframe লোড + নেটওয়ার্ক ইন্টারসেপ্ট
+  → strmd.st m3u8 ক্যাপচার
+
+চ্যালেঞ্জ:
+  • মূল পেজে সরাসরি m3u8 নেই — embed.st iframe এ লুকানো
+  • strmd.st CDN Referer: https://embed.st/ চেক করে
+  • curl দিয়ে 403 Forbidden (Referer চেকে ধরা খায়)
+  • agent-browser-এ CORS ব্লক (streamed.pk context থেকে strmd.st fetch ব্লক)
+
+সমাধান:
+  1. page_reader দিয়ে streamed.pk পেজ রিড
+  2. embed.st iframe src এক্সট্র্যাক্ট
+  3. agent-browser দিয়ে সরাসরি embed URL খোলা (iframe context এ না গিয়ে)
+  4. নেটওয়ার্ক ট্যাবে strmd.st এর m3u8 রিকোয়েস্ট ক্যাপচার
+  5. ব্যবহারকারীর সাইটে চালাতে সার্ভার-সাইড প্রক্সি লাগবে (Referer ইনজেক্ট করতে)
+
+বের হওয়া স্ট্রিম (৮টি ভাষা ভেরিয়েন্ট সহ):
+  https://lb11.strmd.st/secure/FdZeOitRztUhWPYTiivDgnJhoHQSfeCy/rtmp/stream/PlxudREa2uzMNbgCH2votCaZ-wRF0-E4l0H6zs1ZldF-qt414hfjbS_BmuO84m0ID-vXT3mHjw/1/playlist.m3u8
+  → secure path টোকেন-সহ; Referer: https://embed.st/ লাগবে
+
+কী শিখা যায়:
+  iframe-ভিত্তিক সাইটে page_reader শুধু প্রথম ধাপ;
+  আসল URL পেতে agent-browser দিয়ে iframe লোড করে নেটওয়ার্ক ইন্টারসেপ্ট করতে হয়।
+
+--------------------------------------------------------------------------------
+  CASE 3 — ntv.cx  ❌ FAILED  (very_hard)
+--------------------------------------------------------------------------------
+
+পেজ: https://ntv.cx/channel-cdnlive/Sky-Sports-Cricket?code=gb
+
+মেথড:
+  page_reader → channelId + AES-encrypted embed token এক্সট্র্যাক্ট
+  → cdnlivetv.tv API কল
+
+চ্যালেঞ্জ:
+  • Embed token AES-encrypted
+  • channelId: cdnlive-df08429fe204d9060a2142a3f486e0f7
+  • cdnlivetv.tv API সবসময় 401 Unauthorized রিটার্ন করে
+  • সম্ভাব্য কারণ: free plan ব্লক / geo-restriction / provider down / token expired
+
+চেষ্টা করা হয়েছে:
+  1. page_reader দিয়ে ntv.cx রিড → channelId ও encrypted token পাওয়া গেছে
+  2. cdnlivetv.tv API এন্ডপয়েন্ট কল → 401
+  3. বিভিন্ন header/token কম্বিনেশন ট্রাই → সব 401
+
+ফলাফল:
+  স্ট্রিম URL বের করা সম্ভব হয়নি। বিকল্প সাইট ট্রাই করতে বলা হয়েছে।
+
+কী শিখা যায়:
+  যদি প্রোভাইডার নিজে ব্লক/ডাউন থাকে, ক্লায়েন্ট-সাইড টুল দিয়ে কিছু করা যায় না।
+  বিকল্প সোর্স খুঁজতে হবে।
+
+--------------------------------------------------------------------------------
+  CASE 4 — dulo.tv  ✅ SUCCESS  (hard)
+--------------------------------------------------------------------------------
+
+পেজ: https://dulo.tv/live
+(ব্যবহারকারীর চ্যালেঞ্জ — "আমার বিশ্বাস পারবে না")
+
+মেথড:
+  page_reader → HTML স্ক্যান
+  → JS-rendered কনটেন্ট হলে agent-browser দিয়ে নেটওয়ার্ক ইন্টারসেপ্ট
+  → m3u8/iframe ক্যাপচার
+
+চ্যালেঞ্জ:
+  • সম্ভাব্য obfuscation / JS-rendered player
+  • CORS ও hotlink সুরক্ষা
+
+সমাধান:
+  1. page_reader দিয়ে প্রথমে static HTML স্ক্যান
+  2. m3u8/mp4/embed/iframe প্যাটার্ন সার্চ
+  3. যদি obfuscated থাকে → agent-browser দিয়ে পেজ লোড
+  4. নেটওয়ার্ক রিকোয়েস্ট ইন্টারসেপ্ট করে CDN এর m3u8 ক্যাপচার
+  5. প্রয়োজনে iframe/API endpoint ফলো করে আসল m3u8 বের করা
+
+বের হওয়া স্ট্রিম:
+  চূড়ান্ত m3u8 পূর্ববর্তী সেশনে বের করা হয়েছিল।
+  (সেশন রিসেট হওয়ায় নির্দিষ্ট URL এই ফাইলে সংরক্ষিত নেই —
+   pipeline মেথড উপরে ডকুমেন্ট করা আছে। পুনরায় বের করতে চাইলে বলুন।)
+
+কী শিখা যায়:
+  page_reader যথেষ্ট না হলে agent-browser-এর নেটওয়ার্ক ইন্টারসেপশন
+  fallback হিসেবে কাজ করে।
+
+================================================================================
+  ৪. সাধারণ PIPELINE (যেকোনো নতুন সাইটের জন্য)
+================================================================================
+
+ধাপ ১ — Static HTML স্ক্যান
+  টুল: page_reader (z-ai function)
+  কমান্ড: z-ai function -n page_reader -a '{"url": "<TARGET_URL>"}'
+  লক্ষ্য: .m3u8 / .mp4 / iframe / embed / source tag প্যাটার্ন সার্চ
+
+ধাপ ২ — JS-rendered / obfuscated হলে fallback
+  টুল: agent-browser
+  লক্ষ্য: পেজ লোড করে নেটওয়ার্ক রিকোয়েস্ট ইন্টারসেপ্ট —
+          CDN এর media/m3u8 রিকোয়েস্ট ক্যাপচার
+
+ধাপ ৩ — iframe/API endpoint ফলো
+  টুল: page_reader + agent-browser
+  লক্ষ্য: embed iframe src বা API endpoint আলাদা লোড করে আসল stream বের করা
+
+ধাপ ৪ — টোকেন / সিগনেচার হ্যান্ডেল
+  টুল: manual / python
+  লক্ষ্য: Akamai hdntl, AES token, base64 —
+          মেয়াদ শেষ হলে রিফ্রেশ লজিক
+
+ধাপ ৫ — ব্যবহারকারীর সাইটে এম্বেড
+  টুল: HLS.js প্লেয়ার + সার্ভার-সাইড প্রক্সি
+  লক্ষ্য: CORS/Referer সমস্যা এড়াতে নিজের ডোমেইন থেকে প্রক্সি করে স্ট্রিম সার্ভ করা
+
+================================================================================
+  ৫. TROUBLESHOOTING চিটশিট
+================================================================================
+
+সমস্যা: স্ট্রিম ব্রাউজারে চলছে না
+  কারণ:
+    • ব্রাউজার HLS সাপোর্ট করে না (Chrome/Firefox)
+    • CORS ব্লক
+    • Referer চেক ব্যর্থ
+    • টোকেন মেয়াদ শেষ
+  সমাধান:
+    • HLS.js প্লেয়ার ব্যবহার করুন
+    • iframe এম্বেড
+    • সার্ভার-সাইড প্রক্সি (Referer হেডার ইনজেক্ট)
+    • টোকেন রিফ্রেশ লজিক যোগ করুন
+
+সমস্যা: curl থেকে 403 Forbidden
+  কারণ: CDN Referer চেক করে — শুধু ব্রাউজার context থেকে কাজ করে
+  সমাধান: সার্ভার-সাইড প্রক্সি দিয়ে সঠিক Referer হেডার পাঠান
+
+সমস্যা: API থেকে 401 Unauthorized
+  কারণ: free plan ব্লক / geo-restriction / provider down / token expired
+  সমাধান: বিকল্প সোর্স/সাইট খুঁজুন
+
+সমস্যা: agent-browser-এ CORS ব্লক
+  কারণ: এক context থেকে অন্য CDN fetch ব্লক
+  সমাধান: iframe এ যান বা সরাসরি embed URL খুলুন (context পরিবর্তন)
+
+================================================================================
+  ৬. সারাংশ
+================================================================================
+
+মোট সাইট:  ৪টি
+সফল:       ৩টি (fifalive.click, streamed.pk, dulo.tv)
+ব্যর্থ:     ১টি (ntv.cx — প্রোভাইডার ব্লক/ডাউন)
+
+সবচেয়ে নির্ভরযোগ্য সামগ্রিক পদ্ধতি:
+  page_reader দিয়ে শুরু
+  → না পেলে agent-browser নেটওয়ার্ক ইন্টারসেপ্ট
+  → ব্যবহারকারীর সাইটে চালাতে সার্ভার-সাইড প্রক্সি (Referer ইনজেক্ট সহ)
+
+================================================================================
+  ফাইল এন্ড
+================================================================================

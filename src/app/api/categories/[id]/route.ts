@@ -1,7 +1,5 @@
-export const runtime = 'nodejs'
-
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db'
 import { requireAdminAuth } from '@/lib/auth'
 
 // GET /api/categories/[id]
@@ -9,6 +7,8 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+
+      const db = await getDb()
   try {
     const { id } = await params
     const category = await db.category.findUnique({ where: { id } })
@@ -27,6 +27,8 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+
+      const db = await getDb()
   return requireAdminAuth(req, async () => {
   try {
     const { id } = await params
@@ -54,6 +56,8 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+
+      const db = await getDb()
   return requireAdminAuth(_req, async () => {
   try {
     const { id } = await params

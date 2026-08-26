@@ -10,6 +10,7 @@ import { DynamicAdSlot } from '@/components/ads/dynamic-ad-slot'
 import { SocialBarAd } from '@/components/ads/social-bar-ad'
 import { Play, Trophy, Globe, Antenna, ChevronRight, Tv, Zap, Download, Smartphone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { TimezoneSelector } from '@/components/timezone/timezone-selector'
 import { usePwaInstall } from '@/lib/use-pwa-install'
 import { InstallAppDialog } from '@/components/pwa/install-app-dialog'
 import { toast } from 'sonner'
@@ -228,6 +229,15 @@ export function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Timezone Selector (PC view only, below hero) ── */}
+      <div className="hidden lg:flex justify-center py-2 px-4 md:px-6 lg:px-8">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Globe className="h-3.5 w-3.5" />
+          <span>Timezone:</span>
+          <TimezoneSelector />
+        </div>
+      </div>
 
       {/* ── Ad Banner ── */}
       {/* All ads are now controlled from the admin panel (Custom Ad Scripts).

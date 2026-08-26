@@ -281,25 +281,6 @@ export function HlsPlayer({
       maxBufferLength: 30,
       maxMaxBufferLength: 600,
 
-      // ── ABR (Adaptive Bitrate) — tuned for live sports streaming ──
-      // These settings make hls.js react faster to network changes:
-      //   • Start at lower quality and up-switch (prevents initial buffering)
-      //   • Down-switch quickly when bandwidth drops (prevents buffering pauses)
-      //   • Up-switch quickly when bandwidth improves (better quality)
-      //   • Cap quality to screen size on mobile (don't waste bandwidth)
-      //   • Conservative bandwidth estimate to favor smooth playback over quality
-      abrEwmaDefaultEstimate: 500000,  // Start at 0.5Mbps estimate — forces low quality start, then up-switches
-      // This is KEY: on slow 3G/4G, starting at a high estimate causes ABR to
-      // pick 1080p immediately → buffer → painful downswitch. Starting low means
-      // ABR picks 480p first, then up-switches to 720p/1080p in ~5-10s as it
-      // measures actual bandwidth. Result: ZERO initial buffering.
-      abrEwmaFastLatency: 2,  // Fast EWMA window: 2s (default 3s) — reacts faster to bandwidth drops
-      abrEwmaSlowLatency: 5,  // Slow EWMA window: 5s (default 9s) — reacts faster to bandwidth improvements
-      abrBandWidthFactor: 0.6,  // More conservative than default 0.7 — picks quality lower than measured bandwidth
-      abrBandWidthSafeFactor: 0.8,  // More conservative than default 0.95 — wider safety margin
-      capLevelToPlayerSize: true,  // Auto-cap quality to video element dimensions — mobile gets 480p max
-      startFragPrefetch: true,  // Pre-fetch first fragment before ABR decision — smoother start
-
       // ── Proxy mode: faster timeouts for fallback chain ──
       // In PROXY mode only, we reduce retries/timeouts because the proxy adds
       // latency and we want to fail-fast to mpegts fallback.

@@ -1,7 +1,5 @@
-export const runtime = 'nodejs'
-
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db'
 import { requireAdminAuth } from '@/lib/auth'
 import { refreshStreamUrl, parseTokenExpiry, isTokenExpiringSoon } from '@/lib/token-refresh'
 
@@ -29,6 +27,8 @@ export const maxDuration = 300 // 5 min — batch refresh can take a while
 const CRON_SECRET = process.env.CRON_REFRESH_SECRET || ''
 
 export async function POST(req: NextRequest) {
+
+      const db = await getDb()
   // Auth: either admin OR valid cron secret
   const cronSecret = req.headers.get('x-cron-secret')
   const isCron = CRON_SECRET && cronSecret === CRON_SECRET
@@ -175,6 +175,8 @@ export async function POST(req: NextRequest) {
  * Does NOT perform a refresh — just shows what would be refreshed.
  */
 export async function GET(req: NextRequest) {
+
+      const db = await getDb()
   return requireAdminAuth(req, async () => {
     try {
       const channels = await db.channel.findMany({

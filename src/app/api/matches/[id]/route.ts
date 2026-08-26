@@ -1,7 +1,5 @@
-export const runtime = 'nodejs'
-
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db'
 import { requireAdminAuth } from '@/lib/auth'
 
 // GET /api/matches/[id]
@@ -9,6 +7,8 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+
+      const db = await getDb()
   try {
     const { id } = await params
     const match = await db.match.findUnique({
@@ -20,8 +20,7 @@ export async function GET(
     }
     return NextResponse.json(match)
   } catch (error) {
-    // DB unavailable — match data is time-sensitive, just return 404
-    console.error('[Match] DB error:', error)
+    console.error('Error fetching match:', error)
     return NextResponse.json({ error: 'Failed to fetch match' }, { status: 500 })
   }
 }
@@ -31,6 +30,8 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+
+      const db = await getDb()
   return requireAdminAuth(req, async () => {
   try {
     const { id } = await params
@@ -82,6 +83,8 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+
+      const db = await getDb()
   return requireAdminAuth(_req, async () => {
   try {
     const { id } = await params

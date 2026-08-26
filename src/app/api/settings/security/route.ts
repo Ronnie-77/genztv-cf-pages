@@ -1,7 +1,5 @@
-export const runtime = 'nodejs'
-
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -22,6 +20,8 @@ import { isAdminAuthenticated } from '@/lib/auth'
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function GET() {
+
+      const db = await getDb()
   try {
     let settings = await db.appSetting.findUnique({
       where: { id: 'app' },
@@ -40,6 +40,8 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
+
+      const db = await getDb()
   try {
     // Admin-only.
     const authenticated = await isAdminAuthenticated(req)

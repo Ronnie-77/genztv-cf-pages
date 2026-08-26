@@ -532,9 +532,7 @@ export async function GET(req: NextRequest) {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, OPTIONS',
             'Access-Control-Allow-Headers': '*',
-            'Cache-Control': 'public, max-age=2, s-maxage=3',
-            'Stale-While-Revalidate': '1',
-            'Vary': 'Accept-Encoding',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
             'X-Stream-Proxy-Cache': 'HIT',
           },
         })
@@ -703,9 +701,7 @@ export async function GET(req: NextRequest) {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'GET, OPTIONS',
           'Access-Control-Allow-Headers': '*',
-          'Cache-Control': 'public, max-age=2, s-maxage=3',
-          'Stale-While-Revalidate': '1',
-          'Vary': 'Accept-Encoding',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
           'X-Stream-Proxy-Cache': 'MISS',
         },
       })
@@ -732,9 +728,7 @@ export async function GET(req: NextRequest) {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'GET, OPTIONS',
           'Access-Control-Allow-Headers': '*',
-          'Cache-Control': 'public, max-age=2, s-maxage=3',
-          'Stale-While-Revalidate': '1',
-          'Vary': 'Accept-Encoding',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
           'X-Stream-Proxy-Cache': 'MISS',
         },
       })
@@ -768,9 +762,7 @@ export async function GET(req: NextRequest) {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'GET, OPTIONS',
           'Access-Control-Allow-Headers': '*',
-          'Cache-Control': 'public, max-age=30, s-maxage=60',
-          'Stale-While-Revalidate': '15',
-          'Vary': 'Accept-Encoding',
+          'Cache-Control': 'public, max-age=3600',
         },
       })
     }
@@ -787,7 +779,6 @@ export async function GET(req: NextRequest) {
         'Access-Control-Allow-Methods': 'GET, OPTIONS',
         'Access-Control-Allow-Headers': '*',
         'Cache-Control': 'no-cache',
-        'Vary': 'Accept-Encoding',
       },
     })
   } catch (error) {
@@ -808,7 +799,6 @@ export async function OPTIONS() {
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
       'Access-Control-Allow-Headers': '*',
       'Access-Control-Max-Age': '86400',
-      'Vary': 'Accept-Encoding',
     },
   })
 }

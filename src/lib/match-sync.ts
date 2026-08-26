@@ -1,11 +1,12 @@
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db'
 
 /**
  * Shared match-status sync helper.
  *
  * Extracted into its own module so it can be imported by both the
- * `/api/matches` route (auto-sync on GET) without creating a circular
- * import between two route handlers.
+ * `/api/matches` route (auto-sync on GET) and the
+ * `/api/matches/sync-statuses` route (explicit admin-triggered sync)
+ * without creating a circular import between two route handlers.
  */
 
 /**
@@ -25,6 +26,7 @@ export async function syncMatchStatuses(): Promise<{
   updatedToLive: number
   updatedToEnded: number
 }> {
+  const db = await getDb()
   const now = new Date()
   const liveThreshold = new Date(now.getTime() + LIVE_EARLY_MINUTES * 60 * 1000)
 
@@ -63,19 +65,6 @@ export async function syncMatchStatuses(): Promise<{
       data: { status: 'live' },
     })
     updatedToLive = result.count
-
-    if (updatedToLive > 0) {
-      // Mark these matches as notified to prevent future push attempts
-      await db.match.updateMany({
-        where: {
-          id: { in: startingMatches.map(m => m.id) },
-          status: 'live',
-          liveNotifiedAt: null,
-        },
-        data: { liveNotifiedAt: new Date() },
-      })
-      console.log(`[MatchSync] ${updatedToLive} match(es) went LIVE`)
-    }
   }
 
   // Update live → ended

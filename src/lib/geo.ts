@@ -1,24 +1,40 @@
 /**
  * IP → Country geolocation for analytics.
  *
- * On Cloudflare Pages (Workers runtime), the cf-ipcountry header is
- * automatically provided by Cloudflare's edge network — no external
- * lookup needed. This module prefers the header and falls back to
- * ip-api.com only if the header is missing (e.g. local dev).
+ * Uses ip-api.com (free, no API key, 45 req/min limit) with an in-memory
+ * cache so repeat visits from the same IP don't re-query.
  *
- * No in-memory cache on Workers (ephemeral runtime).
+ * IMPORTANT: All country data comes from the REAL visitor's IP. No fake/mock
+ * data is ever generated. If the lookup fails (network error, rate limit,
+ * private IP), country is recorded as an empty string — the rest of the
+ * analytics tracking still works.
+ *
+ * The cache is process-wide (module-level Map) and expires after 24h so
+ * a visitor who roams to a new country eventually gets re-resolved.
  */
+
+interface GeoCacheEntry {
+  country: string
+  expiresAt: number
+}
+
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24 hours
+const LOOKUP_TIMEOUT_MS = 2500
+
+const cache = new Map<string, GeoCacheEntry>()
 
 /** True if the IP is private / loopback / link-local (skip geolocation). */
 function isPrivateIp(ip: string): boolean {
   if (!ip) return true
   if (ip === '::1' || ip === '::') return true
+  // IPv4
   if (/^127\./.test(ip)) return true
   if (/^10\./.test(ip)) return true
   if (/^192\.168\./.test(ip)) return true
   if (/^172\.(1[6-9]|2\d|3[01])\./.test(ip)) return true
   if (/^169\.254\./.test(ip)) return true
   if (/^0\./.test(ip)) return true
+  // IPv6 link-local / unique-local
   if (/^f[cd]/i.test(ip)) return true
   if (/^fe80/i.test(ip)) return true
   return false
@@ -26,24 +42,29 @@ function isPrivateIp(ip: string): boolean {
 
 /**
  * Look up the country code for an IP address.
- * On Cloudflare Workers, the cf-ipcountry header is always present.
- * Falls back to ip-api.com for local development.
+ * Returns '' if the IP is private, the lookup fails, or the result is unknown.
  */
 export async function lookupCountry(ip: string): Promise<string> {
   if (!ip || isPrivateIp(ip)) return ''
 
-  // On Workers: use cf-ipcountry (available in getRequestContext)
-  // But since this function receives raw IP, we'll use ip-api.com
-  // as fallback. In practice, the API routes that use this should
-  // prefer countryFromHeaders() which checks cf-ipcountry first.
+  // Check cache
+  const cached = cache.get(ip)
+  if (cached) {
+    if (Date.now() < cached.expiresAt) return cached.country
+    cache.delete(ip)
+  }
 
   try {
-    const res = await fetch(
-      `http://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,country,countryCode`,
-      {
-        headers: { 'Accept': 'application/json' },
-      }
-    )
+    // ip-api.com free endpoint returns JSON: { country, countryCode, ... }
+    // field: countryName — we use full country name for readability in dashboard.
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), LOOKUP_TIMEOUT_MS)
+
+    const res = await fetch(`http://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,country,countryCode`, {
+      signal: controller.signal,
+      headers: { 'Accept': 'application/json' },
+    })
+    clearTimeout(timer)
 
     if (!res.ok) return ''
     const data = (await res.json()) as {
@@ -52,20 +73,26 @@ export async function lookupCountry(ip: string): Promise<string> {
       countryCode?: string
     }
     if (data.status !== 'success') return ''
-    return data.country?.trim() || data.countryCode?.trim() || ''
+    // Prefer the full country name (e.g. "Bangladesh"); fall back to code.
+    const country = data.country?.trim() || data.countryCode?.trim() || ''
+    cache.set(ip, { country, expiresAt: Date.now() + CACHE_TTL_MS })
+    return country
   } catch {
+    // Network error, timeout, or parse failure — record empty, don't cache
+    // (so a transient failure can be retried on the next visit).
     return ''
   }
 }
 
 /**
  * Best-effort country from request headers, without a network lookup.
- * On Cloudflare Pages, cf-ipcountry is always present and reliable.
+ * Checks common CDN/proxy headers (Vercel, Cloudflare, Caddy) first.
+ * Returns '' if none are present (caller should then use lookupCountry).
  */
 export function countryFromHeaders(headers: Headers): string {
   const candidates = [
-    'cf-ipcountry',       // Cloudflare Workers — always present
-    'x-vercel-ip-country', // Vercel
+    'x-vercel-ip-country',
+    'cf-ipcountry',
     'x-country-code',
     'x-geo-country',
   ]

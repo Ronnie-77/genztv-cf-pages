@@ -1,5 +1,3 @@
-export const runtime = 'nodejs'
-
 // /api/fifalive — Proxy for fifalive.click streams
 //
 // Proxies m3u8 manifests and segments from fifalive.click workers.dev URLs

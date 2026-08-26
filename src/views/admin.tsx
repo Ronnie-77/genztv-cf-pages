@@ -35,20 +35,20 @@ const AdminMatches = lazyWithRetry(() => import('@/views/admin/matches').then(m 
 const AdminSettings = lazyWithRetry(() => import('@/views/admin/settings').then(m => ({ default: m.AdminSettings })))
 const AdminData = lazyWithRetry(() => import('@/views/admin/data').then(m => ({ default: m.AdminData })))
 
-// Bottom nav items (mobile) — icons only
+// Bottom nav items (mobile) — icons only, no labels
 const bottomNavItems = [
   { id: 'channels' as const, label: 'Channels', icon: Tv },
   { id: 'matches' as const, label: 'Matches', icon: Radio },
-  { id: 'data' as const, label: 'Data', icon: Database },
   { id: 'settings' as const, label: 'Settings', icon: Settings },
+  { id: 'data' as const, label: 'Data', icon: Database },
 ]
 
-// Sidebar nav items
+// Sidebar nav items (all pages, for hamburger menu + desktop sidebar)
 const sidebarNavItems = [
   { id: 'channels' as const, label: 'Channels', icon: Tv },
   { id: 'matches' as const, label: 'Matches', icon: Radio },
-  { id: 'data' as const, label: 'Data', icon: Database },
   { id: 'settings' as const, label: 'Settings', icon: Settings },
+  { id: 'data' as const, label: 'Data', icon: Database },
 ]
 
 export function AdminPage() {
@@ -271,10 +271,10 @@ export function AdminPage() {
           return <AdminChannels />
         case 'matches':
           return <AdminMatches />
-        case 'data':
-          return <AdminData />
         case 'settings':
           return <AdminSettings />
+        case 'data':
+          return <AdminData />
         default:
           return <AdminChannels />
       }
