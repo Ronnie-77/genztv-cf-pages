@@ -9,8 +9,6 @@ const config: OpenNextConfig = {
       tagCache: "dummy",
       queue: "dummy",
     },
-    // Enable D1 + KV bindings to be available in the request context
-    externals: ["@prisma/client", "@prisma/adapter-d1"],
   },
 };
 

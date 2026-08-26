@@ -11,6 +11,8 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset",
+    "postinstall": "prisma generate",
+    "build:cf": "prisma generate && opennextjs-cloudflare build",
     "cf:setup": "bash scripts/deploy-cloudflare.sh setup",
     "cf:migrate": "bash scripts/deploy-cloudflare.sh migrate",
     "cf:build": "bash scripts/deploy-cloudflare.sh build",

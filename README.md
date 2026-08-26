@@ -108,6 +108,10 @@ bun run cf:setup
 
 #### ৩. Build + Deploy
 
+দুটো উপায় আছে — **CLI দিয়ে** অথবা **Cloudflare Pages direct git integration** দিয়ে।
+
+##### উপায় ১: CLI দিয়ে (Workers deploy)
+
 ```bash
 # Build OpenNext output
 bun run cf:build
@@ -117,6 +121,29 @@ bun run cf:deploy
 ```
 
 Deploy সফল হলে একটি URL পাবেন: `https://genztv.<your-subdomain>.workers.dev`
+
+##### উপায় ২: Cloudflare Pages direct git integration (recommended)
+
+GitHub-এ push করার পর Cloudflare Pages-এ automatic deploy সেট আপ করুন:
+
+1. Cloudflare Dashboard → **Workers & Pages** → **Create application** → **Pages** → **Connect to Git**
+2. GitHub repository সিলেক্ট করুন
+3. Build settings:
+   - **Framework preset:** `Next.js` (অথবা None)
+   - **Build command:** `npm run build:cf`
+   - **Build output directory:** `.open-next`
+   - **Root directory:** `/` (default)
+4. **Environment variables** যোগ করুন (Settings → Environment variables):
+   - `CF_DEPLOY` = `true`
+   - `ADMIN_PASSWORD` = `your-strong-password`
+   - `NEXTAUTH_SECRET` = `your-random-secret`
+   - `DATABASE_URL` = (empty — D1 binding ব্যবহার হবে)
+5. **D1 database binding** যোগ করুন (Settings → Functions → D1 database bindings):
+   - **Variable name:** `DB`
+   - **D1 database:** `genztv` (Step 1 এ তৈরি করা)
+6. **Save and Deploy** ক্লিক করুন
+
+> ⚠️ **গুরুত্বপূর্ণ:** `database_id` যদি `wrangler.jsonc` এ সেট করা থাকে, তাহলে Pages direct git integration-এ ওই একই D1 database ব্যবহার করুন।
 
 #### ৪. Custom Domain (Optional)
 
