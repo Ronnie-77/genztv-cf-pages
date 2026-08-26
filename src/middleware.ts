@@ -166,7 +166,8 @@ export default proxy
 
 // Edge runtime — required for Cloudflare Workers compatibility
 // (OpenNext/@opennextjs/cloudflare does not support Node.js middleware)
-export const runtime = 'edge'
+// Next.js 16 requires 'experimental-edge' for middleware/proxy runtime
+export const runtime = 'experimental-edge'
 
 export const config = {
   matcher: [

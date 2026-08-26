@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     // If sendPush is true, send push to all subscribers
     if (sendPush) {
       try {
-        const { sendPushToAll } = await import('@/lib/push-sender')
+        const { sendPushToAll } = await import('@/lib/push')
         const result = await sendPushToAll({
           title,
           body: notifBody || '',
