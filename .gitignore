@@ -53,6 +53,9 @@ db/*.db-journal
 prisma/*.db
 prisma/*.db-journal
 
+# ── Prisma generated client (new prisma-client generator) ──
+src/generated/
+
 # ── Logs ──
 *.log
 dev.log

@@ -23,7 +23,7 @@
 //
 // A cached singleton is used so subsequent calls return immediately.
 
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@/generated/prisma/client'
 import type { D1Database } from '@cloudflare/workers-types'
 
 const globalForPrisma = globalThis as unknown as {
