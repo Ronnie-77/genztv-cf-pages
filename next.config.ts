@@ -25,6 +25,21 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // ────────────────────────────────────────────────────────────────
+  // Cloudflare Workers compatibility: alias Node built-ins to shims.
+  // Prisma's runtime imports `node:os` during client init to detect
+  // the query engine. On Cloudflare Workers, unenv doesn't implement
+  // `node:os`. We alias it to our shim that provides safe defaults.
+  // The D1 driver adapter never uses the engine binary — only the
+  // detection code path runs.
+  // ────────────────────────────────────────────────────────────────
+  serverExternalPackages: ['@prisma/client', '@prisma/adapter-d1'],
+  turbopack: {
+    resolveAlias: {
+      'node:os': './src/lib/os-shim.ts',
+      'os': './src/lib/os-shim.ts',
+    },
+  },
   async redirects() {
     return [
       {

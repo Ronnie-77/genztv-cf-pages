@@ -11,6 +11,7 @@ const config: OpenNextConfig = {
       queue: "dummy",
     },
   },
+  // Keep node:crypto external (Workers provides it via nodejs_compat)
   edgeExternals: ["node:crypto"],
   middleware: {
     external: true,
