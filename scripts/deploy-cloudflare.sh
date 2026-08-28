@@ -3,11 +3,12 @@
 # GenZTV — Cloudflare D1 deployment helper
 # ═══════════════════════════════════════════════════════════════════
 # Usage:
-#   ./scripts/deploy-cloudflare.sh setup   # First-time: create D1 + DB schema
-#   ./scripts/deploy-cloudflare.sh build   # Build for Cloudflare
-#   ./scripts/deploy-cloudflare.sh deploy  # Deploy to Cloudflare Workers
-#   ./scripts/deploy-cloudflare.sh migrate # Apply schema changes to D1
-#   ./scripts/deploy-cloudflare.sh dev     # Local dev with wrangler D1 sim
+#   ./scripts/deploy-cloudflare.sh setup    # First-time: create D1 + apply schema
+#   ./scripts/deploy-cloudflare.sh schema   # Apply schema to D1 (dashboard alternative)
+#   ./scripts/deploy-cloudflare.sh build    # Build for Cloudflare
+#   ./scripts/deploy-cloudflare.sh deploy   # Deploy to Cloudflare Workers
+#   ./scripts/deploy-cloudflare.sh migrate  # Apply schema changes to D1
+#   ./scripts/deploy-cloudflare.sh dev      # Local dev with wrangler D1 sim
 #
 # Prerequisites:
 #   1. Install wrangler: bun add -g wrangler  (or use local `bunx wrangler`)
@@ -28,27 +29,32 @@ case "$CMD" in
     echo "✅ D1 database created. Copy the 'database_id' from the output above"
     echo "   and paste it into wrangler.jsonc (replace REPLACE_WITH_YOUR_D1_DATABASE_ID)."
     echo ""
-    echo "📦 Applying initial schema to D1 (remote)..."
+    echo "📦 Applying schema to D1 (remote)..."
+    bunx wrangler d1 execute genztv --remote --file=prisma/d1-schema.sql
+    echo "✅ Schema applied to remote D1."
+    echo ""
+    echo "📦 Applying schema to D1 (local simulator)..."
+    bunx wrangler d1 execute genztv --local --file=prisma/d1-schema.sql 2>/dev/null || true
+    echo "✅ Done. Now run: ./scripts/deploy-cloudflare.sh build && ./scripts/deploy-cloudflare.sh deploy"
+    ;;
+  schema)
+    echo "📦 Applying schema to D1 (remote)..."
+    bunx wrangler d1 execute genztv --remote --file=prisma/d1-schema.sql
+    echo "✅ Schema applied to remote D1."
+    echo ""
+    echo "📦 Applying schema to D1 (local simulator)..."
+    bunx wrangler d1 execute genztv --local --file=prisma/d1-schema.sql 2>/dev/null || true
+    echo "✅ Done."
+    ;;
+  migrate)
+    echo "📦 Regenerating schema SQL from Prisma..."
     bunx prisma migrate diff \
       --from-empty \
       --to-schema-datamodel prisma/schema.prisma \
-      --script > /tmp/genztv-migration.sql
-    bunx wrangler d1 execute genztv --remote --file=/tmp/genztv-migration.sql
-    echo "✅ Schema applied to remote D1."
-    ;;
-  migrate)
-    echo "📦 Generating migration SQL from current Prisma schema..."
-    bunx prisma migrate diff \
-      --from-schema-datasource prisma/schema.prisma \
-      --to-schema-datamodel prisma/schema.prisma \
-      --script > /tmp/genztv-drift.sql || true
-    if [ -s /tmp/genztv-drift.sql ]; then
-      echo "📦 Applying drift migration to remote D1..."
-      bunx wrangler d1 execute genztv --remote --file=/tmp/genztv-drift.sql
-      echo "✅ D1 schema synced."
-    else
-      echo "✅ D1 schema already in sync."
-    fi
+      --script > prisma/d1-schema.sql
+    echo "📦 Applying to remote D1..."
+    bunx wrangler d1 execute genztv --remote --file=prisma/d1-schema.sql
+    echo "✅ D1 schema synced."
     ;;
   build)
     echo "🏗️  Building Next.js for Cloudflare Workers (OpenNext)..."
@@ -62,7 +68,7 @@ case "$CMD" in
     ;;
   dev)
     echo "🏃 Starting local dev with Cloudflare context (D1 simulator)..."
-    echo "   This runs `next dev` with @opennextjs/cloudflare's local proxy."
+    echo "   This runs \`next dev\` with @opennextjs/cloudflare's local proxy."
     echo "   D1 binding 'DB' will be a local SQLite file (.wrangler/state/)."
     bun run dev
     ;;
@@ -73,8 +79,9 @@ GenZTV Cloudflare D1 deployment script
 Usage: $0 <command>
 
 Commands:
-  setup    Create D1 database + apply initial schema (run once)
-  migrate  Apply schema drift to existing D1 (run after schema.prisma changes)
+  setup    Create D1 database + apply schema (run once)
+  schema   Apply schema to D1 (run if tables are missing)
+  migrate  Regenerate schema SQL from Prisma + apply to D1
   build    Build the app for Cloudflare Workers via OpenNext
   deploy   Deploy the built app to Cloudflare Workers
   dev      Local dev with D1 simulator (uses standard \`next dev\`)

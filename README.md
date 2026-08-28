@@ -151,6 +151,83 @@ Cloudflare dashboard:
 - Workers & Pages → genztv → Settings → Triggers → Custom Domains
 - আপনার domain যোগ করুন
 
+### 🔍 D1 Schema Apply (গুরুত্বপূর্ণ!)
+
+Deploy এর পর যদি admin panel-এ চ্যানেল/ম্যাচ অ্যাড করতে error আসে, তাহলে **D1 ডাটাবেসে schema apply হয়নি**। এটি ঠিক করতে হবে।
+
+#### উপায় ১: Local থেকে wrangler দিয়ে (recommended)
+
+```bash
+# wrangler login করা থাকলে
+bun run cf:schema
+# অথবা: npx wrangler d1 execute genztv --remote --file=prisma/d1-schema.sql
+```
+
+#### উপায় ২: Cloudflare dashboard থেকে
+
+1. Cloudflare Dashboard → **Workers & Pages** → **D1**
+2. `genztv` ডাটাবেসে ক্লিক করুন
+3. **Query** tab এ যান
+4. `prisma/d1-schema.sql` ফাইলের পুরো content copy করে paste করুন
+5. **Execute** ক্লিক করুন
+
+#### Verify করুন
+
+Browser এ গিয়ে এই URL খুলুন:
+```
+https://your-app-url.workers.dev/api/db-health
+```
+
+সব ঠিক থাকলে এরকম দেখাবে:
+```json
+{
+  "checks": {
+    "env_CF_DEPLOY": "true",
+    "db_client_init": "OK",
+    "tables": {
+      "channel": "OK (0 rows)",
+      "match": "OK (0 rows)",
+      "category": "OK (0 rows)",
+      "appSetting": "OK (1 rows)"
+    },
+    "summary": "ALL TABLES OK"
+  }
+}
+```
+
+### 🚨 Troubleshooting
+
+#### সমস্যা ১: "no such table: Channel" / চ্যানেল অ্যাড করা যাচ্ছে না
+
+**কারণ:** D1 তে schema apply হয়নি।
+
+**সমাধান:** উপরের "D1 Schema Apply" section ফলো করুন।
+
+#### সমস্যা ২: `/api/db-health` এ `env_CF_DEPLOY: "NOT SET"` দেখাচ্ছে
+
+**কারণ:** Cloudflare Pages এ `CF_DEPLOY` env var সেট হয়নি।
+
+**সমাধান:**
+1. Cloudflare Dashboard → Workers & Pages → genztv → **Settings** → **Environment variables**
+2. `CF_DEPLOY` = `true` যোগ করুন
+3. Redeploy করুন
+
+#### সমস্যা ৩: `db_client_init: FAILED` — D1 binding missing
+
+**কারণ:** D1 binding "DB" সেট হয়নি।
+
+**সমাধান:**
+1. Cloudflare Dashboard → Workers & Pages → genztv → **Settings** → **Functions** → **D1 database bindings**
+2. **Variable name:** `DB`, **D1 database:** `genztv` সেট করুন
+3. Redeploy করুন
+
+#### সমস্যা ৪: Build error
+
+Build log এ যদি error আসে, নিচের ফাইলগুলো ঠিক আছে কিনা চেক করুন:
+- `package.json` — `build:cf` script আছে কিনা
+- `open-next.config.ts` — `proxyExternalRequest: "fetch"` আছে কিনা
+- `src/middleware.ts` — `runtime = 'experimental-edge'` আছে কিনা
+
 ### Schema আপডেট (পরবর্তীতে)
 
 যদি `prisma/schema.prisma` পরিবর্তন করেন:
@@ -159,7 +236,7 @@ Cloudflare dashboard:
 # Local dev এ apply
 bun run db:push
 
-# D1 এ apply
+# D1 এ apply (schema.sql regenerate + apply)
 bun run cf:migrate
 
 # Re-deploy
