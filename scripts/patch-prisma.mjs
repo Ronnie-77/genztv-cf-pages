@@ -30,16 +30,15 @@ const candidates = [
   resolve(projectRoot, 'node_modules/.prisma/client/runtime/library.mjs'),
   resolve(process.cwd(), 'node_modules/@prisma/client/runtime/library.mjs'),
   resolve(process.cwd(), 'node_modules/.prisma/client/runtime/library.mjs'),
+  // Also patch @prisma/adapter-d1's node entry (it imports node:fs)
+  resolve(projectRoot, 'node_modules/@prisma/adapter-d1/dist/index-node.mjs'),
+  resolve(process.cwd(), 'node_modules/@prisma/adapter-d1/dist/index-node.mjs'),
 ]
 
-const libPath = candidates.find((p) => existsSync(p))
-
-if (!libPath) {
-  console.warn('[patch-prisma] No library.mjs found — skipping.')
-  process.exit(0)
-}
-
-console.log(`[patch-prisma] Patching ${libPath}`)
+let patchedCount = 0
+for (const libPath of candidates) {
+  if (!existsSync(libPath)) continue
+  console.log(`[patch-prisma] Patching ${libPath}`)
 
 let src = readFileSync(libPath, 'utf8')
 const original = src
@@ -146,6 +145,10 @@ src = src.replace(/import\s*"node:fs"\s*;?/g, '')
 if (src !== original) {
   writeFileSync(libPath, src)
   console.log('[patch-prisma] ✅ Patched successfully.')
+  patchedCount++
 } else {
   console.log('[patch-prisma] No changes (already patched or patterns not found).')
 }
+} // end for loop
+
+console.log(`[patch-prisma] Done. Patched ${patchedCount} file(s).`)

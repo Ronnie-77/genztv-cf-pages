@@ -26,14 +26,15 @@ const nextConfig: NextConfig = {
     ],
   },
   // ────────────────────────────────────────────────────────────────
-  // Cloudflare Workers compatibility: alias Node built-ins to shims.
-  // Prisma's runtime imports `node:os` during client init to detect
-  // the query engine. On Cloudflare Workers, unenv doesn't implement
-  // `node:os`. We alias it to our shim that provides safe defaults.
-  // The D1 driver adapter never uses the engine binary — only the
-  // detection code path runs.
+  // Cloudflare Workers compatibility
   // ────────────────────────────────────────────────────────────────
-  serverExternalPackages: ['@prisma/client', '@prisma/adapter-d1'],
+  // Keep @prisma/client external (its library.mjs is patched by
+  // scripts/patch-prisma.mjs to inline-stub node:fs/node:os imports).
+  // But DO NOT externalize @prisma/adapter-d1 — we want Next.js to
+  // bundle it so the `workerd` export condition resolves to
+  // index-workerd.mjs (which has no node:fs imports) instead of the
+  // default `node` condition (index-node.mjs, which imports node:fs).
+  serverExternalPackages: ['@prisma/client'],
   turbopack: {
     resolveAlias: {
       'node:os': './src/lib/os-shim.ts',
