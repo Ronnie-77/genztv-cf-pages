@@ -158,9 +158,11 @@ Deploy এর পর যদি admin panel-এ চ্যানেল/ম্য�
 #### উপায় ১: Local থেকে wrangler দিয়ে (recommended)
 
 ```bash
-# wrangler login করা থাকলে
-bun run cf:schema
-# অথবা: npx wrangler d1 execute genztv --remote --file=prisma/d1-schema.sql
+# প্রথমে d1-schema.sql ফাইল তৈরি করুন (যদি না থাকে)
+npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > prisma/d1-schema.sql
+
+# তারপর D1 তে apply করুন
+npx wrangler d1 execute genztv --remote --file=prisma/d1-schema.sql
 ```
 
 #### উপায় ২: Cloudflare dashboard থেকে
