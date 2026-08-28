@@ -21,6 +21,13 @@
 // ═══════════════════════════════════════════════════════════════════
 
 import type { D1Database } from '@cloudflare/workers-types'
+// Node polyfills MUST be imported at the top level (statically) so they
+// run before @prisma/client's module-level code executes. This file
+// stubs out fs.readdirSync, os.platform(), etc. that Prisma calls
+// during client init for engine detection. On Cloudflare Workers,
+// unenv doesn't implement these — the D1 driver adapter handles all
+// actual DB operations without needing the engine binary.
+import '@/lib/node-polyfill'
 
 type PrismaClientInstance = {
   channel: unknown
@@ -42,13 +49,7 @@ function isCloudflareWorker(): boolean {
 }
 
 async function createD1Client(): Promise<PrismaClientInstance> {
-  // 1. Install Node polyfills FIRST (before any Prisma code loads).
-  // These stub out fs.readdirSync, os.platform(), etc. that Prisma's
-  // module-level code calls. With a D1 driver adapter, the engine
-  // binary is never actually used — only the detection code runs.
-  await import('@/lib/node-polyfill')
-
-  // 2. Now dynamically import Prisma + adapter. Polyfills are in place.
+  // Dynamically import Prisma + adapter (polyfill already loaded above).
   const [{ PrismaClient }, { PrismaD1 }, { getCloudflareContext }] = await Promise.all([
     import('@prisma/client'),
     import('@prisma/adapter-d1'),
