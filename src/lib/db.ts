@@ -6,13 +6,11 @@
 //   Uses standard PrismaClient with `DATABASE_URL=file:...` SQLite file.
 //
 // PRODUCTION (Cloudflare Workers via @opennextjs/cloudflare):
-//   Uses PrismaD1 adapter bound to the D1 binding named `DB`.
+//   Uses PrismaD1 adapter + WASM query engine (no native binary needed).
 //
-// IMPORTANT: Prisma's client init calls fs.readdirSync + os.platform()
-// to detect the query engine. On Cloudflare Workers these Node APIs
-// are not fully available (unenv stubs). We install polyfills FIRST,
-// then dynamically import @prisma/client so the polyfills are in place
-// before Prisma's module-level code runs.
+// IMPORTANT: On Cloudflare Workers, the native query engine binary
+// (libquery_engine-*.so.node) cannot be loaded. We use the WASM
+// query engine instead, which is pure JavaScript and works everywhere.
 //
 // USAGE:
 //   import { getDb } from '@/lib/db'
@@ -21,12 +19,7 @@
 // ═══════════════════════════════════════════════════════════════════
 
 import type { D1Database } from '@cloudflare/workers-types'
-// Node polyfills MUST be imported at the top level (statically) so they
-// run before @prisma/client's module-level code executes. This file
-// stubs out fs.readdirSync, os.platform(), etc. that Prisma calls
-// during client init for engine detection. On Cloudflare Workers,
-// unenv doesn't implement these — the D1 driver adapter handles all
-// actual DB operations without needing the engine binary.
+// Node polyfills MUST be imported before @prisma/client on Cloudflare Workers.
 import '@/lib/node-polyfill'
 
 type PrismaClientInstance = {
@@ -34,7 +27,6 @@ type PrismaClientInstance = {
   match: unknown
   category: unknown
   appSetting: unknown
-  // Allow arbitrary model access via index signature
   [key: string]: unknown
 }
 
@@ -49,7 +41,6 @@ function isCloudflareWorker(): boolean {
 }
 
 async function createD1Client(): Promise<PrismaClientInstance> {
-  // Dynamically import Prisma + adapter (polyfill already loaded above).
   const [{ PrismaClient }, { PrismaD1 }, { getCloudflareContext }] = await Promise.all([
     import('@prisma/client'),
     import('@prisma/adapter-d1'),
@@ -77,13 +68,24 @@ async function createD1Client(): Promise<PrismaClientInstance> {
   }
 
   const adapter = new PrismaD1(d1)
-  // @ts-expect-error — PrismaClient constructor accepts adapter in this Prisma version
-  return new PrismaClient({ adapter }) as PrismaClientInstance
+
+  // ── Use WASM query engine (no native binary needed) ──
+  // On Cloudflare Workers, native .so.node binaries cannot be loaded.
+  // We import the WASM runtime + module dynamically and pass them to
+  // PrismaClient via the `engineWasm` option.
+  //
+  // The wasm-base64 file contains the WASM binary as a base64 string.
+  // query_engine_bg.sqlite.mjs contains the JS glue code (getRuntime/getQueryEngineWasmModule).
+  const wasmModule = await import('@prisma/client/runtime/query_engine_bg.sqlite.wasm-base64.mjs')
+
+  // @ts-expect-error — PrismaClient constructor accepts adapter + engineWasm
+  return new PrismaClient({
+    adapter,
+    engineWasm: wasmModule,
+  }) as PrismaClientInstance
 }
 
 async function createLocalClient(): Promise<PrismaClientInstance> {
-  // Local dev: standard PrismaClient with SQLite URL from .env.
-  // No polyfill needed — Node.js has full fs/os support.
   const { PrismaClient } = await import('@prisma/client')
   const client = new PrismaClient() as PrismaClientInstance
   if (process.env.NODE_ENV !== 'production') {
