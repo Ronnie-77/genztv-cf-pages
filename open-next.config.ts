@@ -12,8 +12,7 @@ const config: OpenNextConfig = {
     },
   },
   // Explicitly enable workerd build conditions so @prisma/adapter-d1
-  // resolves to index-workerd.mjs (no node:fs imports) instead of
-  // index-node.mjs (which imports node:fs).
+  // resolves to index-workerd.mjs (no node:fs imports)
   cloudflare: {
     useWorkerdCondition: true,
   },
