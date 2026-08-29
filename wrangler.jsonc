@@ -3,7 +3,7 @@
   "name": "genztv-cf-pages",
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-09-23",
-  "compatibility_flags": ["nodejs_compat_v2"],
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
