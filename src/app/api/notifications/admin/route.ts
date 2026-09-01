@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
 import { requireAdminAuth } from '@/lib/auth'
+import type { AppNotificationRow } from '@/lib/types'
+import { toBool } from '@/lib/types'
 
 /**
  * GET /api/notifications/admin (admin only)
@@ -9,15 +11,19 @@ import { requireAdminAuth } from '@/lib/auth'
  * for the admin management UI.
  */
 export async function GET(req: NextRequest) {
-
-      const db = await getDb()
   return requireAdminAuth(req, async () => {
     try {
-      const notifications = await db.appNotification.findMany({
-        orderBy: { createdAt: 'desc' },
-        take: 200,
-      })
-      return NextResponse.json(notifications)
+      const db = await getDb()
+      const rows = await db.all<AppNotificationRow>(
+        'SELECT * FROM AppNotification ORDER BY createdAt DESC LIMIT 200'
+      )
+      const result = rows.map((r) => ({
+        ...r,
+        isActive: toBool(r.isActive),
+        sendPush: toBool(r.sendPush),
+        pushSent: toBool(r.pushSent),
+      }))
+      return NextResponse.json(result)
     } catch (error) {
       console.error('Error fetching admin notifications:', error)
       return NextResponse.json(

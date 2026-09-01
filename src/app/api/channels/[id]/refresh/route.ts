@@ -1,7 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
+import type { ChannelRow } from '@/lib/types'
+import { toBool } from '@/lib/types'
 import { requireAdminAuth } from '@/lib/auth'
 import { refreshStreamUrl, parseTokenExpiry } from '@/lib/token-refresh'
+
+type RefreshStatusRow = Pick<
+  ChannelRow,
+  | 'id'
+  | 'name'
+  | 'streamType'
+  | 'streamUrl'
+  | 'sourcePageUrl'
+  | 'tokenExpiresAt'
+  | 'lastRefreshedAt'
+  | 'autoRefresh'
+  | 'refreshError'
+>
+
+const REFRESH_STATUS_COLUMNS =
+  'id, name, streamType, streamUrl, sourcePageUrl, tokenExpiresAt, lastRefreshedAt, autoRefresh, refreshError'
 
 /**
  * POST /api/channels/[id]/refresh
@@ -27,15 +45,15 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-
-      const db = await getDb()
   return requireAdminAuth(req, async () => {
     try {
+      const db = await getDb()
       const { id } = await params
       const body = await req.json().catch(() => ({}))
       const force = Boolean(body?.force)
+      const now = new Date().toISOString()
 
-      const channel = await db.channel.findUnique({ where: { id } })
+      const channel = await db.first<ChannelRow>('SELECT * FROM Channel WHERE id = ?', id)
       if (!channel) {
         return NextResponse.json({ error: 'Channel not found' }, { status: 404 })
       }
@@ -51,7 +69,7 @@ export async function POST(
       }
 
       // If autoRefresh is off and not forced, refuse — admin must opt in.
-      if (!channel.autoRefresh && !force) {
+      if (!toBool(channel.autoRefresh) && !force) {
         return NextResponse.json(
           {
             error:
@@ -72,10 +90,12 @@ export async function POST(
 
       if (!result.success || !result.newStreamUrl) {
         // Record the failure on the channel so the admin sees it.
-        await db.channel.update({
-          where: { id },
-          data: { refreshError: result.message },
-        })
+        await db.run(
+          'UPDATE Channel SET refreshError = ?, updatedAt = ? WHERE id = ?',
+          result.message,
+          now,
+          id
+        )
         return NextResponse.json(
           { error: 'Refresh failed', detail: result.message },
           { status: 502 }
@@ -85,10 +105,12 @@ export async function POST(
       // Verify the new URL is at least a plausible m3u8 URL.
       const newUrl = result.newStreamUrl
       if (!/\.m3u8?(\?|$)/i.test(newUrl)) {
-        await db.channel.update({
-          where: { id },
-          data: { refreshError: `Found URL is not an m3u8: ${newUrl.slice(0, 100)}` },
-        })
+        await db.run(
+          'UPDATE Channel SET refreshError = ?, updatedAt = ? WHERE id = ?',
+          `Found URL is not an m3u8: ${newUrl.slice(0, 100)}`,
+          now,
+          id
+        )
         return NextResponse.json(
           { error: 'Refreshed URL is not an m3u8', detail: newUrl.slice(0, 200) },
           { status: 502 }
@@ -97,15 +119,28 @@ export async function POST(
 
       // Parse new expiry (if any) and persist.
       const parsed = parseTokenExpiry(newUrl)
-      const updated = await db.channel.update({
-        where: { id },
-        data: {
-          streamUrl: newUrl,
-          tokenExpiresAt: parsed.expiresAt ? new Date(parsed.expiresAt) : null,
-          lastRefreshedAt: new Date(),
-          refreshError: '',
-        },
-      })
+      const tokenExpiresAt = parsed.expiresAt
+        ? new Date(parsed.expiresAt).toISOString()
+        : null
+      await db.run(
+        'UPDATE Channel SET streamUrl = ?, tokenExpiresAt = ?, lastRefreshedAt = ?, refreshError = ?, updatedAt = ? WHERE id = ?',
+        newUrl,
+        tokenExpiresAt,
+        now,
+        '',
+        now,
+        id
+      )
+
+      const updated = await db.first<ChannelRow>('SELECT * FROM Channel WHERE id = ?', id)
+      const updatedResult = updated
+        ? {
+            ...updated,
+            isFeatured: toBool(updated.isFeatured),
+            isActive: toBool(updated.isActive),
+            autoRefresh: toBool(updated.autoRefresh),
+          }
+        : null
 
       console.log(
         `[refresh] ✅ "${channel.name}" refreshed. New expiry: ${
@@ -115,7 +150,7 @@ export async function POST(
 
       return NextResponse.json({
         success: true,
-        channel: updated,
+        channel: updatedResult,
         message: result.message,
         source: result.source,
         newExpiresAt: parsed.expiresAt,
@@ -123,7 +158,10 @@ export async function POST(
     } catch (error) {
       console.error('[refresh] Error:', error)
       return NextResponse.json(
-        { error: 'Failed to refresh channel', detail: error instanceof Error ? error.message : 'Unknown' },
+        {
+          error: 'Failed to refresh channel',
+          detail: error instanceof Error ? error.message : 'Unknown',
+        },
         { status: 500 }
       )
     }
@@ -141,28 +179,20 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-
-      const db = await getDb()
   try {
+    const db = await getDb()
     const { id } = await params
-    const channel = await db.channel.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        streamType: true,
-        streamUrl: true,
-        sourcePageUrl: true,
-        tokenExpiresAt: true,
-        lastRefreshedAt: true,
-        autoRefresh: true,
-        refreshError: true,
-      },
-    })
+    const channel = await db.first<RefreshStatusRow>(
+      `SELECT ${REFRESH_STATUS_COLUMNS} FROM Channel WHERE id = ?`,
+      id
+    )
     if (!channel) {
       return NextResponse.json({ error: 'Channel not found' }, { status: 404 })
     }
-    return NextResponse.json(channel)
+    return NextResponse.json({
+      ...channel,
+      autoRefresh: toBool(channel.autoRefresh),
+    })
   } catch (error) {
     console.error('[refresh-status] Error:', error)
     return NextResponse.json({ error: 'Failed to fetch refresh status' }, { status: 500 })

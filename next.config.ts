@@ -25,21 +25,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // ────────────────────────────────────────────────────────────────
-  // Cloudflare Workers compatibility
-  // ────────────────────────────────────────────────────────────────
-  // DO NOT externalize @prisma/client or @prisma/adapter-d1.
-  // Let Next.js bundle them so Turbopack can alias node:fs/node:os
-  // to our shims. This ensures the worker bundle has NO external
-  // node:* imports.
-  turbopack: {
-    resolveAlias: {
-      'node:os': './src/lib/os-shim.ts',
-      'os': './src/lib/os-shim.ts',
-      'node:fs': './src/lib/fs-shim.ts',
-      'fs': './src/lib/fs-shim.ts',
-    },
-  },
   async redirects() {
     return [
       {

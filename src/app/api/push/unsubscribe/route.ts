@@ -3,9 +3,8 @@ import { getDb } from '@/lib/db'
 
 // POST /api/push/unsubscribe — Remove a push subscription
 export async function POST(req: NextRequest) {
-
-      const db = await getDb()
   try {
+    const db = await getDb()
     const body = await req.json()
     const { endpoint } = body
 
@@ -13,9 +12,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing endpoint' }, { status: 400 })
     }
 
-    await db.pushSubscription.deleteMany({
-      where: { endpoint },
-    })
+    await db.run('DELETE FROM PushSubscription WHERE endpoint = ?', endpoint)
 
     return NextResponse.json({ success: true })
   } catch (error) {

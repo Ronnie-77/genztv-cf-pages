@@ -11,11 +11,6 @@ const config: OpenNextConfig = {
       queue: "dummy",
     },
   },
-  // Explicitly enable workerd build conditions so @prisma/adapter-d1
-  // resolves to index-workerd.mjs (no node:fs imports)
-  cloudflare: {
-    useWorkerdCondition: true,
-  },
   edgeExternals: ["node:crypto"],
   middleware: {
     external: true,

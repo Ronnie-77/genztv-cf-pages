@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
+import type { ChannelRow } from '@/lib/types'
+import { toBool } from '@/lib/types'
 import { refreshStreamUrl, parseTokenExpiry } from '@/lib/token-refresh'
 
 /**
@@ -29,6 +31,14 @@ import { refreshStreamUrl, parseTokenExpiry } from '@/lib/token-refresh'
  *   502 { error }                                            — refresh attempted but failed
  */
 export const maxDuration = 60
+
+type ReactiveChannelRow = Pick<
+  ChannelRow,
+  'id' | 'name' | 'streamUrl' | 'sourcePageUrl' | 'refreshPattern' | 'autoRefresh' | 'tokenExpiresAt'
+>
+
+const REACTIVE_COLUMNS =
+  'id, name, streamUrl, sourcePageUrl, refreshPattern, autoRefresh, tokenExpiresAt'
 
 // In-memory rate limit state. Cleared on server restart.
 // Keyed by channelId.
@@ -81,30 +91,23 @@ export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-
-      const db = await getDb()
   try {
+    const db = await getDb()
     const { id } = await params
 
-    const channel = await db.channel.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        streamUrl: true,
-        sourcePageUrl: true,
-        refreshPattern: true,
-        autoRefresh: true,
-        tokenExpiresAt: true,
-      },
-    })
+    const channel = await db.first<ReactiveChannelRow>(
+      `SELECT ${REACTIVE_COLUMNS} FROM Channel WHERE id = ?`,
+      id
+    )
 
     if (!channel) {
       return NextResponse.json({ error: 'Channel not found' }, { status: 404 })
     }
 
+    const autoRefreshOn = toBool(channel.autoRefresh)
+
     // Must have autoRefresh + source page
-    if (!channel.autoRefresh || !channel.sourcePageUrl) {
+    if (!autoRefreshOn || !channel.sourcePageUrl) {
       return NextResponse.json({
         success: true,
         refreshed: false,
@@ -134,11 +137,15 @@ export async function POST(
       pattern: channel.refreshPattern || undefined,
     })
 
+    const now = new Date().toISOString()
+
     if (!result.success || !result.newStreamUrl) {
-      await db.channel.update({
-        where: { id },
-        data: { refreshError: result.message },
-      })
+      await db.run(
+        'UPDATE Channel SET refreshError = ?, updatedAt = ? WHERE id = ?',
+        result.message,
+        now,
+        id
+      )
       return NextResponse.json(
         {
           success: false,
@@ -152,10 +159,12 @@ export async function POST(
 
     const newUrl = result.newStreamUrl
     if (!/\.m3u8?(\?|$)/i.test(newUrl)) {
-      await db.channel.update({
-        where: { id },
-        data: { refreshError: `Not m3u8: ${newUrl.slice(0, 100)}` },
-      })
+      await db.run(
+        'UPDATE Channel SET refreshError = ?, updatedAt = ? WHERE id = ?',
+        `Not m3u8: ${newUrl.slice(0, 100)}`,
+        now,
+        id
+      )
       return NextResponse.json(
         {
           success: false,
@@ -178,15 +187,18 @@ export async function POST(
     }
 
     const parsed = parseTokenExpiry(newUrl)
-    await db.channel.update({
-      where: { id },
-      data: {
-        streamUrl: newUrl,
-        tokenExpiresAt: parsed.expiresAt ? new Date(parsed.expiresAt) : null,
-        lastRefreshedAt: new Date(),
-        refreshError: '',
-      },
-    })
+    const tokenExpiresAt = parsed.expiresAt
+      ? new Date(parsed.expiresAt).toISOString()
+      : null
+    await db.run(
+      'UPDATE Channel SET streamUrl = ?, tokenExpiresAt = ?, lastRefreshedAt = ?, refreshError = ?, updatedAt = ? WHERE id = ?',
+      newUrl,
+      tokenExpiresAt,
+      now,
+      '',
+      now,
+      id
+    )
 
     console.log(
       `[reactive-refresh] ✅ "${channel.name}" refreshed reactively (source: ${result.source})`
@@ -202,7 +214,10 @@ export async function POST(
   } catch (error) {
     console.error('[reactive-refresh] Error:', error)
     return NextResponse.json(
-      { error: 'Reactive refresh failed', detail: error instanceof Error ? error.message : 'Unknown' },
+      {
+        error: 'Reactive refresh failed',
+        detail: error instanceof Error ? error.message : 'Unknown',
+      },
       { status: 500 }
     )
   }

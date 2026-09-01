@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getDb } from '@/lib/db'
+import { getDb, generateId } from '@/lib/db'
 import { requireAdminAuth } from '@/lib/auth'
 import { sendPushToAll } from '@/lib/push'
 import { apiCache } from '@/lib/cache'
+import type { AppNotificationRow } from '@/lib/types'
+import { toBool, toNum } from '@/lib/types'
 
 /**
  * GET /api/notifications (public)
@@ -17,8 +19,6 @@ import { apiCache } from '@/lib/cache'
  * browser via a `lastReadAt` timestamp in localStorage.
  */
 export async function GET(req: NextRequest) {
-
-      const db = await getDb()
   try {
     const { searchParams } = new URL(req.url)
     const limitParam = searchParams.get('limit')
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Build cache key
-    const cacheKey = `notifications:list:${limit}`
+    const cacheKey = `list:${limit}`
 
     // Check cache first
     const cached = apiCache.getNotifications(cacheKey)
@@ -37,25 +37,16 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(cached)
     }
 
-    const notifications = await db.appNotification.findMany({
-      where: { isActive: true },
-      orderBy: { createdAt: 'desc' },
-      take: limit,
-      select: {
-        id: true,
-        type: true,
-        title: true,
-        body: true,
-        url: true,
-        imageUrl: true,
-        createdAt: true,
-      },
-    })
+    const db = await getDb()
+    const rows = await db.all<AppNotificationRow>(
+      'SELECT id, type, title, body, url, imageUrl, createdAt FROM AppNotification WHERE isActive = 1 ORDER BY createdAt DESC LIMIT ?',
+      limit
+    )
 
     // Cache the result
-    apiCache.setNotifications(cacheKey, notifications)
+    apiCache.setNotifications(cacheKey, rows)
 
-    return NextResponse.json(notifications)
+    return NextResponse.json(rows)
   } catch (error) {
     console.error('Error fetching notifications:', error)
     return NextResponse.json(
@@ -83,10 +74,9 @@ export async function GET(req: NextRequest) {
  * many subscribers received the push.
  */
 export async function POST(req: NextRequest) {
-
-      const db = await getDb()
   return requireAdminAuth(req, async () => {
     try {
+      const db = await getDb()
       const body = await req.json()
 
       if (!body.title || typeof body.title !== 'string' || !body.title.trim()) {
@@ -105,37 +95,68 @@ export async function POST(req: NextRequest) {
           : 'notice'
 
       const sendPush = body.sendPush === true
+      const id = generateId()
+      const now = new Date().toISOString()
+      const title = body.title.trim().slice(0, 200)
+      const notifBody = (typeof body.body === 'string' ? body.body : '').slice(0, 1000)
+      const url = (typeof body.url === 'string' ? body.url : '').slice(0, 500)
+      const imageUrl =
+        typeof body.imageUrl === 'string' ? body.imageUrl.slice(0, 500) : ''
+      const isActive = body.isActive !== false
 
-      const notification = await db.appNotification.create({
-        data: {
-          type,
-          title: body.title.trim().slice(0, 200),
-          body: (typeof body.body === 'string' ? body.body : '').slice(0, 1000),
-          url: (typeof body.url === 'string' ? body.url : '').slice(0, 500),
-          imageUrl:
-            typeof body.imageUrl === 'string' ? body.imageUrl.slice(0, 500) : '',
-          isActive: body.isActive !== false,
-          sendPush,
-          pushSent: false,
-        },
-      })
+      await db.run(
+        `INSERT INTO AppNotification
+         (id, type, title, body, url, imageUrl, isActive, sendPush, pushSent, createdAt, updatedAt)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        id,
+        type,
+        title,
+        notifBody,
+        url,
+        imageUrl,
+        toNum(isActive),
+        toNum(sendPush),
+        0,
+        now,
+        now
+      )
+
+      const notification = {
+        id,
+        type,
+        title,
+        body: notifBody,
+        url,
+        imageUrl,
+        isActive,
+        sendPush,
+        pushSent: false,
+        createdAt: now,
+        updatedAt: now,
+      }
 
       // Optionally fire a web push to all subscribers.
       let pushResult: { sent: number; failed: number; removed: number } | null = null
       if (sendPush) {
         try {
-          pushResult = await sendPushToAll({
+          const result = await sendPushToAll({
             title: notification.title,
             body: notification.body || 'New update on GenZ TV',
             icon: notification.imageUrl || '/logo.svg',
-            image: notification.imageUrl || '/logo.svg',
             url: notification.url || '/',
             tag: `app-notif-${notification.id}`,
           })
-          await db.appNotification.update({
-            where: { id: notification.id },
-            data: { pushSent: true },
-          })
+          pushResult = {
+            sent: result.sent,
+            failed: result.failed,
+            removed: 0,
+          }
+          await db.run(
+            'UPDATE AppNotification SET pushSent = 1, updatedAt = ? WHERE id = ?',
+            new Date().toISOString(),
+            id
+          )
+          notification.pushSent = true
         } catch (err) {
           console.error('Push send failed for notification', notification.id, err)
           // Don't fail the whole request — the in-app notification was still created.
@@ -145,10 +166,7 @@ export async function POST(req: NextRequest) {
       // Invalidate notification caches
       apiCache.invalidateNotifications()
 
-      return NextResponse.json(
-        { ...notification, pushResult },
-        { status: 201 }
-      )
+      return NextResponse.json({ ...notification, pushResult }, { status: 201 })
     } catch (error) {
       console.error('Error creating notification:', error)
       return NextResponse.json(

@@ -1,0 +1,1200 @@
+     1→2026-08-28T17:22:22.896Z        Initializing build environment...
+     2→2026-08-28T17:22:24.739Z        Success: Finished initializing build environment
+     3→2026-08-28T17:22:25.284Z        Cloning repository...
+     4→2026-08-28T17:22:27.387Z        Restoring from dependencies cache
+     5→2026-08-28T17:22:27.389Z        Restoring from build output cache
+     6→2026-08-28T17:22:27.393Z        Detected the following tools from environment: bun@1.2.15, npm@10.9.2, nodejs@24.18.0
+     7→2026-08-28T17:22:27.564Z        Success: Build output restored from build cache.
+     8→2026-08-28T17:22:38.685Z        Success: Dependencies restored from build cache.
+     9→2026-08-28T17:22:38.687Z        Installing project dependencies: bun install --frozen-lockfile
+    10→2026-08-28T17:22:39.125Z        bun install v1.2.15 (df017990)
+    11→2026-08-28T17:22:51.195Z        
+    12→2026-08-28T17:22:51.196Z        $ prisma generate && node scripts/patch-prisma.mjs
+    13→2026-08-28T17:22:52.580Z        Prisma schema loaded from prisma/schema.prisma
+    14→2026-08-28T17:22:52.588Z        warn Preview feature "driverAdapters" is deprecated. The functionality can be used without specifying it as a preview feature.
+    15→2026-08-28T17:22:52.889Z        ┌─────────────────────────────────────────────────────────┐
+    16→2026-08-28T17:22:52.890Z        │  Update available 6.19.2 -> 8.0.0-rc.12                 │
+    17→2026-08-28T17:22:52.890Z        │                                                         │
+    18→2026-08-28T17:22:52.890Z        │  This is a major update - please follow the guide at    │
+    19→2026-08-28T17:22:52.890Z        │  https://pris.ly/d/major-version-upgrade                │
+    20→2026-08-28T17:22:52.890Z        │                                                         │
+    21→2026-08-28T17:22:52.890Z        │  Run the following to update                            │
+    22→2026-08-28T17:22:52.890Z        │    npm i --save-dev prisma@latest                       │
+    23→2026-08-28T17:22:52.890Z        │    npm i @prisma/client@latest                          │
+    24→2026-08-28T17:22:52.890Z        └─────────────────────────────────────────────────────────┘
+    25→2026-08-28T17:22:52.891Z        
+    26→2026-08-28T17:22:52.891Z        ✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 140ms
+    27→2026-08-28T17:22:52.891Z        
+    28→2026-08-28T17:22:52.891Z        Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+    29→2026-08-28T17:22:52.891Z        
+    30→2026-08-28T17:22:52.891Z        Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+    31→2026-08-28T17:22:52.891Z        
+    32→2026-08-28T17:22:53.073Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/client/runtime/library.mjs
+    33→2026-08-28T17:22:53.081Z        [patch-prisma] ✅ Patched successfully.
+    34→2026-08-28T17:22:53.082Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/client/runtime/library.mjs
+    35→2026-08-28T17:22:53.084Z        [patch-prisma] No changes (already patched or patterns not found).
+    36→2026-08-28T17:22:53.084Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/adapter-d1/dist/index-node.mjs
+    37→2026-08-28T17:22:53.085Z        [patch-prisma] ✅ Patched successfully.
+    38→2026-08-28T17:22:53.085Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/adapter-d1/dist/index-node.mjs
+    39→2026-08-28T17:22:53.086Z        [patch-prisma] No changes (already patched or patterns not found).
+    40→2026-08-28T17:22:53.086Z        [patch-prisma] Done. Patched 2 file(s).
+    41→2026-08-28T17:22:53.090Z        
+    42→2026-08-28T17:22:53.091Z        + @cloudflare/workers-types@5.20260817.1
+    43→2026-08-28T17:22:53.092Z        + @tailwindcss/postcss@4.1.18
+    44→2026-08-28T17:22:53.092Z        + @types/react@19.2.8
+    45→2026-08-28T17:22:53.092Z        + @types/react-dom@19.2.3
+    46→2026-08-28T17:22:53.092Z        + @types/web-push@3.6.4
+    47→2026-08-28T17:22:53.092Z        + bun-types@1.3.6
+    48→2026-08-28T17:22:53.092Z        + eslint@9.39.2
+    49→2026-08-28T17:22:53.092Z        + eslint-config-next@16.1.3
+    50→2026-08-28T17:22:53.092Z        + tailwindcss@4.1.18
+    51→2026-08-28T17:22:53.092Z        + tw-animate-css@1.4.0
+    52→2026-08-28T17:22:53.092Z        + typescript@5.9.3
+    53→2026-08-28T17:22:53.092Z        + wrangler@4.123.0
+    54→2026-08-28T17:22:53.093Z        + @dnd-kit/core@6.3.1
+    55→2026-08-28T17:22:53.093Z        + @dnd-kit/sortable@10.0.0
+    56→2026-08-28T17:22:53.093Z        + @dnd-kit/utilities@3.2.2
+    57→2026-08-28T17:22:53.093Z        + @hookform/resolvers@5.2.2
+    58→2026-08-28T17:22:53.093Z        + @mdxeditor/editor@3.52.3
+    59→2026-08-28T17:22:53.093Z        + @opennextjs/cloudflare@1.20.2
+    60→2026-08-28T17:22:53.093Z        + @prisma/adapter-d1@7.9.1
+    61→2026-08-28T17:22:53.093Z        + @prisma/client@6.19.2
+    62→2026-08-28T17:22:53.093Z        + @radix-ui/react-accordion@1.2.12
+    63→2026-08-28T17:22:53.093Z        + @radix-ui/react-alert-dialog@1.1.15
+    64→2026-08-28T17:22:53.093Z        + @radix-ui/react-aspect-ratio@1.1.8
+    65→2026-08-28T17:22:53.093Z        + @radix-ui/react-avatar@1.1.11
+    66→2026-08-28T17:22:53.093Z        + @radix-ui/react-checkbox@1.3.3
+    67→2026-08-28T17:22:53.093Z        + @radix-ui/react-collapsible@1.1.12
+    68→2026-08-28T17:22:53.093Z        + @radix-ui/react-context-menu@2.2.16
+    69→2026-08-28T17:22:53.093Z        + @radix-ui/react-dialog@1.1.15
+    70→2026-08-28T17:22:53.093Z        + @radix-ui/react-dropdown-menu@2.1.16
+    71→2026-08-28T17:22:53.093Z        + @radix-ui/react-hover-card@1.1.15
+    72→2026-08-28T17:22:53.093Z        + @radix-ui/react-label@2.1.8
+    73→2026-08-28T17:22:53.093Z        + @radix-ui/react-menubar@1.1.16
+    74→2026-08-28T17:22:53.093Z        + @radix-ui/react-navigation-menu@1.2.14
+    75→2026-08-28T17:22:53.093Z        + @radix-ui/react-popover@1.1.15
+    76→2026-08-28T17:22:53.093Z        + @radix-ui/react-progress@1.1.8
+    77→2026-08-28T17:22:53.093Z        + @radix-ui/react-radio-group@1.3.8
+    78→2026-08-28T17:22:53.093Z        + @radix-ui/react-scroll-area@1.2.10
+    79→2026-08-28T17:22:53.093Z        + @radix-ui/react-select@2.2.6
+    80→2026-08-28T17:22:53.094Z        + @radix-ui/react-separator@1.1.8
+    81→2026-08-28T17:22:53.094Z        + @radix-ui/react-slider@1.3.6
+    82→2026-08-28T17:22:53.094Z        + @radix-ui/react-slot@1.2.4
+    83→2026-08-28T17:22:53.094Z        + @radix-ui/react-switch@1.2.6
+    84→2026-08-28T17:22:53.094Z        + @radix-ui/react-tabs@1.1.13
+    85→2026-08-28T17:22:53.094Z        + @radix-ui/react-toast@1.2.15
+    86→2026-08-28T17:22:53.094Z        + @radix-ui/react-toggle@1.1.10
+    87→2026-08-28T17:22:53.094Z        + @radix-ui/react-toggle-group@1.1.11
+    88→2026-08-28T17:22:53.094Z        + @radix-ui/react-tooltip@1.2.8
+    89→2026-08-28T17:22:53.094Z        + @reactuses/core@6.1.9
+    90→2026-08-28T17:22:53.094Z        + @tanstack/react-query@5.90.19
+    91→2026-08-28T17:22:53.094Z        + @tanstack/react-table@8.21.3
+    92→2026-08-28T17:22:53.094Z        + class-variance-authority@0.7.1
+    93→2026-08-28T17:22:53.094Z        + clsx@2.1.1
+    94→2026-08-28T17:22:53.094Z        + cmdk@1.1.1
+    95→2026-08-28T17:22:53.094Z        + date-fns@4.1.0
+    96→2026-08-28T17:22:53.094Z        + embla-carousel-react@8.6.0
+    97→2026-08-28T17:22:53.094Z        + framer-motion@12.26.2
+    98→2026-08-28T17:22:53.094Z        + hls.js@1.7.0
+    99→2026-08-28T17:22:53.094Z        + input-otp@1.4.2
+   100→2026-08-28T17:22:53.095Z        + lucide-react@0.525.0
+   101→2026-08-28T17:22:53.095Z        + mpegts.js@1.8.2
+   102→2026-08-28T17:22:53.098Z        + next@16.1.3
+   103→2026-08-28T17:22:53.098Z        + next-auth@4.24.13
+   104→2026-08-28T17:22:53.098Z        + next-intl@4.7.0
+   105→2026-08-28T17:22:53.098Z        + next-themes@0.4.6
+   106→2026-08-28T17:22:53.098Z        + prisma@6.19.2
+   107→2026-08-28T17:22:53.098Z        + react@19.2.3
+   108→2026-08-28T17:22:53.098Z        + react-day-picker@9.13.0
+   109→2026-08-28T17:22:53.098Z        + react-dom@19.2.3
+   110→2026-08-28T17:22:53.098Z        + react-hook-form@7.71.1
+   111→2026-08-28T17:22:53.098Z        + react-markdown@10.1.0
+   112→2026-08-28T17:22:53.098Z        + react-resizable-panels@3.0.6
+   113→2026-08-28T17:22:53.098Z        + react-syntax-highlighter@15.6.6
+   114→2026-08-28T17:22:53.099Z        + recharts@2.15.4
+   115→2026-08-28T17:22:53.099Z        + sharp@0.34.5
+   116→2026-08-28T17:22:53.099Z        + socket.io-client@4.8.3
+   117→2026-08-28T17:22:53.099Z        + sonner@2.0.7
+   118→2026-08-28T17:22:53.099Z        + tailwind-merge@3.4.0
+   119→2026-08-28T17:22:53.099Z        + tailwindcss-animate@1.0.7
+   120→2026-08-28T17:22:53.099Z        + uuid@11.1.0
+   121→2026-08-28T17:22:53.099Z        + vaul@1.1.2
+   122→2026-08-28T17:22:53.099Z        + web-push@3.6.7
+   123→2026-08-28T17:22:53.099Z        + z-ai-web-dev-sdk@0.0.18
+   124→2026-08-28T17:22:53.099Z        + zod@4.3.5
+   125→2026-08-28T17:22:53.099Z        + zustand@5.0.10
+   126→2026-08-28T17:22:53.099Z        
+   127→2026-08-28T17:22:53.099Z        1128 packages installed [14.01s]
+   128→2026-08-28T17:22:53.229Z        Executing user build command: npm run build:cf
+   129→2026-08-28T17:22:53.691Z        
+   130→2026-08-28T17:22:53.691Z        > genztv@0.3.0 build:cf
+   131→2026-08-28T17:22:53.692Z        > prisma generate && node scripts/patch-prisma.mjs && opennextjs-cloudflare build
+   132→2026-08-28T17:22:53.692Z        
+   133→2026-08-28T17:22:54.721Z        Prisma schema loaded from prisma/schema.prisma
+   134→2026-08-28T17:22:54.725Z        warn Preview feature "driverAdapters" is deprecated. The functionality can be used without specifying it as a preview feature.
+   135→2026-08-28T17:22:54.968Z        
+   136→2026-08-28T17:22:54.968Z        ✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 101ms
+   137→2026-08-28T17:22:54.968Z        
+   138→2026-08-28T17:22:54.968Z        Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+   139→2026-08-28T17:22:54.968Z        
+   140→2026-08-28T17:22:54.968Z        Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+   141→2026-08-28T17:22:54.968Z        
+   142→2026-08-28T17:22:55.025Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/client/runtime/library.mjs
+   143→2026-08-28T17:22:55.028Z        [patch-prisma] No changes (already patched or patterns not found).
+   144→2026-08-28T17:22:55.028Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/client/runtime/library.mjs
+   145→2026-08-28T17:22:55.030Z        [patch-prisma] No changes (already patched or patterns not found).
+   146→2026-08-28T17:22:55.030Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/adapter-d1/dist/index-node.mjs
+   147→2026-08-28T17:22:55.031Z        [patch-prisma] No changes (already patched or patterns not found).
+   148→2026-08-28T17:22:55.031Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/adapter-d1/dist/index-node.mjs
+   149→2026-08-28T17:22:55.032Z        [patch-prisma] No changes (already patched or patterns not found).
+   150→2026-08-28T17:22:55.032Z        [patch-prisma] Done. Patched 0 file(s).
+   151→2026-08-28T17:22:56.857Z        
+   152→2026-08-28T17:22:56.858Z        ┌─────────────────────────────┐
+   153→2026-08-28T17:22:56.858Z        │ OpenNext — Cloudflare build │
+   154→2026-08-28T17:22:56.858Z        └─────────────────────────────┘
+   155→2026-08-28T17:22:56.858Z        
+   156→2026-08-28T17:22:56.982Z        App directory: /opt/buildhome/repo
+   157→2026-08-28T17:22:56.982Z        Next.js version : 16.1.3
+   158→2026-08-28T17:22:56.983Z        @opennextjs/cloudflare version: 1.20.2
+   159→2026-08-28T17:22:56.983Z        @opennextjs/aws version: 4.1.0
+   160→2026-08-28T17:22:56.984Z        WARN workerd compatibility_date: 2025-09-23, consider updating your wrangler config to a more recent date to benefit from the latest features and fixes.
+   161→2026-08-28T17:22:56.985Z        
+   162→2026-08-28T17:22:56.985Z        ┌─────────────────────────────────┐
+   163→2026-08-28T17:22:56.985Z        │ OpenNext — Building Next.js app │
+   164→2026-08-28T17:22:56.985Z        └─────────────────────────────────┘
+   165→2026-08-28T17:22:56.985Z        
+   166→2026-08-28T17:22:57.104Z        $ next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/
+   167→2026-08-28T17:22:58.209Z        ▲ Next.js 16.1.3 (Turbopack)
+   168→2026-08-28T17:22:58.209Z        - Experiments (use with caution):
+   169→2026-08-28T17:22:58.209Z          · proxyClientMaxBodySize: "100mb"
+   170→2026-08-28T17:22:58.209Z          · serverActions
+   171→2026-08-28T17:22:58.209Z        
+   172→2026-08-28T17:22:58.220Z        ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+   173→2026-08-28T17:22:58.251Z          Creating an optimized production build ...
+   174→2026-08-28T17:23:21.632Z        ✓ Compiled successfully in 22.7s
+   175→2026-08-28T17:23:21.646Z          Skipping validation of types
+   176→2026-08-28T17:23:21.910Z          Collecting page data using 1 worker ...
+   177→2026-08-28T17:23:22.844Z        ⚠ You are using an experimental edge runtime, the API might change.
+   178→2026-08-28T17:23:22.860Z          Generating static pages using 1 worker (0/44) ...
+   179→2026-08-28T17:23:22.997Z          Generating static pages using 1 worker (11/44) 
+   180→2026-08-28T17:23:23.006Z          Generating static pages using 1 worker (22/44) 
+   181→2026-08-28T17:23:23.011Z          Generating static pages using 1 worker (33/44) 
+   182→2026-08-28T17:23:23.043Z        ✓ Generating static pages using 1 worker (44/44) in 183.5ms
+   183→2026-08-28T17:23:23.124Z          Finalizing page optimization ...
+   184→2026-08-28T17:23:24.029Z        
+   185→2026-08-28T17:23:24.033Z        Route (app)
+   186→2026-08-28T17:23:24.033Z        ┌ ○ /
+   187→2026-08-28T17:23:24.033Z        ├ ○ /_not-found
+   188→2026-08-28T17:23:24.033Z        ├ ƒ /api
+   189→2026-08-28T17:23:24.033Z        ├ ƒ /api/admin/live-viewers
+   190→2026-08-28T17:23:24.033Z        ├ ƒ /api/analytics/cleanup
+   191→2026-08-28T17:23:24.033Z        ├ ƒ /api/analytics/daily-reset
+   192→2026-08-28T17:23:24.033Z        ├ ƒ /api/analytics/dashboard
+   193→2026-08-28T17:23:24.034Z        ├ ƒ /api/analytics/heartbeat
+   194→2026-08-28T17:23:24.034Z        ├ ƒ /api/analytics/track
+   195→2026-08-28T17:23:24.034Z        ├ ƒ /api/auth/login
+   196→2026-08-28T17:23:24.034Z        ├ ƒ /api/auth/logout
+   197→2026-08-28T17:23:24.034Z        ├ ƒ /api/auth/verify
+   198→2026-08-28T17:23:24.034Z        ├ ƒ /api/categories
+   199→2026-08-28T17:23:24.034Z        ├ ƒ /api/categories/[id]
+   200→2026-08-28T17:23:24.034Z        ├ ƒ /api/channels
+   201→2026-08-28T17:23:24.034Z        ├ ƒ /api/channels/[id]
+   202→2026-08-28T17:23:24.034Z        ├ ƒ /api/channels/[id]/reactive-refresh
+   203→2026-08-28T17:23:24.034Z        ├ ƒ /api/channels/[id]/refresh
+   204→2026-08-28T17:23:24.034Z        ├ ƒ /api/channels/export
+   205→2026-08-28T17:23:24.034Z        ├ ƒ /api/channels/import-file
+   206→2026-08-28T17:23:24.035Z        ├ ƒ /api/channels/refresh-expired
+   207→2026-08-28T17:23:24.035Z        ├ ƒ /api/data
+   208→2026-08-28T17:23:24.035Z        ├ ƒ /api/data/import
+   209→2026-08-28T17:23:24.035Z        ├ ƒ /api/data/reset
+   210→2026-08-28T17:23:24.035Z        ├ ƒ /api/db-health
+   211→2026-08-28T17:23:24.035Z        ├ ƒ /api/feedback
+   212→2026-08-28T17:23:24.035Z        ├ ƒ /api/feedback/[id]
+   213→2026-08-28T17:23:24.035Z        ├ ƒ /api/fifalive
+   214→2026-08-28T17:23:24.035Z        ├ ƒ /api/fifalive/streams
+   215→2026-08-28T17:23:24.036Z        ├ ƒ /api/iframe-proxy
+   216→2026-08-28T17:23:24.036Z        ├ ƒ /api/m3u-parse
+   217→2026-08-28T17:23:24.036Z        ├ ƒ /api/matches
+   218→2026-08-28T17:23:24.036Z        ├ ƒ /api/matches/[id]
+   219→2026-08-28T17:23:24.036Z        ├ ƒ /api/matches/sync-statuses
+   220→2026-08-28T17:23:24.036Z        ├ ƒ /api/notifications
+   221→2026-08-28T17:23:24.036Z        ├ ƒ /api/notifications/[id]
+   222→2026-08-28T17:23:24.036Z        ├ ƒ /api/notifications/admin
+   223→2026-08-28T17:23:24.036Z        ├ ƒ /api/push/notifications
+   224→2026-08-28T17:23:24.038Z        ├ ƒ /api/push/notifications/[id]
+   225→2026-08-28T17:23:24.038Z        ├ ƒ /api/push/notify
+   226→2026-08-28T17:23:24.039Z        ├ ƒ /api/push/subscribe
+   227→2026-08-28T17:23:24.039Z        ├ ƒ /api/push/subscribers
+   228→2026-08-28T17:23:24.039Z        ├ ƒ /api/push/unsubscribe
+   229→2026-08-28T17:23:24.039Z        ├ ƒ /api/push/vapid-key
+   230→2026-08-28T17:23:24.039Z        ├ ƒ /api/resolve-fifalive
+   231→2026-08-28T17:23:24.039Z        ├ ƒ /api/seed
+   232→2026-08-28T17:23:24.039Z        ├ ƒ /api/settings
+   233→2026-08-28T17:23:24.039Z        ├ ƒ /api/settings/security
+   234→2026-08-28T17:23:24.039Z        ├ ƒ /api/stream-proxy
+   235→2026-08-28T17:23:24.040Z        ├ ƒ /api/transcode
+   236→2026-08-28T17:23:24.040Z        └ ƒ /api/transcode-stream
+   237→2026-08-28T17:23:24.040Z        
+   238→2026-08-28T17:23:24.040Z        
+   239→2026-08-28T17:23:24.040Z        ƒ Proxy (Middleware)
+   240→2026-08-28T17:23:24.040Z        
+   241→2026-08-28T17:23:24.040Z        ○  (Static)   prerendered as static content
+   242→2026-08-28T17:23:24.040Z        ƒ  (Dynamic)  server-rendered on demand
+   243→2026-08-28T17:23:24.040Z        
+   244→2026-08-28T17:23:24.131Z        
+   245→2026-08-28T17:23:24.132Z        ┌──────────────────────────────┐
+   246→2026-08-28T17:23:24.132Z        │ OpenNext — Generating bundle │
+   247→2026-08-28T17:23:24.132Z        └──────────────────────────────┘
+   248→2026-08-28T17:23:24.132Z        
+   249→2026-08-28T17:23:24.242Z        Bundling middleware function...
+   250→2026-08-28T17:23:24.323Z        Bundling static assets...
+   251→2026-08-28T17:23:24.331Z        Bundling cache assets...
+   252→2026-08-28T17:23:24.358Z        Building server function: default...
+   253→2026-08-28T17:23:28.550Z        Applying code patches: 3.234s
+   254→2026-08-28T17:23:28.947Z        # copyPackageTemplateFiles
+   255→2026-08-28T17:23:28.948Z        ⚙️ Bundling the OpenNext server...
+   256→2026-08-28T17:23:28.948Z        
+   257→2026-08-28T17:23:32.070Z        Worker saved in `.open-next/worker.js` 🚀
+   258→2026-08-28T17:23:32.071Z        
+   259→2026-08-28T17:23:32.071Z        OpenNext build complete.
+   260→2026-08-28T17:23:32.326Z        Success: Build command completed
+   261→2026-08-28T17:23:32.479Z        Executing user deploy command: npx wrangler deploy
+   262→2026-08-28T17:23:34.729Z        
+   263→2026-08-28T17:23:34.729Z         ⛅️ wrangler 4.123.0
+   264→2026-08-28T17:23:34.729Z        ────────────────────
+   265→2026-08-28T17:23:34.785Z        OpenNext project detected, calling `opennextjs-cloudflare deploy`
+   266→2026-08-28T17:23:38.731Z        
+   267→2026-08-28T17:23:38.733Z        ┌──────────────────────────────┐
+   268→2026-08-28T17:23:38.734Z        │ OpenNext — Cloudflare deploy │
+   269→2026-08-28T17:23:38.734Z        └──────────────────────────────┘
+   270→2026-08-28T17:23:38.734Z        
+   271→2026-08-28T17:23:39.212Z        Incremental cache does not need populating
+   272→2026-08-28T17:23:39.212Z        Tag cache does not need populating
+   273→2026-08-28T17:23:40.652Z        
+   274→2026-08-28T17:23:40.653Z         ⛅️ wrangler 4.123.0 (update available 4.127.1)
+   275→2026-08-28T17:23:40.653Z        ───────────────────────────────────────────────
+   276→2026-08-28T17:23:40.660Z        
+   277→2026-08-28T17:23:40.660Z        Cloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md
+   278→2026-08-28T17:23:43.394Z        🌀 Building list of assets...
+   279→2026-08-28T17:23:43.397Z        ✨ Read 86 files from the assets directory /opt/buildhome/repo/.open-next/assets
+   280→2026-08-28T17:23:43.461Z        🌀 Starting asset upload...
+   281→2026-08-28T17:23:44.345Z        🌀 Found 1 new or modified static asset to upload. Proceeding with upload...
+   282→2026-08-28T17:23:44.345Z        + /BUILD_ID
+   283→2026-08-28T17:23:44.895Z        Uploaded 1 of 1 asset
+   284→2026-08-28T17:23:44.896Z        ✨ Success! Uploaded 1 file (79 already uploaded) (0.55 sec)
+   285→2026-08-28T17:23:44.896Z        
+   286→2026-08-28T17:23:45.379Z        Total Upload: 10334.72 KiB / gzip: 2456.70 KiB
+   287→2026-08-28T17:23:46.536Z        Your Worker has access to the following bindings:
+   288→2026-08-28T17:23:46.537Z        Binding                                              Resource                  
+   289→2026-08-28T17:23:46.537Z        env.ASSETS                                           Assets                    
+   290→2026-08-28T17:23:46.537Z        env.CF_DEPLOY ("true")                               Environment Variable      
+   291→2026-08-28T17:23:46.537Z        env.ADMIN_PASSWORD ("Ronnie7700")                    Environment Variable      
+   292→2026-08-28T17:23:46.537Z        env.NEXTAUTH_SECRET ("change-me-in-production")      Environment Variable      
+   293→2026-08-28T17:23:46.537Z        
+   294→2026-08-28T17:23:46.546Z        
+   295→2026-08-28T17:23:46.641Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   296→2026-08-28T17:23:46.641Z        
+   297→2026-08-28T17:23:46.641Z            .open-next/server-functions/default/handler.mjs:1216:262310:
+   298→2026-08-28T17:23:46.641Z              1216 │ ...ata:{...i3,placement:g3}}},options:[c10,d10]},F2&&{name:"shif...
+   299→2026-08-28T17:23:46.641Z                   ╵                               ~~~~~~~
+   300→2026-08-28T17:23:46.641Z        
+   301→2026-08-28T17:23:46.641Z          The original key "options" is here:
+   302→2026-08-28T17:23:46.641Z        
+   303→2026-08-28T17:23:46.641Z            .open-next/server-functions/default/handler.mjs:1216:262011:
+   304→2026-08-28T17:23:46.641Z              1216 │ ...middleware:[{name:"offset",options:e2=c10={mainAxis:B2+V2,ali...
+   305→2026-08-28T17:23:46.641Z                   ╵                               ~~~~~~~
+   306→2026-08-28T17:23:46.641Z        
+   307→2026-08-28T17:23:46.642Z        
+   308→2026-08-28T17:23:46.642Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   309→2026-08-28T17:23:46.642Z        
+   310→2026-08-28T17:23:46.642Z            .open-next/server-functions/default/handler.mjs:1216:263867:
+   311→2026-08-28T17:23:46.642Z              1216 │ ...abled:{[m3]:e3,[l3]:f3}}}},options:[i2,j2]},F2&&{name:"flip",...
+   312→2026-08-28T17:23:46.642Z                   ╵                               ~~~~~~~
+   313→2026-08-28T17:23:46.642Z        
+   314→2026-08-28T17:23:46.642Z          The original key "options" is here:
+   315→2026-08-28T17:23:46.642Z        
+   316→2026-08-28T17:23:46.642Z            .open-next/server-functions/default/handler.mjs:1216:262347:
+   317→2026-08-28T17:23:46.643Z              1216 │ ...10,d10]},F2&&{name:"shift",options:k2=i2={mainAxis:!0,crossAx...
+   318→2026-08-28T17:23:46.643Z                   ╵                               ~~~~~~~
+   319→2026-08-28T17:23:46.643Z        
+   320→2026-08-28T17:23:46.643Z        
+   321→2026-08-28T17:23:46.643Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   322→2026-08-28T17:23:46.643Z        
+   323→2026-08-28T17:23:46.643Z            .open-next/server-functions/default/handler.mjs:1216:265917:
+   324→2026-08-28T17:23:46.643Z              1216 │ ...{placement:c12}}}return{}},options:[l2,m2]},{name:"size",opti...
+   325→2026-08-28T17:23:46.643Z                   ╵                               ~~~~~~~
+   326→2026-08-28T17:23:46.643Z        
+   327→2026-08-28T17:23:46.643Z          The original key "options" is here:
+   328→2026-08-28T17:23:46.643Z        
+   329→2026-08-28T17:23:46.643Z            .open-next/server-functions/default/handler.mjs:1216:263901:
+   330→2026-08-28T17:23:46.643Z              1216 │ ...:[i2,j2]},F2&&{name:"flip",options:n2=l2={...Z2},async fn(a11...
+   331→2026-08-28T17:23:46.643Z                   ╵                               ~~~~~~~
+   332→2026-08-28T17:23:46.643Z        
+   333→2026-08-28T17:23:46.644Z        
+   334→2026-08-28T17:23:46.644Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   335→2026-08-28T17:23:46.644Z        
+   336→2026-08-28T17:23:46.644Z            .open-next/server-functions/default/handler.mjs:1216:267332:
+   337→2026-08-28T17:23:46.644Z              1216 │ ...ght?{reset:{rects:!0}}:{}},options:[o2,r2]},R2&&{name:"arrow"...
+   338→2026-08-28T17:23:46.644Z                   ╵                               ~~~~~~~
+   339→2026-08-28T17:23:46.644Z        
+   340→2026-08-28T17:23:46.644Z          The original key "options" is here:
+   341→2026-08-28T17:23:46.644Z        
+   342→2026-08-28T17:23:46.644Z            .open-next/server-functions/default/handler.mjs:1216:265947:
+   343→2026-08-28T17:23:46.645Z              1216 │ ...ions:[l2,m2]},{name:"size",options:s2=o2={...Z2,apply:({eleme...
+   344→2026-08-28T17:23:46.645Z                   ╵                               ~~~~~~~
+   345→2026-08-28T17:23:46.645Z        
+   346→2026-08-28T17:23:46.645Z        
+   347→2026-08-28T17:23:46.645Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   348→2026-08-28T17:23:46.645Z        
+   349→2026-08-28T17:23:46.645Z            .open-next/server-functions/default/handler.mjs:1216:267638:
+   350→2026-08-28T17:23:46.645Z              1216 │ ...,padding:c11}).fn(a11):{}},options:[t2,u2]},dS({arrowWidth:U2...
+   351→2026-08-28T17:23:46.645Z                   ╵                               ~~~~~~~
+   352→2026-08-28T17:23:46.645Z        
+   353→2026-08-28T17:23:46.645Z          The original key "options" is here:
+   354→2026-08-28T17:23:46.645Z        
+   355→2026-08-28T17:23:46.646Z            .open-next/server-functions/default/handler.mjs:1216:267367:
+   356→2026-08-28T17:23:46.646Z              1216 │ ...[o2,r2]},R2&&{name:"arrow",options:v2=t2={element:R2,padding:...
+   357→2026-08-28T17:23:46.646Z                   ╵                               ~~~~~~~
+   358→2026-08-28T17:23:46.646Z        
+   359→2026-08-28T17:23:46.646Z        
+   360→2026-08-28T17:23:46.647Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   361→2026-08-28T17:23:46.647Z        
+   362→2026-08-28T17:23:46.647Z            .open-next/server-functions/default/handler.mjs:1216:268164:
+   363→2026-08-28T17:23:46.650Z              1216 │ ...(c12)}}}default:return{}}},options:[w2,x2]}]}),[ad2,ae2]=dT(a...
+   364→2026-08-28T17:23:46.650Z                   ╵                               ~~~~~~~
+   365→2026-08-28T17:23:46.650Z        
+   366→2026-08-28T17:23:46.650Z          The original key "options" is here:
+   367→2026-08-28T17:23:46.650Z        
+   368→2026-08-28T17:23:46.650Z            .open-next/server-functions/default/handler.mjs:1216:267707:
+   369→2026-08-28T17:23:46.650Z              1216 │ ...ight:V2}),J2&&{name:"hide",options:y2=w2={strategy:"reference...
+   370→2026-08-28T17:23:46.650Z                   ╵                               ~~~~~~~
+   371→2026-08-28T17:23:46.650Z        
+   372→2026-08-28T17:23:46.650Z        
+   373→2026-08-28T17:23:46.651Z        ✘ [ERROR] A request to the Cloudflare API (/accounts/a2f4abe25a45a0b0523f8af1a09743d8/workers/scripts/genztv-cf-pages/versions) failed.
+   374→2026-08-28T17:23:46.651Z        
+   375→2026-08-28T17:23:46.651Z          Uncaught Error: No such module "node:fs".
+   376→2026-08-28T17:23:46.654Z            imported from "worker.js"
+   377→2026-08-28T17:23:46.654Z           [code: 10021]
+   378→2026-08-28T17:23:46.654Z          To learn more about this error, visit: https://developers.cloudflare.com/workers/observability/errors/#validation-errors-10021
+   379→2026-08-28T17:23:46.654Z        
+   380→2026-08-28T17:23:46.654Z          
+   381→2026-08-28T17:23:46.654Z          If you think this is a bug, please open an issue at: https://github.com/cloudflare/workers-sdk/issues/new/choose
+   382→2026-08-28T17:23:46.655Z        
+   383→2026-08-28T17:23:46.655Z        
+   384→2026-08-28T17:23:46.655Z        🪵  Logs were written to "/opt/buildhome/.config/.wrangler/logs/wrangler-2026-08-28_17-23-40_179.log"
+   385→2026-08-28T17:23:46.655Z        ERROR Wrangler deploy command failed:
+   386→2026-08-28T17:23:46.655Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   387→2026-08-28T17:23:46.655Z        
+   388→2026-08-28T17:23:46.655Z            .open-next/server-functions/default/handler.mjs:1216:262310:
+   389→2026-08-28T17:23:46.655Z              1216 │ ...ata:{...i3,placement:g3}}},options:[c10,d10]},F2&&{name:"shif...
+   390→2026-08-28T17:23:46.655Z                   ╵                               ~~~~~~~
+   391→2026-08-28T17:23:46.656Z        
+   392→2026-08-28T17:23:46.656Z          The original key "options" is here:
+   393→2026-08-28T17:23:46.656Z        
+   394→2026-08-28T17:23:46.656Z            .open-next/server-functions/default/handler.mjs:1216:262011:
+   395→2026-08-28T17:23:46.656Z              1216 │ ...middleware:[{name:"offset",options:e2=c10={mainAxis:B2+V2,ali...
+   396→2026-08-28T17:23:46.656Z                   ╵                               ~~~~~~~
+   397→2026-08-28T17:23:46.656Z        
+   398→2026-08-28T17:23:46.656Z        
+   399→2026-08-28T17:23:46.656Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   400→2026-08-28T17:23:46.656Z        
+   401→2026-08-28T17:23:46.656Z            .open-next/server-functions/default/handler.mjs:1216:263867:
+   402→2026-08-28T17:23:46.656Z              1216 │ ...abled:{[m3]:e3,[l3]:f3}}}},options:[i2,j2]},F2&&{name:"flip",...
+   403→2026-08-28T17:23:46.657Z                   ╵                               ~~~~~~~
+   404→2026-08-28T17:23:46.657Z        
+   405→2026-08-28T17:23:46.657Z          The original key "options" is here:
+   406→2026-08-28T17:23:46.657Z        
+   407→2026-08-28T17:23:46.657Z            .open-next/server-functions/default/handler.mjs:1216:262347:
+   408→2026-08-28T17:23:46.657Z              1216 │ ...10,d10]},F2&&{name:"shift",options:k2=i2={mainAxis:!0,crossAx...
+   409→2026-08-28T17:23:46.657Z                   ╵                               ~~~~~~~
+   410→2026-08-28T17:23:46.657Z        
+   411→2026-08-28T17:23:46.657Z        
+   412→2026-08-28T17:23:46.657Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   413→2026-08-28T17:23:46.658Z        
+   414→2026-08-28T17:23:46.658Z            .open-next/server-functions/default/handler.mjs:1216:265917:
+   415→2026-08-28T17:23:46.658Z              1216 │ ...{placement:c12}}}return{}},options:[l2,m2]},{name:"size",opti...
+   416→2026-08-28T17:23:46.658Z                   ╵                               ~~~~~~~
+   417→2026-08-28T17:23:46.658Z        
+   418→2026-08-28T17:23:46.658Z          The original key "options" is here:
+   419→2026-08-28T17:23:46.658Z        
+   420→2026-08-28T17:23:46.663Z            .open-next/server-functions/default/handler.mjs:1216:263901:
+   421→2026-08-28T17:23:46.663Z              1216 │ ...:[i2,j2]},F2&&{name:"flip",options:n2=l2={...Z2},async fn(a11...
+   422→2026-08-28T17:23:46.663Z                   ╵                               ~~~~~~~
+   423→2026-08-28T17:23:46.663Z        
+   424→2026-08-28T17:23:46.663Z        
+   425→2026-08-28T17:23:46.663Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   426→2026-08-28T17:23:46.663Z        
+   427→2026-08-28T17:23:46.663Z            .open-next/server-functions/default/handler.mjs:1216:267332:
+   428→2026-08-28T17:23:46.663Z              1216 │ ...ght?{reset:{rects:!0}}:{}},options:[o2,r2]},R2&&{name:"arrow"...
+   429→2026-08-28T17:23:46.663Z                   ╵                               ~~~~~~~
+   430→2026-08-28T17:23:46.663Z        
+   431→2026-08-28T17:23:46.663Z          The original key "options" is here:
+   432→2026-08-28T17:23:46.664Z        
+   433→2026-08-28T17:23:46.664Z            .open-next/server-functions/default/handler.mjs:1216:265947:
+   434→2026-08-28T17:23:46.664Z              1216 │ ...ions:[l2,m2]},{name:"size",options:s2=o2={...Z2,apply:({eleme...
+   435→2026-08-28T17:23:46.664Z                   ╵                               ~~~~~~~
+   436→2026-08-28T17:23:46.664Z        
+   437→2026-08-28T17:23:46.664Z        
+   438→2026-08-28T17:23:46.664Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   439→2026-08-28T17:23:46.664Z        
+   440→2026-08-28T17:23:46.664Z            .open-next/server-functions/default/handler.mjs:1216:267638:
+   441→2026-08-28T17:23:46.664Z              1216 │ ...,padding:c11}).fn(a11):{}},options:[t2,u2]},dS({arrowWidth:U2...
+   442→2026-08-28T17:23:46.664Z                   ╵                               ~~~~~~~
+   443→2026-08-28T17:23:46.664Z        
+   444→2026-08-28T17:23:46.664Z          The original key "options" is here:
+   445→2026-08-28T17:23:46.664Z        
+   446→2026-08-28T17:23:46.665Z            .open-next/server-functions/default/handler.mjs:1216:267367:
+   447→2026-08-28T17:23:46.665Z              1216 │ ...[o2,r2]},R2&&{name:"arrow",options:v2=t2={element:R2,padding:...
+   448→2026-08-28T17:23:46.665Z                   ╵                               ~~~~~~~
+   449→2026-08-28T17:23:46.665Z        
+   450→2026-08-28T17:23:46.665Z        
+   451→2026-08-28T17:23:46.665Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   452→2026-08-28T17:23:46.665Z        
+   453→2026-08-28T17:23:46.665Z            .open-next/server-functions/default/handler.mjs:1216:268164:
+   454→2026-08-28T17:23:46.665Z              1216 │ ...(c12)}}}default:return{}}},options:[w2,x2]}]}),[ad2,ae2]=dT(a...
+   455→2026-08-28T17:23:46.665Z                   ╵                               ~~~~~~~
+   456→2026-08-28T17:23:46.665Z        
+   457→2026-08-28T17:23:46.665Z          The original key "options" is here:
+   458→2026-08-28T17:23:46.665Z        
+   459→2026-08-28T17:23:46.665Z            .open-next/server-functions/default/handler.mjs:1216:267707:
+   460→2026-08-28T17:23:46.665Z              1216 │ ...ight:V2}),J2&&{name:"hide",options:y2=w2={strategy:"reference...
+   461→2026-08-28T17:23:46.665Z                   ╵                               ~~~~~~~
+   462→2026-08-28T17:23:46.665Z        
+   463→2026-08-28T17:23:46.665Z        
+   464→2026-08-28T17:23:46.665Z        ✘ [ERROR] A request to the Cloudflare API (/accounts/a2f4abe25a45a0b0523f8af1a09743d8/workers/scripts/genztv-cf-pages/versions) failed.
+   465→2026-08-28T17:23:46.666Z        
+   466→2026-08-28T17:23:46.666Z          Uncaught Error: No such module "node:fs".
+   467→2026-08-28T17:23:46.666Z            imported from "worker.js"
+   468→2026-08-28T17:23:46.666Z           [code: 10021]
+   469→2026-08-28T17:23:46.666Z          To learn more about this error, visit: https://developers.cloudflare.com/workers/observability/errors/#validation-errors-10021
+   470→2026-08-28T17:23:46.666Z        
+   471→2026-08-28T17:23:46.666Z          
+   472→2026-08-28T17:23:46.666Z          If you think this is a bug, please open an issue at: https://github.com/cloudflare/workers-sdk/issues/new/choose
+   473→2026-08-28T17:23:46.666Z        
+   474→2026-08-28T17:23:46.666Z        
+   475→2026-08-28T17:23:46.666Z        🪵  Logs were written to "/opt/buildhome/.config/.wrangler/logs/wrangler-2026-08-28_17-23-40_179.log"
+   476→2026-08-28T17:23:46.666Z        
+   477→2026-08-28T17:23:46.745Z        
+   478→2026-08-28T17:23:46.826Z        ✘ [ERROR] 
+   479→2026-08-28T17:23:46.826Z        
+   480→2026-08-28T17:23:46.826Z        
+   481→2026-08-28T17:23:46.827Z        If you think this is a bug then please create an issue at https://github.com/cloudflare/workers-sdk/issues/new/choose
+   482→2026-08-28T17:23:46.830Z        Note that there is a newer version of Wrangler available (4.127.1). Consider checking whether upgrading resolves this error.
+   483→2026-08-28T17:23:46.852Z        🪵  Logs were written to "/opt/buildhome/.config/.wrangler/logs/wrangler-2026-08-28_17-23-34_091.log"
+   484→2026-08-28T17:23:46.971Z        Failed: error occurred while running deploy command
+   485→2026-08-28T17:22:22.896Z        Initializing build environment...
+   486→2026-08-28T17:22:24.739Z        Success: Finished initializing build environment
+   487→2026-08-28T17:22:25.284Z        Cloning repository...
+   488→2026-08-28T17:22:27.387Z        Restoring from dependencies cache
+   489→2026-08-28T17:22:27.389Z        Restoring from build output cache
+   490→2026-08-28T17:22:27.393Z        Detected the following tools from environment: bun@1.2.15, npm@10.9.2, nodejs@24.18.0
+   491→2026-08-28T17:22:27.564Z        Success: Build output restored from build cache.
+   492→2026-08-28T17:22:38.685Z        Success: Dependencies restored from build cache.
+   493→2026-08-28T17:22:38.687Z        Installing project dependencies: bun install --frozen-lockfile
+   494→2026-08-28T17:22:39.125Z        bun install v1.2.15 (df017990)
+   495→2026-08-28T17:22:51.195Z        
+   496→2026-08-28T17:22:51.196Z        $ prisma generate && node scripts/patch-prisma.mjs
+   497→2026-08-28T17:22:52.580Z        Prisma schema loaded from prisma/schema.prisma
+   498→2026-08-28T17:22:52.588Z        warn Preview feature "driverAdapters" is deprecated. The functionality can be used without specifying it as a preview feature.
+   499→2026-08-28T17:22:52.889Z        ┌─────────────────────────────────────────────────────────┐
+   500→2026-08-28T17:22:52.890Z        │  Update available 6.19.2 -> 8.0.0-rc.12                 │
+   501→2026-08-28T17:22:52.890Z        │                                                         │
+   502→2026-08-28T17:22:52.890Z        │  This is a major update - please follow the guide at    │
+   503→2026-08-28T17:22:52.890Z        │  https://pris.ly/d/major-version-upgrade                │
+   504→2026-08-28T17:22:52.890Z        │                                                         │
+   505→2026-08-28T17:22:52.890Z        │  Run the following to update                            │
+   506→2026-08-28T17:22:52.890Z        │    npm i --save-dev prisma@latest                       │
+   507→2026-08-28T17:22:52.890Z        │    npm i @prisma/client@latest                          │
+   508→2026-08-28T17:22:52.890Z        └─────────────────────────────────────────────────────────┘
+   509→2026-08-28T17:22:52.891Z        
+   510→2026-08-28T17:22:52.891Z        ✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 140ms
+   511→2026-08-28T17:22:52.891Z        
+   512→2026-08-28T17:22:52.891Z        Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+   513→2026-08-28T17:22:52.891Z        
+   514→2026-08-28T17:22:52.891Z        Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+   515→2026-08-28T17:22:52.891Z        
+   516→2026-08-28T17:22:53.073Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/client/runtime/library.mjs
+   517→2026-08-28T17:22:53.081Z        [patch-prisma] ✅ Patched successfully.
+   518→2026-08-28T17:22:53.082Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/client/runtime/library.mjs
+   519→2026-08-28T17:22:53.084Z        [patch-prisma] No changes (already patched or patterns not found).
+   520→2026-08-28T17:22:53.084Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/adapter-d1/dist/index-node.mjs
+   521→2026-08-28T17:22:53.085Z        [patch-prisma] ✅ Patched successfully.
+   522→2026-08-28T17:22:53.085Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/adapter-d1/dist/index-node.mjs
+   523→2026-08-28T17:22:53.086Z        [patch-prisma] No changes (already patched or patterns not found).
+   524→2026-08-28T17:22:53.086Z        [patch-prisma] Done. Patched 2 file(s).
+   525→2026-08-28T17:22:53.090Z        
+   526→2026-08-28T17:22:53.091Z        + @cloudflare/workers-types@5.20260817.1
+   527→2026-08-28T17:22:53.092Z        + @tailwindcss/postcss@4.1.18
+   528→2026-08-28T17:22:53.092Z        + @types/react@19.2.8
+   529→2026-08-28T17:22:53.092Z        + @types/react-dom@19.2.3
+   530→2026-08-28T17:22:53.092Z        + @types/web-push@3.6.4
+   531→2026-08-28T17:22:53.092Z        + bun-types@1.3.6
+   532→2026-08-28T17:22:53.092Z        + eslint@9.39.2
+   533→2026-08-28T17:22:53.092Z        + eslint-config-next@16.1.3
+   534→2026-08-28T17:22:53.092Z        + tailwindcss@4.1.18
+   535→2026-08-28T17:22:53.092Z        + tw-animate-css@1.4.0
+   536→2026-08-28T17:22:53.092Z        + typescript@5.9.3
+   537→2026-08-28T17:22:53.092Z        + wrangler@4.123.0
+   538→2026-08-28T17:22:53.093Z        + @dnd-kit/core@6.3.1
+   539→2026-08-28T17:22:53.093Z        + @dnd-kit/sortable@10.0.0
+   540→2026-08-28T17:22:53.093Z        + @dnd-kit/utilities@3.2.2
+   541→2026-08-28T17:22:53.093Z        + @hookform/resolvers@5.2.2
+   542→2026-08-28T17:22:53.093Z        + @mdxeditor/editor@3.52.3
+   543→2026-08-28T17:22:53.093Z        + @opennextjs/cloudflare@1.20.2
+   544→2026-08-28T17:22:53.093Z        + @prisma/adapter-d1@7.9.1
+   545→2026-08-28T17:22:53.093Z        + @prisma/client@6.19.2
+   546→2026-08-28T17:22:53.093Z        + @radix-ui/react-accordion@1.2.12
+   547→2026-08-28T17:22:53.093Z        + @radix-ui/react-alert-dialog@1.1.15
+   548→2026-08-28T17:22:53.093Z        + @radix-ui/react-aspect-ratio@1.1.8
+   549→2026-08-28T17:22:53.093Z        + @radix-ui/react-avatar@1.1.11
+   550→2026-08-28T17:22:53.093Z        + @radix-ui/react-checkbox@1.3.3
+   551→2026-08-28T17:22:53.093Z        + @radix-ui/react-collapsible@1.1.12
+   552→2026-08-28T17:22:53.093Z        + @radix-ui/react-context-menu@2.2.16
+   553→2026-08-28T17:22:53.093Z        + @radix-ui/react-dialog@1.1.15
+   554→2026-08-28T17:22:53.093Z        + @radix-ui/react-dropdown-menu@2.1.16
+   555→2026-08-28T17:22:53.093Z        + @radix-ui/react-hover-card@1.1.15
+   556→2026-08-28T17:22:53.093Z        + @radix-ui/react-label@2.1.8
+   557→2026-08-28T17:22:53.093Z        + @radix-ui/react-menubar@1.1.16
+   558→2026-08-28T17:22:53.093Z        + @radix-ui/react-navigation-menu@1.2.14
+   559→2026-08-28T17:22:53.093Z        + @radix-ui/react-popover@1.1.15
+   560→2026-08-28T17:22:53.093Z        + @radix-ui/react-progress@1.1.8
+   561→2026-08-28T17:22:53.093Z        + @radix-ui/react-radio-group@1.3.8
+   562→2026-08-28T17:22:53.093Z        + @radix-ui/react-scroll-area@1.2.10
+   563→2026-08-28T17:22:53.093Z        + @radix-ui/react-select@2.2.6
+   564→2026-08-28T17:22:53.094Z        + @radix-ui/react-separator@1.1.8
+   565→2026-08-28T17:22:53.094Z        + @radix-ui/react-slider@1.3.6
+   566→2026-08-28T17:22:53.094Z        + @radix-ui/react-slot@1.2.4
+   567→2026-08-28T17:22:53.094Z        + @radix-ui/react-switch@1.2.6
+   568→2026-08-28T17:22:53.094Z        + @radix-ui/react-tabs@1.1.13
+   569→2026-08-28T17:22:53.094Z        + @radix-ui/react-toast@1.2.15
+   570→2026-08-28T17:22:53.094Z        + @radix-ui/react-toggle@1.1.10
+   571→2026-08-28T17:22:53.094Z        + @radix-ui/react-toggle-group@1.1.11
+   572→2026-08-28T17:22:53.094Z        + @radix-ui/react-tooltip@1.2.8
+   573→2026-08-28T17:22:53.094Z        + @reactuses/core@6.1.9
+   574→2026-08-28T17:22:53.094Z        + @tanstack/react-query@5.90.19
+   575→2026-08-28T17:22:53.094Z        + @tanstack/react-table@8.21.3
+   576→2026-08-28T17:22:53.094Z        + class-variance-authority@0.7.1
+   577→2026-08-28T17:22:53.094Z        + clsx@2.1.1
+   578→2026-08-28T17:22:53.094Z        + cmdk@1.1.1
+   579→2026-08-28T17:22:53.094Z        + date-fns@4.1.0
+   580→2026-08-28T17:22:53.094Z        + embla-carousel-react@8.6.0
+   581→2026-08-28T17:22:53.094Z        + framer-motion@12.26.2
+   582→2026-08-28T17:22:53.094Z        + hls.js@1.7.0
+   583→2026-08-28T17:22:53.094Z        + input-otp@1.4.2
+   584→2026-08-28T17:22:53.095Z        + lucide-react@0.525.0
+   585→2026-08-28T17:22:53.095Z        + mpegts.js@1.8.2
+   586→2026-08-28T17:22:53.098Z        + next@16.1.3
+   587→2026-08-28T17:22:53.098Z        + next-auth@4.24.13
+   588→2026-08-28T17:22:53.098Z        + next-intl@4.7.0
+   589→2026-08-28T17:22:53.098Z        + next-themes@0.4.6
+   590→2026-08-28T17:22:53.098Z        + prisma@6.19.2
+   591→2026-08-28T17:22:53.098Z        + react@19.2.3
+   592→2026-08-28T17:22:53.098Z        + react-day-picker@9.13.0
+   593→2026-08-28T17:22:53.098Z        + react-dom@19.2.3
+   594→2026-08-28T17:22:53.098Z        + react-hook-form@7.71.1
+   595→2026-08-28T17:22:53.098Z        + react-markdown@10.1.0
+   596→2026-08-28T17:22:53.098Z        + react-resizable-panels@3.0.6
+   597→2026-08-28T17:22:53.098Z        + react-syntax-highlighter@15.6.6
+   598→2026-08-28T17:22:53.099Z        + recharts@2.15.4
+   599→2026-08-28T17:22:53.099Z        + sharp@0.34.5
+   600→2026-08-28T17:22:53.099Z        + socket.io-client@4.8.3
+   601→2026-08-28T17:22:53.099Z        + sonner@2.0.7
+   602→2026-08-28T17:22:53.099Z        + tailwind-merge@3.4.0
+   603→2026-08-28T17:22:53.099Z        + tailwindcss-animate@1.0.7
+   604→2026-08-28T17:22:53.099Z        + uuid@11.1.0
+   605→2026-08-28T17:22:53.099Z        + vaul@1.1.2
+   606→2026-08-28T17:22:53.099Z        + web-push@3.6.7
+   607→2026-08-28T17:22:53.099Z        + z-ai-web-dev-sdk@0.0.18
+   608→2026-08-28T17:22:53.099Z        + zod@4.3.5
+   609→2026-08-28T17:22:53.099Z        + zustand@5.0.10
+   610→2026-08-28T17:22:53.099Z        
+   611→2026-08-28T17:22:53.099Z        1128 packages installed [14.01s]
+   612→2026-08-28T17:22:53.229Z        Executing user build command: npm run build:cf
+   613→2026-08-28T17:22:53.691Z        
+   614→2026-08-28T17:22:53.691Z        > genztv@0.3.0 build:cf
+   615→2026-08-28T17:22:53.692Z        > prisma generate && node scripts/patch-prisma.mjs && opennextjs-cloudflare build
+   616→2026-08-28T17:22:53.692Z        
+   617→2026-08-28T17:22:54.721Z        Prisma schema loaded from prisma/schema.prisma
+   618→2026-08-28T17:22:54.725Z        warn Preview feature "driverAdapters" is deprecated. The functionality can be used without specifying it as a preview feature.
+   619→2026-08-28T17:22:54.968Z        
+   620→2026-08-28T17:22:54.968Z        ✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 101ms
+   621→2026-08-28T17:22:54.968Z        
+   622→2026-08-28T17:22:54.968Z        Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+   623→2026-08-28T17:22:54.968Z        
+   624→2026-08-28T17:22:54.968Z        Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+   625→2026-08-28T17:22:54.968Z        
+   626→2026-08-28T17:22:55.025Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/client/runtime/library.mjs
+   627→2026-08-28T17:22:55.028Z        [patch-prisma] No changes (already patched or patterns not found).
+   628→2026-08-28T17:22:55.028Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/client/runtime/library.mjs
+   629→2026-08-28T17:22:55.030Z        [patch-prisma] No changes (already patched or patterns not found).
+   630→2026-08-28T17:22:55.030Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/adapter-d1/dist/index-node.mjs
+   631→2026-08-28T17:22:55.031Z        [patch-prisma] No changes (already patched or patterns not found).
+   632→2026-08-28T17:22:55.031Z        [patch-prisma] Patching /opt/buildhome/repo/node_modules/@prisma/adapter-d1/dist/index-node.mjs
+   633→2026-08-28T17:22:55.032Z        [patch-prisma] No changes (already patched or patterns not found).
+   634→2026-08-28T17:22:55.032Z        [patch-prisma] Done. Patched 0 file(s).
+   635→2026-08-28T17:22:56.857Z        
+   636→2026-08-28T17:22:56.858Z        ┌─────────────────────────────┐
+   637→2026-08-28T17:22:56.858Z        │ OpenNext — Cloudflare build │
+   638→2026-08-28T17:22:56.858Z        └─────────────────────────────┘
+   639→2026-08-28T17:22:56.858Z        
+   640→2026-08-28T17:22:56.982Z        App directory: /opt/buildhome/repo
+   641→2026-08-28T17:22:56.982Z        Next.js version : 16.1.3
+   642→2026-08-28T17:22:56.983Z        @opennextjs/cloudflare version: 1.20.2
+   643→2026-08-28T17:22:56.983Z        @opennextjs/aws version: 4.1.0
+   644→2026-08-28T17:22:56.984Z        WARN workerd compatibility_date: 2025-09-23, consider updating your wrangler config to a more recent date to benefit from the latest features and fixes.
+   645→2026-08-28T17:22:56.985Z        
+   646→2026-08-28T17:22:56.985Z        ┌─────────────────────────────────┐
+   647→2026-08-28T17:22:56.985Z        │ OpenNext — Building Next.js app │
+   648→2026-08-28T17:22:56.985Z        └─────────────────────────────────┘
+   649→2026-08-28T17:22:56.985Z        
+   650→2026-08-28T17:22:57.104Z        $ next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/
+   651→2026-08-28T17:22:58.209Z        ▲ Next.js 16.1.3 (Turbopack)
+   652→2026-08-28T17:22:58.209Z        - Experiments (use with caution):
+   653→2026-08-28T17:22:58.209Z          · proxyClientMaxBodySize: "100mb"
+   654→2026-08-28T17:22:58.209Z          · serverActions
+   655→2026-08-28T17:22:58.209Z        
+   656→2026-08-28T17:22:58.220Z        ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+   657→2026-08-28T17:22:58.251Z          Creating an optimized production build ...
+   658→2026-08-28T17:23:21.632Z        ✓ Compiled successfully in 22.7s
+   659→2026-08-28T17:23:21.646Z          Skipping validation of types
+   660→2026-08-28T17:23:21.910Z          Collecting page data using 1 worker ...
+   661→2026-08-28T17:23:22.844Z        ⚠ You are using an experimental edge runtime, the API might change.
+   662→2026-08-28T17:23:22.860Z          Generating static pages using 1 worker (0/44) ...
+   663→2026-08-28T17:23:22.997Z          Generating static pages using 1 worker (11/44) 
+   664→2026-08-28T17:23:23.006Z          Generating static pages using 1 worker (22/44) 
+   665→2026-08-28T17:23:23.011Z          Generating static pages using 1 worker (33/44) 
+   666→2026-08-28T17:23:23.043Z        ✓ Generating static pages using 1 worker (44/44) in 183.5ms
+   667→2026-08-28T17:23:23.124Z          Finalizing page optimization ...
+   668→2026-08-28T17:23:24.029Z        
+   669→2026-08-28T17:23:24.033Z        Route (app)
+   670→2026-08-28T17:23:24.033Z        ┌ ○ /
+   671→2026-08-28T17:23:24.033Z        ├ ○ /_not-found
+   672→2026-08-28T17:23:24.033Z        ├ ƒ /api
+   673→2026-08-28T17:23:24.033Z        ├ ƒ /api/admin/live-viewers
+   674→2026-08-28T17:23:24.033Z        ├ ƒ /api/analytics/cleanup
+   675→2026-08-28T17:23:24.033Z        ├ ƒ /api/analytics/daily-reset
+   676→2026-08-28T17:23:24.033Z        ├ ƒ /api/analytics/dashboard
+   677→2026-08-28T17:23:24.034Z        ├ ƒ /api/analytics/heartbeat
+   678→2026-08-28T17:23:24.034Z        ├ ƒ /api/analytics/track
+   679→2026-08-28T17:23:24.034Z        ├ ƒ /api/auth/login
+   680→2026-08-28T17:23:24.034Z        ├ ƒ /api/auth/logout
+   681→2026-08-28T17:23:24.034Z        ├ ƒ /api/auth/verify
+   682→2026-08-28T17:23:24.034Z        ├ ƒ /api/categories
+   683→2026-08-28T17:23:24.034Z        ├ ƒ /api/categories/[id]
+   684→2026-08-28T17:23:24.034Z        ├ ƒ /api/channels
+   685→2026-08-28T17:23:24.034Z        ├ ƒ /api/channels/[id]
+   686→2026-08-28T17:23:24.034Z        ├ ƒ /api/channels/[id]/reactive-refresh
+   687→2026-08-28T17:23:24.034Z        ├ ƒ /api/channels/[id]/refresh
+   688→2026-08-28T17:23:24.034Z        ├ ƒ /api/channels/export
+   689→2026-08-28T17:23:24.034Z        ├ ƒ /api/channels/import-file
+   690→2026-08-28T17:23:24.035Z        ├ ƒ /api/channels/refresh-expired
+   691→2026-08-28T17:23:24.035Z        ├ ƒ /api/data
+   692→2026-08-28T17:23:24.035Z        ├ ƒ /api/data/import
+   693→2026-08-28T17:23:24.035Z        ├ ƒ /api/data/reset
+   694→2026-08-28T17:23:24.035Z        ├ ƒ /api/db-health
+   695→2026-08-28T17:23:24.035Z        ├ ƒ /api/feedback
+   696→2026-08-28T17:23:24.035Z        ├ ƒ /api/feedback/[id]
+   697→2026-08-28T17:23:24.035Z        ├ ƒ /api/fifalive
+   698→2026-08-28T17:23:24.035Z        ├ ƒ /api/fifalive/streams
+   699→2026-08-28T17:23:24.036Z        ├ ƒ /api/iframe-proxy
+   700→2026-08-28T17:23:24.036Z        ├ ƒ /api/m3u-parse
+   701→2026-08-28T17:23:24.036Z        ├ ƒ /api/matches
+   702→2026-08-28T17:23:24.036Z        ├ ƒ /api/matches/[id]
+   703→2026-08-28T17:23:24.036Z        ├ ƒ /api/matches/sync-statuses
+   704→2026-08-28T17:23:24.036Z        ├ ƒ /api/notifications
+   705→2026-08-28T17:23:24.036Z        ├ ƒ /api/notifications/[id]
+   706→2026-08-28T17:23:24.036Z        ├ ƒ /api/notifications/admin
+   707→2026-08-28T17:23:24.036Z        ├ ƒ /api/push/notifications
+   708→2026-08-28T17:23:24.038Z        ├ ƒ /api/push/notifications/[id]
+   709→2026-08-28T17:23:24.038Z        ├ ƒ /api/push/notify
+   710→2026-08-28T17:23:24.039Z        ├ ƒ /api/push/subscribe
+   711→2026-08-28T17:23:24.039Z        ├ ƒ /api/push/subscribers
+   712→2026-08-28T17:23:24.039Z        ├ ƒ /api/push/unsubscribe
+   713→2026-08-28T17:23:24.039Z        ├ ƒ /api/push/vapid-key
+   714→2026-08-28T17:23:24.039Z        ├ ƒ /api/resolve-fifalive
+   715→2026-08-28T17:23:24.039Z        ├ ƒ /api/seed
+   716→2026-08-28T17:23:24.039Z        ├ ƒ /api/settings
+   717→2026-08-28T17:23:24.039Z        ├ ƒ /api/settings/security
+   718→2026-08-28T17:23:24.039Z        ├ ƒ /api/stream-proxy
+   719→2026-08-28T17:23:24.040Z        ├ ƒ /api/transcode
+   720→2026-08-28T17:23:24.040Z        └ ƒ /api/transcode-stream
+   721→2026-08-28T17:23:24.040Z        
+   722→2026-08-28T17:23:24.040Z        
+   723→2026-08-28T17:23:24.040Z        ƒ Proxy (Middleware)
+   724→2026-08-28T17:23:24.040Z        
+   725→2026-08-28T17:23:24.040Z        ○  (Static)   prerendered as static content
+   726→2026-08-28T17:23:24.040Z        ƒ  (Dynamic)  server-rendered on demand
+   727→2026-08-28T17:23:24.040Z        
+   728→2026-08-28T17:23:24.131Z        
+   729→2026-08-28T17:23:24.132Z        ┌──────────────────────────────┐
+   730→2026-08-28T17:23:24.132Z        │ OpenNext — Generating bundle │
+   731→2026-08-28T17:23:24.132Z        └──────────────────────────────┘
+   732→2026-08-28T17:23:24.132Z        
+   733→2026-08-28T17:23:24.242Z        Bundling middleware function...
+   734→2026-08-28T17:23:24.323Z        Bundling static assets...
+   735→2026-08-28T17:23:24.331Z        Bundling cache assets...
+   736→2026-08-28T17:23:24.358Z        Building server function: default...
+   737→2026-08-28T17:23:28.550Z        Applying code patches: 3.234s
+   738→2026-08-28T17:23:28.947Z        # copyPackageTemplateFiles
+   739→2026-08-28T17:23:28.948Z        ⚙️ Bundling the OpenNext server...
+   740→2026-08-28T17:23:28.948Z        
+   741→2026-08-28T17:23:32.070Z        Worker saved in `.open-next/worker.js` 🚀
+   742→2026-08-28T17:23:32.071Z        
+   743→2026-08-28T17:23:32.071Z        OpenNext build complete.
+   744→2026-08-28T17:23:32.326Z        Success: Build command completed
+   745→2026-08-28T17:23:32.479Z        Executing user deploy command: npx wrangler deploy
+   746→2026-08-28T17:23:34.729Z        
+   747→2026-08-28T17:23:34.729Z         ⛅️ wrangler 4.123.0
+   748→2026-08-28T17:23:34.729Z        ────────────────────
+   749→2026-08-28T17:23:34.785Z        OpenNext project detected, calling `opennextjs-cloudflare deploy`
+   750→2026-08-28T17:23:38.731Z        
+   751→2026-08-28T17:23:38.733Z        ┌──────────────────────────────┐
+   752→2026-08-28T17:23:38.734Z        │ OpenNext — Cloudflare deploy │
+   753→2026-08-28T17:23:38.734Z        └──────────────────────────────┘
+   754→2026-08-28T17:23:38.734Z        
+   755→2026-08-28T17:23:39.212Z        Incremental cache does not need populating
+   756→2026-08-28T17:23:39.212Z        Tag cache does not need populating
+   757→2026-08-28T17:23:40.652Z        
+   758→2026-08-28T17:23:40.653Z         ⛅️ wrangler 4.123.0 (update available 4.127.1)
+   759→2026-08-28T17:23:40.653Z        ───────────────────────────────────────────────
+   760→2026-08-28T17:23:40.660Z        
+   761→2026-08-28T17:23:40.660Z        Cloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md
+   762→2026-08-28T17:23:43.394Z        🌀 Building list of assets...
+   763→2026-08-28T17:23:43.397Z        ✨ Read 86 files from the assets directory /opt/buildhome/repo/.open-next/assets
+   764→2026-08-28T17:23:43.461Z        🌀 Starting asset upload...
+   765→2026-08-28T17:23:44.345Z        🌀 Found 1 new or modified static asset to upload. Proceeding with upload...
+   766→2026-08-28T17:23:44.345Z        + /BUILD_ID
+   767→2026-08-28T17:23:44.895Z        Uploaded 1 of 1 asset
+   768→2026-08-28T17:23:44.896Z        ✨ Success! Uploaded 1 file (79 already uploaded) (0.55 sec)
+   769→2026-08-28T17:23:44.896Z        
+   770→2026-08-28T17:23:45.379Z        Total Upload: 10334.72 KiB / gzip: 2456.70 KiB
+   771→2026-08-28T17:23:46.536Z        Your Worker has access to the following bindings:
+   772→2026-08-28T17:23:46.537Z        Binding                                              Resource                  
+   773→2026-08-28T17:23:46.537Z        env.ASSETS                                           Assets                    
+   774→2026-08-28T17:23:46.537Z        env.CF_DEPLOY ("true")                               Environment Variable      
+   775→2026-08-28T17:23:46.537Z        env.ADMIN_PASSWORD ("Ronnie7700")                    Environment Variable      
+   776→2026-08-28T17:23:46.537Z        env.NEXTAUTH_SECRET ("change-me-in-production")      Environment Variable      
+   777→2026-08-28T17:23:46.537Z        
+   778→2026-08-28T17:23:46.546Z        
+   779→2026-08-28T17:23:46.641Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   780→2026-08-28T17:23:46.641Z        
+   781→2026-08-28T17:23:46.641Z            .open-next/server-functions/default/handler.mjs:1216:262310:
+   782→2026-08-28T17:23:46.641Z              1216 │ ...ata:{...i3,placement:g3}}},options:[c10,d10]},F2&&{name:"shif...
+   783→2026-08-28T17:23:46.641Z                   ╵                               ~~~~~~~
+   784→2026-08-28T17:23:46.641Z        
+   785→2026-08-28T17:23:46.641Z          The original key "options" is here:
+   786→2026-08-28T17:23:46.641Z        
+   787→2026-08-28T17:23:46.641Z            .open-next/server-functions/default/handler.mjs:1216:262011:
+   788→2026-08-28T17:23:46.641Z              1216 │ ...middleware:[{name:"offset",options:e2=c10={mainAxis:B2+V2,ali...
+   789→2026-08-28T17:23:46.641Z                   ╵                               ~~~~~~~
+   790→2026-08-28T17:23:46.641Z        
+   791→2026-08-28T17:23:46.642Z        
+   792→2026-08-28T17:23:46.642Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   793→2026-08-28T17:23:46.642Z        
+   794→2026-08-28T17:23:46.642Z            .open-next/server-functions/default/handler.mjs:1216:263867:
+   795→2026-08-28T17:23:46.642Z              1216 │ ...abled:{[m3]:e3,[l3]:f3}}}},options:[i2,j2]},F2&&{name:"flip",...
+   796→2026-08-28T17:23:46.642Z                   ╵                               ~~~~~~~
+   797→2026-08-28T17:23:46.642Z        
+   798→2026-08-28T17:23:46.642Z          The original key "options" is here:
+   799→2026-08-28T17:23:46.642Z        
+   800→2026-08-28T17:23:46.642Z            .open-next/server-functions/default/handler.mjs:1216:262347:
+   801→2026-08-28T17:23:46.643Z              1216 │ ...10,d10]},F2&&{name:"shift",options:k2=i2={mainAxis:!0,crossAx...
+   802→2026-08-28T17:23:46.643Z                   ╵                               ~~~~~~~
+   803→2026-08-28T17:23:46.643Z        
+   804→2026-08-28T17:23:46.643Z        
+   805→2026-08-28T17:23:46.643Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   806→2026-08-28T17:23:46.643Z        
+   807→2026-08-28T17:23:46.643Z            .open-next/server-functions/default/handler.mjs:1216:265917:
+   808→2026-08-28T17:23:46.643Z              1216 │ ...{placement:c12}}}return{}},options:[l2,m2]},{name:"size",opti...
+   809→2026-08-28T17:23:46.643Z                   ╵                               ~~~~~~~
+   810→2026-08-28T17:23:46.643Z        
+   811→2026-08-28T17:23:46.643Z          The original key "options" is here:
+   812→2026-08-28T17:23:46.643Z        
+   813→2026-08-28T17:23:46.643Z            .open-next/server-functions/default/handler.mjs:1216:263901:
+   814→2026-08-28T17:23:46.643Z              1216 │ ...:[i2,j2]},F2&&{name:"flip",options:n2=l2={...Z2},async fn(a11...
+   815→2026-08-28T17:23:46.643Z                   ╵                               ~~~~~~~
+   816→2026-08-28T17:23:46.643Z        
+   817→2026-08-28T17:23:46.644Z        
+   818→2026-08-28T17:23:46.644Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   819→2026-08-28T17:23:46.644Z        
+   820→2026-08-28T17:23:46.644Z            .open-next/server-functions/default/handler.mjs:1216:267332:
+   821→2026-08-28T17:23:46.644Z              1216 │ ...ght?{reset:{rects:!0}}:{}},options:[o2,r2]},R2&&{name:"arrow"...
+   822→2026-08-28T17:23:46.644Z                   ╵                               ~~~~~~~
+   823→2026-08-28T17:23:46.644Z        
+   824→2026-08-28T17:23:46.644Z          The original key "options" is here:
+   825→2026-08-28T17:23:46.644Z        
+   826→2026-08-28T17:23:46.644Z            .open-next/server-functions/default/handler.mjs:1216:265947:
+   827→2026-08-28T17:23:46.645Z              1216 │ ...ions:[l2,m2]},{name:"size",options:s2=o2={...Z2,apply:({eleme...
+   828→2026-08-28T17:23:46.645Z                   ╵                               ~~~~~~~
+   829→2026-08-28T17:23:46.645Z        
+   830→2026-08-28T17:23:46.645Z        
+   831→2026-08-28T17:23:46.645Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   832→2026-08-28T17:23:46.645Z        
+   833→2026-08-28T17:23:46.645Z            .open-next/server-functions/default/handler.mjs:1216:267638:
+   834→2026-08-28T17:23:46.645Z              1216 │ ...,padding:c11}).fn(a11):{}},options:[t2,u2]},dS({arrowWidth:U2...
+   835→2026-08-28T17:23:46.645Z                   ╵                               ~~~~~~~
+   836→2026-08-28T17:23:46.645Z        
+   837→2026-08-28T17:23:46.645Z          The original key "options" is here:
+   838→2026-08-28T17:23:46.645Z        
+   839→2026-08-28T17:23:46.646Z            .open-next/server-functions/default/handler.mjs:1216:267367:
+   840→2026-08-28T17:23:46.646Z              1216 │ ...[o2,r2]},R2&&{name:"arrow",options:v2=t2={element:R2,padding:...
+   841→2026-08-28T17:23:46.646Z                   ╵                               ~~~~~~~
+   842→2026-08-28T17:23:46.646Z        
+   843→2026-08-28T17:23:46.646Z        
+   844→2026-08-28T17:23:46.647Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   845→2026-08-28T17:23:46.647Z        
+   846→2026-08-28T17:23:46.647Z            .open-next/server-functions/default/handler.mjs:1216:268164:
+   847→2026-08-28T17:23:46.650Z              1216 │ ...(c12)}}}default:return{}}},options:[w2,x2]}]}),[ad2,ae2]=dT(a...
+   848→2026-08-28T17:23:46.650Z                   ╵                               ~~~~~~~
+   849→2026-08-28T17:23:46.650Z        
+   850→2026-08-28T17:23:46.650Z          The original key "options" is here:
+   851→2026-08-28T17:23:46.650Z        
+   852→2026-08-28T17:23:46.650Z            .open-next/server-functions/default/handler.mjs:1216:267707:
+   853→2026-08-28T17:23:46.650Z              1216 │ ...ight:V2}),J2&&{name:"hide",options:y2=w2={strategy:"reference...
+   854→2026-08-28T17:23:46.650Z                   ╵                               ~~~~~~~
+   855→2026-08-28T17:23:46.650Z        
+   856→2026-08-28T17:23:46.650Z        
+   857→2026-08-28T17:23:46.651Z        ✘ [ERROR] A request to the Cloudflare API (/accounts/a2f4abe25a45a0b0523f8af1a09743d8/workers/scripts/genztv-cf-pages/versions) failed.
+   858→2026-08-28T17:23:46.651Z        
+   859→2026-08-28T17:23:46.651Z          Uncaught Error: No such module "node:fs".
+   860→2026-08-28T17:23:46.654Z            imported from "worker.js"
+   861→2026-08-28T17:23:46.654Z           [code: 10021]
+   862→2026-08-28T17:23:46.654Z          To learn more about this error, visit: https://developers.cloudflare.com/workers/observability/errors/#validation-errors-10021
+   863→2026-08-28T17:23:46.654Z        
+   864→2026-08-28T17:23:46.654Z          
+   865→2026-08-28T17:23:46.654Z          If you think this is a bug, please open an issue at: https://github.com/cloudflare/workers-sdk/issues/new/choose
+   866→2026-08-28T17:23:46.655Z        
+   867→2026-08-28T17:23:46.655Z        
+   868→2026-08-28T17:23:46.655Z        🪵  Logs were written to "/opt/buildhome/.config/.wrangler/logs/wrangler-2026-08-28_17-23-40_179.log"
+   869→2026-08-28T17:23:46.655Z        ERROR Wrangler deploy command failed:
+   870→2026-08-28T17:23:46.655Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   871→2026-08-28T17:23:46.655Z        
+   872→2026-08-28T17:23:46.655Z            .open-next/server-functions/default/handler.mjs:1216:262310:
+   873→2026-08-28T17:23:46.655Z              1216 │ ...ata:{...i3,placement:g3}}},options:[c10,d10]},F2&&{name:"shif...
+   874→2026-08-28T17:23:46.655Z                   ╵                               ~~~~~~~
+   875→2026-08-28T17:23:46.656Z        
+   876→2026-08-28T17:23:46.656Z          The original key "options" is here:
+   877→2026-08-28T17:23:46.656Z        
+   878→2026-08-28T17:23:46.656Z            .open-next/server-functions/default/handler.mjs:1216:262011:
+   879→2026-08-28T17:23:46.656Z              1216 │ ...middleware:[{name:"offset",options:e2=c10={mainAxis:B2+V2,ali...
+   880→2026-08-28T17:23:46.656Z                   ╵                               ~~~~~~~
+   881→2026-08-28T17:23:46.656Z        
+   882→2026-08-28T17:23:46.656Z        
+   883→2026-08-28T17:23:46.656Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   884→2026-08-28T17:23:46.656Z        
+   885→2026-08-28T17:23:46.656Z            .open-next/server-functions/default/handler.mjs:1216:263867:
+   886→2026-08-28T17:23:46.656Z              1216 │ ...abled:{[m3]:e3,[l3]:f3}}}},options:[i2,j2]},F2&&{name:"flip",...
+   887→2026-08-28T17:23:46.657Z                   ╵                               ~~~~~~~
+   888→2026-08-28T17:23:46.657Z        
+   889→2026-08-28T17:23:46.657Z          The original key "options" is here:
+   890→2026-08-28T17:23:46.657Z        
+   891→2026-08-28T17:23:46.657Z            .open-next/server-functions/default/handler.mjs:1216:262347:
+   892→2026-08-28T17:23:46.657Z              1216 │ ...10,d10]},F2&&{name:"shift",options:k2=i2={mainAxis:!0,crossAx...
+   893→2026-08-28T17:23:46.657Z                   ╵                               ~~~~~~~
+   894→2026-08-28T17:23:46.657Z        
+   895→2026-08-28T17:23:46.657Z        
+   896→2026-08-28T17:23:46.657Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   897→2026-08-28T17:23:46.658Z        
+   898→2026-08-28T17:23:46.658Z            .open-next/server-functions/default/handler.mjs:1216:265917:
+   899→2026-08-28T17:23:46.658Z              1216 │ ...{placement:c12}}}return{}},options:[l2,m2]},{name:"size",opti...
+   900→2026-08-28T17:23:46.658Z                   ╵                               ~~~~~~~
+   901→2026-08-28T17:23:46.658Z        
+   902→2026-08-28T17:23:46.658Z          The original key "options" is here:
+   903→2026-08-28T17:23:46.658Z        
+   904→2026-08-28T17:23:46.663Z            .open-next/server-functions/default/handler.mjs:1216:263901:
+   905→2026-08-28T17:23:46.663Z              1216 │ ...:[i2,j2]},F2&&{name:"flip",options:n2=l2={...Z2},async fn(a11...
+   906→2026-08-28T17:23:46.663Z                   ╵                               ~~~~~~~
+   907→2026-08-28T17:23:46.663Z        
+   908→2026-08-28T17:23:46.663Z        
+   909→2026-08-28T17:23:46.663Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   910→2026-08-28T17:23:46.663Z        
+   911→2026-08-28T17:23:46.663Z            .open-next/server-functions/default/handler.mjs:1216:267332:
+   912→2026-08-28T17:23:46.663Z              1216 │ ...ght?{reset:{rects:!0}}:{}},options:[o2,r2]},R2&&{name:"arrow"...
+   913→2026-08-28T17:23:46.663Z                   ╵                               ~~~~~~~
+   914→2026-08-28T17:23:46.663Z        
+   915→2026-08-28T17:23:46.663Z          The original key "options" is here:
+   916→2026-08-28T17:23:46.664Z        
+   917→2026-08-28T17:23:46.664Z            .open-next/server-functions/default/handler.mjs:1216:265947:
+   918→2026-08-28T17:23:46.664Z              1216 │ ...ions:[l2,m2]},{name:"size",options:s2=o2={...Z2,apply:({eleme...
+   919→2026-08-28T17:23:46.664Z                   ╵                               ~~~~~~~
+   920→2026-08-28T17:23:46.664Z        
+   921→2026-08-28T17:23:46.664Z        
+   922→2026-08-28T17:23:46.664Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   923→2026-08-28T17:23:46.664Z        
+   924→2026-08-28T17:23:46.664Z            .open-next/server-functions/default/handler.mjs:1216:267638:
+   925→2026-08-28T17:23:46.664Z              1216 │ ...,padding:c11}).fn(a11):{}},options:[t2,u2]},dS({arrowWidth:U2...
+   926→2026-08-28T17:23:46.664Z                   ╵                               ~~~~~~~
+   927→2026-08-28T17:23:46.664Z        
+   928→2026-08-28T17:23:46.664Z          The original key "options" is here:
+   929→2026-08-28T17:23:46.664Z        
+   930→2026-08-28T17:23:46.665Z            .open-next/server-functions/default/handler.mjs:1216:267367:
+   931→2026-08-28T17:23:46.665Z              1216 │ ...[o2,r2]},R2&&{name:"arrow",options:v2=t2={element:R2,padding:...
+   932→2026-08-28T17:23:46.665Z                   ╵                               ~~~~~~~
+   933→2026-08-28T17:23:46.665Z        
+   934→2026-08-28T17:23:46.665Z        
+   935→2026-08-28T17:23:46.665Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+   936→2026-08-28T17:23:46.665Z        
+   937→2026-08-28T17:23:46.665Z            .open-next/server-functions/default/handler.mjs:1216:268164:
+   938→2026-08-28T17:23:46.665Z              1216 │ ...(c12)}}}default:return{}}},options:[w2,x2]}]}),[ad2,ae2]=dT(a...
+   939→2026-08-28T17:23:46.665Z                   ╵                               ~~~~~~~
+   940→2026-08-28T17:23:46.665Z        
+   941→2026-08-28T17:23:46.665Z          The original key "options" is here:
+   942→2026-08-28T17:23:46.665Z        
+   943→2026-08-28T17:23:46.665Z            .open-next/server-functions/default/handler.mjs:1216:267707:
+   944→2026-08-28T17:23:46.665Z              1216 │ ...ight:V2}),J2&&{name:"hide",options:y2=w2={strategy:"reference...
+   945→2026-08-28T17:23:46.665Z                   ╵                               ~~~~~~~
+   946→2026-08-28T17:23:46.665Z        
+   947→2026-08-28T17:23:46.665Z        
+   948→2026-08-28T17:23:46.665Z        ✘ [ERROR] A request to the Cloudflare API (/accounts/a2f4abe25a45a0b0523f8af1a09743d8/workers/scripts/genztv-cf-pages/versions) failed.
+   949→2026-08-28T17:23:46.666Z        
+   950→2026-08-28T17:23:46.666Z          Uncaught Error: No such module "node:fs".
+   951→2026-08-28T17:23:46.666Z            imported from "worker.js"
+   952→2026-08-28T17:23:46.666Z           [code: 10021]
+   953→2026-08-28T17:23:46.666Z          To learn more about this error, visit: https://developers.cloudflare.com/workers/observability/errors/#validation-errors-10021
+   954→2026-08-28T17:23:46.666Z        
+   955→2026-08-28T17:23:46.666Z          
+   956→2026-08-28T17:23:46.666Z          If you think this is a bug, please open an issue at: https://github.com/cloudflare/workers-sdk/issues/new/choose
+   957→2026-08-28T17:23:46.666Z        
+   958→2026-08-28T17:23:46.666Z        
+   959→2026-08-28T17:23:46.666Z        🪵  Logs were written to "/opt/buildhome/.config/.wrangler/logs/wrangler-2026-08-28_17-23-40_179.log"
+   960→2026-08-28T17:23:46.666Z        
+   961→2026-08-28T17:23:46.745Z        
+   962→2026-08-28T17:23:46.826Z        ✘ [ERROR] 
+   963→2026-08-28T17:23:46.826Z        
+   964→2026-08-28T17:23:46.826Z        
+   965→2026-08-28T17:23:46.827Z        If you think this is a bug then please create an issue at https://github.com/cloudflare/workers-sdk/issues/new/choose
+   966→2026-08-28T17:23:46.830Z        Note that there is a newer version of Wrangler available (4.127.1). Consider checking whether upgrading resolves this error.
+   967→2026-08-28T17:23:46.852Z        🪵  Logs were written to "/opt/buildhome/.config/.wrangler/logs/wrangler-2026-08-28_17-23-34_091.log"
+   968→2026-08-28T17:23:46.971Z        Failed: error occurred while running deploy command
+   969→2026-08-29T03:14:20.606Z        Applying code patches: 3.616s
+   970→2026-08-29T03:14:20.958Z        # copyPackageTemplateFiles
+   971→2026-08-29T03:14:20.960Z        ⚙️ Bundling the OpenNext server...
+   972→2026-08-29T03:14:20.960Z        
+   973→2026-08-29T03:14:23.295Z        Worker saved in `.open-next/worker.js` 🚀
+   974→2026-08-29T03:14:23.297Z        
+   975→2026-08-29T03:14:23.298Z        OpenNext build complete.
+   976→2026-08-29T03:14:23.832Z        Success: Build command completed
+   977→2026-08-29T03:14:24.024Z        Executing user deploy command: npx wrangler deploy
+   978→2026-08-29T03:14:26.314Z        
+   979→2026-08-29T03:14:26.314Z         ⛅️ wrangler 4.123.0
+   980→2026-08-29T03:14:26.314Z        ────────────────────
+   981→2026-08-29T03:14:26.365Z        OpenNext project detected, calling `opennextjs-cloudflare deploy`
+   982→2026-08-29T03:14:30.804Z        
+   983→2026-08-29T03:14:30.804Z        ┌──────────────────────────────┐
+   984→2026-08-29T03:14:30.804Z        │ OpenNext — Cloudflare deploy │
+   985→2026-08-29T03:14:30.805Z        └──────────────────────────────┘
+   986→2026-08-29T03:14:30.805Z        
+   987→2026-08-29T03:14:31.323Z        Incremental cache does not need populating
+   988→2026-08-29T03:14:31.325Z        Tag cache does not need populating
+   989→2026-08-29T03:14:33.396Z        
+   990→2026-08-29T03:14:33.396Z         ⛅️ wrangler 4.123.0 (update available 4.127.1)
+   991→2026-08-29T03:14:33.396Z        ───────────────────────────────────────────────
+   992→2026-08-29T03:14:33.410Z        
+   993→2026-08-29T03:14:33.411Z        Cloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md
+   994→2026-08-29T03:14:36.311Z        🌀 Building list of assets...
+   995→2026-08-29T03:14:36.315Z        ✨ Read 86 files from the assets directory /opt/buildhome/repo/.open-next/assets
+   996→2026-08-29T03:14:36.390Z        🌀 Starting asset upload...
+   997→2026-08-29T03:14:38.382Z        🌀 Found 1 new or modified static asset to upload. Proceeding with upload...
+   998→2026-08-29T03:14:38.382Z        + /BUILD_ID
+   999→2026-08-29T03:14:39.042Z        Uploaded 1 of 1 asset
+  1000→2026-08-29T03:14:39.042Z        ✨ Success! Uploaded 1 file (79 already uploaded) (0.66 sec)
+  1001→2026-08-29T03:14:39.042Z        
+  1002→2026-08-29T03:14:39.475Z        Total Upload: 10334.72 KiB / gzip: 2456.70 KiB
+  1003→2026-08-29T03:14:40.942Z        Your Worker has access to the following bindings:
+  1004→2026-08-29T03:14:40.943Z        Binding                                              Resource                  
+  1005→2026-08-29T03:14:40.943Z        env.ASSETS                                           Assets                    
+  1006→2026-08-29T03:14:40.943Z        env.CF_DEPLOY ("true")                               Environment Variable      
+  1007→2026-08-29T03:14:40.943Z        env.ADMIN_PASSWORD ("Ronnie7700")                    Environment Variable      
+  1008→2026-08-29T03:14:40.943Z        env.NEXTAUTH_SECRET ("change-me-in-production")      Environment Variable      
+  1009→2026-08-29T03:14:40.943Z        
+  1010→2026-08-29T03:14:40.954Z        
+  1011→2026-08-29T03:14:41.045Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+  1012→2026-08-29T03:14:41.046Z        
+  1013→2026-08-29T03:14:41.046Z            .open-next/server-functions/default/handler.mjs:1216:262310:
+  1014→2026-08-29T03:14:41.046Z              1216 │ ...ata:{...i3,placement:g3}}},options:[c10,d10]},F2&&{name:"shif...
+  1015→2026-08-29T03:14:41.046Z                   ╵                               ~~~~~~~
+  1016→2026-08-29T03:14:41.047Z        
+  1017→2026-08-29T03:14:41.047Z          The original key "options" is here:
+  1018→2026-08-29T03:14:41.047Z        
+  1019→2026-08-29T03:14:41.047Z            .open-next/server-functions/default/handler.mjs:1216:262011:
+  1020→2026-08-29T03:14:41.047Z              1216 │ ...middleware:[{name:"offset",options:e2=c10={mainAxis:B2+V2,ali...
+  1021→2026-08-29T03:14:41.047Z                   ╵                               ~~~~~~~
+  1022→2026-08-29T03:14:41.048Z        
+  1023→2026-08-29T03:14:41.048Z        
+  1024→2026-08-29T03:14:41.048Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+  1025→2026-08-29T03:14:41.052Z        
+  1026→2026-08-29T03:14:41.052Z            .open-next/server-functions/default/handler.mjs:1216:263867:
+  1027→2026-08-29T03:14:41.056Z              1216 │ ...abled:{[m3]:e3,[l3]:f3}}}},options:[i2,j2]},F2&&{name:"flip",...
+  1028→2026-08-29T03:14:41.056Z                   ╵                               ~~~~~~~
+  1029→2026-08-29T03:14:41.057Z        
+  1030→2026-08-29T03:14:41.057Z          The original key "options" is here:
+  1031→2026-08-29T03:14:41.057Z        
+  1032→2026-08-29T03:14:41.057Z            .open-next/server-functions/default/handler.mjs:1216:262347:
+  1033→2026-08-29T03:14:41.057Z              1216 │ ...10,d10]},F2&&{name:"shift",options:k2=i2={mainAxis:!0,crossAx...
+  1034→2026-08-29T03:14:41.057Z                   ╵                               ~~~~~~~
+  1035→2026-08-29T03:14:41.058Z        
+  1036→2026-08-29T03:14:41.058Z        
+  1037→2026-08-29T03:14:41.058Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+  1038→2026-08-29T03:14:41.058Z        
+  1039→2026-08-29T03:14:41.058Z            .open-next/server-functions/default/handler.mjs:1216:265917:
+  1040→2026-08-29T03:14:41.058Z              1216 │ ...{placement:c12}}}return{}},options:[l2,m2]},{name:"size",opti...
+  1041→2026-08-29T03:14:41.058Z                   ╵                               ~~~~~~~
+  1042→2026-08-29T03:14:41.058Z        
+  1043→2026-08-29T03:14:41.058Z          The original key "options" is here:
+  1044→2026-08-29T03:14:41.059Z        
+  1045→2026-08-29T03:14:41.059Z            .open-next/server-functions/default/handler.mjs:1216:263901:
+  1046→2026-08-29T03:14:41.059Z              1216 │ ...:[i2,j2]},F2&&{name:"flip",options:n2=l2={...Z2},async fn(a11...
+  1047→2026-08-29T03:14:41.059Z                   ╵                               ~~~~~~~
+  1048→2026-08-29T03:14:41.059Z        
+  1049→2026-08-29T03:14:41.059Z        
+  1050→2026-08-29T03:14:41.059Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+  1051→2026-08-29T03:14:41.059Z        
+  1052→2026-08-29T03:14:41.059Z            .open-next/server-functions/default/handler.mjs:1216:267332:
+  1053→2026-08-29T03:14:41.059Z              1216 │ ...ght?{reset:{rects:!0}}:{}},options:[o2,r2]},R2&&{name:"arrow"...
+  1054→2026-08-29T03:14:41.059Z                   ╵                               ~~~~~~~
+  1055→2026-08-29T03:14:41.059Z        
+  1056→2026-08-29T03:14:41.059Z          The original key "options" is here:
+  1057→2026-08-29T03:14:41.059Z        
+  1058→2026-08-29T03:14:41.059Z            .open-next/server-functions/default/handler.mjs:1216:265947:
+  1059→2026-08-29T03:14:41.059Z              1216 │ ...ions:[l2,m2]},{name:"size",options:s2=o2={...Z2,apply:({eleme...
+  1060→2026-08-29T03:14:41.059Z                   ╵                               ~~~~~~~
+  1061→2026-08-29T03:14:41.059Z        
+  1062→2026-08-29T03:14:41.059Z        
+  1063→2026-08-29T03:14:41.059Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+  1064→2026-08-29T03:14:41.060Z        
+  1065→2026-08-29T03:14:41.060Z            .open-next/server-functions/default/handler.mjs:1216:267638:
+  1066→2026-08-29T03:14:41.060Z              1216 │ ...,padding:c11}).fn(a11):{}},options:[t2,u2]},dS({arrowWidth:U2...
+  1067→2026-08-29T03:14:41.060Z                   ╵                               ~~~~~~~
+  1068→2026-08-29T03:14:41.060Z        
+  1069→2026-08-29T03:14:41.060Z          The original key "options" is here:
+  1070→2026-08-29T03:14:41.060Z        
+  1071→2026-08-29T03:14:41.060Z            .open-next/server-functions/default/handler.mjs:1216:267367:
+  1072→2026-08-29T03:14:41.060Z              1216 │ ...[o2,r2]},R2&&{name:"arrow",options:v2=t2={element:R2,padding:...
+  1073→2026-08-29T03:14:41.060Z                   ╵                               ~~~~~~~
+  1074→2026-08-29T03:14:41.060Z        
+  1075→2026-08-29T03:14:41.060Z        
+  1076→2026-08-29T03:14:41.060Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+  1077→2026-08-29T03:14:41.061Z        
+  1078→2026-08-29T03:14:41.061Z            .open-next/server-functions/default/handler.mjs:1216:268164:
+  1079→2026-08-29T03:14:41.061Z              1216 │ ...(c12)}}}default:return{}}},options:[w2,x2]}]}),[ad2,ae2]=dT(a...
+  1080→2026-08-29T03:14:41.061Z                   ╵                               ~~~~~~~
+  1081→2026-08-29T03:14:41.061Z        
+  1082→2026-08-29T03:14:41.061Z          The original key "options" is here:
+  1083→2026-08-29T03:14:41.061Z        
+  1084→2026-08-29T03:14:41.061Z            .open-next/server-functions/default/handler.mjs:1216:267707:
+  1085→2026-08-29T03:14:41.062Z              1216 │ ...ight:V2}),J2&&{name:"hide",options:y2=w2={strategy:"reference...
+  1086→2026-08-29T03:14:41.062Z                   ╵                               ~~~~~~~
+  1087→2026-08-29T03:14:41.062Z        
+  1088→2026-08-29T03:14:41.062Z        
+  1089→2026-08-29T03:14:41.062Z        ✘ [ERROR] A request to the Cloudflare API (/accounts/a2f4abe25a45a0b0523f8af1a09743d8/workers/scripts/genztv-cf-pages/versions) failed.
+  1090→2026-08-29T03:14:41.062Z        
+  1091→2026-08-29T03:14:41.062Z          Uncaught Error: No such module "node:fs".
+  1092→2026-08-29T03:14:41.062Z            imported from "worker.js"
+  1093→2026-08-29T03:14:41.063Z           [code: 10021]
+  1094→2026-08-29T03:14:41.063Z          To learn more about this error, visit: https://developers.cloudflare.com/workers/observability/errors/#validation-errors-10021
+  1095→2026-08-29T03:14:41.063Z        
+  1096→2026-08-29T03:14:41.063Z          
+  1097→2026-08-29T03:14:41.063Z          If you think this is a bug, please open an issue at: https://github.com/cloudflare/workers-sdk/issues/new/choose
+  1098→2026-08-29T03:14:41.063Z        
+  1099→2026-08-29T03:14:41.063Z        
+  1100→2026-08-29T03:14:41.063Z        🪵  Logs were written to "/opt/buildhome/.config/.wrangler/logs/wrangler-2026-08-29_03-14-32_721.log"
+  1101→2026-08-29T03:14:41.064Z        ERROR Wrangler deploy command failed:
+  1102→2026-08-29T03:14:41.064Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+  1103→2026-08-29T03:14:41.064Z        
+  1104→2026-08-29T03:14:41.064Z            .open-next/server-functions/default/handler.mjs:1216:262310:
+  1105→2026-08-29T03:14:41.064Z              1216 │ ...ata:{...i3,placement:g3}}},options:[c10,d10]},F2&&{name:"shif...
+  1106→2026-08-29T03:14:41.064Z                   ╵                               ~~~~~~~
+  1107→2026-08-29T03:14:41.064Z        
+  1108→2026-08-29T03:14:41.064Z          The original key "options" is here:
+  1109→2026-08-29T03:14:41.064Z        
+  1110→2026-08-29T03:14:41.064Z            .open-next/server-functions/default/handler.mjs:1216:262011:
+  1111→2026-08-29T03:14:41.064Z              1216 │ ...middleware:[{name:"offset",options:e2=c10={mainAxis:B2+V2,ali...
+  1112→2026-08-29T03:14:41.064Z                   ╵                               ~~~~~~~
+  1113→2026-08-29T03:14:41.064Z        
+  1114→2026-08-29T03:14:41.064Z        
+  1115→2026-08-29T03:14:41.064Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+  1116→2026-08-29T03:14:41.064Z        
+  1117→2026-08-29T03:14:41.065Z            .open-next/server-functions/default/handler.mjs:1216:263867:
+  1118→2026-08-29T03:14:41.065Z              1216 │ ...abled:{[m3]:e3,[l3]:f3}}}},options:[i2,j2]},F2&&{name:"flip",...
+  1119→2026-08-29T03:14:41.065Z                   ╵                               ~~~~~~~
+  1120→2026-08-29T03:14:41.065Z        
+  1121→2026-08-29T03:14:41.065Z          The original key "options" is here:
+  1122→2026-08-29T03:14:41.065Z        
+  1123→2026-08-29T03:14:41.065Z            .open-next/server-functions/default/handler.mjs:1216:262347:
+  1124→2026-08-29T03:14:41.065Z              1216 │ ...10,d10]},F2&&{name:"shift",options:k2=i2={mainAxis:!0,crossAx...
+  1125→2026-08-29T03:14:41.065Z                   ╵                               ~~~~~~~
+  1126→2026-08-29T03:14:41.065Z        
+  1127→2026-08-29T03:14:41.065Z        
+  1128→2026-08-29T03:14:41.065Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+  1129→2026-08-29T03:14:41.065Z        
+  1130→2026-08-29T03:14:41.065Z            .open-next/server-functions/default/handler.mjs:1216:265917:
+  1131→2026-08-29T03:14:41.065Z              1216 │ ...{placement:c12}}}return{}},options:[l2,m2]},{name:"size",opti...
+  1132→2026-08-29T03:14:41.065Z                   ╵                               ~~~~~~~
+  1133→2026-08-29T03:14:41.065Z        
+  1134→2026-08-29T03:14:41.066Z          The original key "options" is here:
+  1135→2026-08-29T03:14:41.066Z        
+  1136→2026-08-29T03:14:41.066Z            .open-next/server-functions/default/handler.mjs:1216:263901:
+  1137→2026-08-29T03:14:41.066Z              1216 │ ...:[i2,j2]},F2&&{name:"flip",options:n2=l2={...Z2},async fn(a11...
+  1138→2026-08-29T03:14:41.066Z                   ╵                               ~~~~~~~
+  1139→2026-08-29T03:14:41.066Z        
+  1140→2026-08-29T03:14:41.066Z        
+  1141→2026-08-29T03:14:41.066Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+  1142→2026-08-29T03:14:41.066Z        
+  1143→2026-08-29T03:14:41.066Z            .open-next/server-functions/default/handler.mjs:1216:267332:
+  1144→2026-08-29T03:14:41.066Z              1216 │ ...ght?{reset:{rects:!0}}:{}},options:[o2,r2]},R2&&{name:"arrow"...
+  1145→2026-08-29T03:14:41.066Z                   ╵                               ~~~~~~~
+  1146→2026-08-29T03:14:41.066Z        
+  1147→2026-08-29T03:14:41.066Z          The original key "options" is here:
+  1148→2026-08-29T03:14:41.066Z        
+  1149→2026-08-29T03:14:41.066Z            .open-next/server-functions/default/handler.mjs:1216:265947:
+  1150→2026-08-29T03:14:41.067Z              1216 │ ...ions:[l2,m2]},{name:"size",options:s2=o2={...Z2,apply:({eleme...
+  1151→2026-08-29T03:14:41.067Z                   ╵                               ~~~~~~~
+  1152→2026-08-29T03:14:41.067Z        
+  1153→2026-08-29T03:14:41.067Z        
+  1154→2026-08-29T03:14:41.067Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+  1155→2026-08-29T03:14:41.067Z        
+  1156→2026-08-29T03:14:41.067Z            .open-next/server-functions/default/handler.mjs:1216:267638:
+  1157→2026-08-29T03:14:41.067Z              1216 │ ...,padding:c11}).fn(a11):{}},options:[t2,u2]},dS({arrowWidth:U2...
+  1158→2026-08-29T03:14:41.067Z                   ╵                               ~~~~~~~
+  1159→2026-08-29T03:14:41.067Z        
+  1160→2026-08-29T03:14:41.067Z          The original key "options" is here:
+  1161→2026-08-29T03:14:41.067Z        
+  1162→2026-08-29T03:14:41.067Z            .open-next/server-functions/default/handler.mjs:1216:267367:
+  1163→2026-08-29T03:14:41.068Z              1216 │ ...[o2,r2]},R2&&{name:"arrow",options:v2=t2={element:R2,padding:...
+  1164→2026-08-29T03:14:41.068Z                   ╵                               ~~~~~~~
+  1165→2026-08-29T03:14:41.068Z        
+  1166→2026-08-29T03:14:41.068Z        
+  1167→2026-08-29T03:14:41.068Z        ▲ [WARNING] Duplicate key "options" in object literal [duplicate-object-key]
+  1168→2026-08-29T03:14:41.069Z        
+  1169→2026-08-29T03:14:41.070Z            .open-next/server-functions/default/handler.mjs:1216:268164:
+  1170→2026-08-29T03:14:41.070Z              1216 │ ...(c12)}}}default:return{}}},options:[w2,x2]}]}),[ad2,ae2]=dT(a...
+  1171→2026-08-29T03:14:41.070Z                   ╵                               ~~~~~~~
+  1172→2026-08-29T03:14:41.070Z        
+  1173→2026-08-29T03:14:41.070Z          The original key "options" is here:
+  1174→2026-08-29T03:14:41.070Z        
+  1175→2026-08-29T03:14:41.070Z            .open-next/server-functions/default/handler.mjs:1216:267707:
+  1176→2026-08-29T03:14:41.070Z              1216 │ ...ight:V2}),J2&&{name:"hide",options:y2=w2={strategy:"reference...
+  1177→2026-08-29T03:14:41.070Z                   ╵                               ~~~~~~~
+  1178→2026-08-29T03:14:41.070Z        
+  1179→2026-08-29T03:14:41.070Z        
+  1180→2026-08-29T03:14:41.070Z        ✘ [ERROR] A request to the Cloudflare API (/accounts/a2f4abe25a45a0b0523f8af1a09743d8/workers/scripts/genztv-cf-pages/versions) failed.
+  1181→2026-08-29T03:14:41.070Z        
+  1182→2026-08-29T03:14:41.070Z          Uncaught Error: No such module "node:fs".
+  1183→2026-08-29T03:14:41.070Z            imported from "worker.js"
+  1184→2026-08-29T03:14:41.070Z           [code: 10021]
+  1185→2026-08-29T03:14:41.071Z          To learn more about this error, visit: https://developers.cloudflare.com/workers/observability/errors/#validation-errors-10021
+  1186→2026-08-29T03:14:41.071Z        
+  1187→2026-08-29T03:14:41.071Z          
+  1188→2026-08-29T03:14:41.071Z          If you think this is a bug, please open an issue at: https://github.com/cloudflare/workers-sdk/issues/new/choose
+  1189→2026-08-29T03:14:41.071Z        
+  1190→2026-08-29T03:14:41.071Z        
+  1191→2026-08-29T03:14:41.071Z        🪵  Logs were written to "/opt/buildhome/.config/.wrangler/logs/wrangler-2026-08-29_03-14-32_721.log"
+  1192→2026-08-29T03:14:41.071Z        
+  1193→2026-08-29T03:14:41.147Z        
+  1194→2026-08-29T03:14:41.236Z        ✘ [ERROR] 
+  1195→2026-08-29T03:14:41.237Z        
+  1196→2026-08-29T03:14:41.237Z        
+  1197→2026-08-29T03:14:41.238Z        If you think this is a bug then please create an issue at https://github.com/cloudflare/workers-sdk/issues/new/choose
+  1198→2026-08-29T03:14:41.238Z        Note that there is a newer version of Wrangler available (4.127.1). Consider checking whether upgrading resolves this error.
+  1199→2026-08-29T03:14:41.266Z        🪵  Logs were written to "/opt/buildhome/.config/.wrangler/logs/wrangler-2026-08-29_03-14-25_748.log"
+  1200→2026-08-29T03:14:41.411Z        Failed: error occurred while running deploy command

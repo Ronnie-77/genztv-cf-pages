@@ -110,6 +110,22 @@ class ApiCache {
     this.deleteByPrefix('matches:')
   }
 
+  // ── App Notifications (in-app bell) ──
+
+  private static readonly TTL_NOTIFICATIONS = 30_000
+
+  getNotifications(cacheKey: string): unknown[] | null {
+    return this.get<unknown[]>(`notifications:${cacheKey}`)
+  }
+
+  setNotifications(cacheKey: string, data: unknown[]): void {
+    this.set(`notifications:${cacheKey}`, data, ApiCache.TTL_NOTIFICATIONS)
+  }
+
+  invalidateNotifications(): void {
+    this.deleteByPrefix('notifications:')
+  }
+
   // ── Analytics Dashboard ──
 
   getDashboard(): Record<string, unknown> | null {

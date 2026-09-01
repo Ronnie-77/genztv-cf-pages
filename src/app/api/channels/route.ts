@@ -1,62 +1,64 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getDb } from '@/lib/db'
+import { getDb, generateId } from '@/lib/db'
+import type { ChannelRow } from '@/lib/types'
+import { toBool } from '@/lib/types'
 import { requireAdminAuth } from '@/lib/auth'
 import { parseTokenExpiry } from '@/lib/token-refresh'
 import { apiCache } from '@/lib/cache'
 
 // GET /api/channels — list all channels (with optional filters)
 export async function GET(req: NextRequest) {
-
-      const db = await getDb()
   try {
+    const db = await getDb()
     const { searchParams } = new URL(req.url)
     const category = searchParams.get('category')
     const search = searchParams.get('search')
     const featured = searchParams.get('featured')
     const active = searchParams.get('active')
 
-    // Build cache key from query params
     const cacheKey = `channels:list:${category || 'all'}:${search || ''}:${featured || ''}:${active || 'true'}`
-
-    // Check cache first
     const cached = apiCache.getChannels(cacheKey)
-    if (cached) {
-      return NextResponse.json(cached)
-    }
+    if (cached) return NextResponse.json(cached)
 
-    const where: Record<string, unknown> = {}
-    // Support multi-category: category field stores comma-separated values (e.g., "sports,cricket")
-    // Using 'contains' so a channel with "sports,cricket" matches both 'sports' and 'cricket' filters
-    if (category && category !== 'all') where.category = { contains: category }
-    if (featured === 'true') where.isFeatured = true
-    // By default only show active channels, unless includeInactive=true (for admin)
+    // Build SQL WHERE clause
+    const conditions: string[] = []
+    const params: unknown[] = []
+
+    if (category && category !== 'all') {
+      conditions.push('category LIKE ?')
+      params.push(`%${category}%`)
+    }
+    if (featured === 'true') {
+      conditions.push('isFeatured = 1')
+    }
     if (active === 'all') {
-      // Show all channels regardless of active status
-    } else if (active !== 'false') {
-      where.isActive = true
+      // show all
+    } else if (active === 'false') {
+      conditions.push('isActive = 0')
+    } else {
+      conditions.push('isActive = 1')
     }
     if (search) {
-      where.OR = [
-        { name: { contains: search } },
-        { tags: { contains: search } },
-        { language: { contains: search } },
-        { country: { contains: search } },
-      ]
+      conditions.push('(name LIKE ? OR tags LIKE ? OR language LIKE ? OR country LIKE ?)')
+      const term = `%${search}%`
+      params.push(term, term, term, term)
     }
 
-    const channels = await db.channel.findMany({
-      where,
-      orderBy: [
-        { isFeatured: 'desc' },
-        { viewCount: 'desc' },
-        { name: 'asc' },
-      ],
-    })
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
+    const sql = `SELECT * FROM Channel ${whereClause} ORDER BY isFeatured DESC, viewCount DESC, name ASC`
 
-    // Cache the result
-    apiCache.setChannels(cacheKey, channels)
+    const channels = await db.all<ChannelRow>(sql, ...params)
 
-    return NextResponse.json(channels)
+    // Convert 0/1 to booleans for API response
+    const result = channels.map((c) => ({
+      ...c,
+      isFeatured: toBool(c.isFeatured),
+      isActive: toBool(c.isActive),
+      autoRefresh: toBool(c.autoRefresh),
+    }))
+
+    apiCache.setChannels(cacheKey, result)
+    return NextResponse.json(result)
   } catch (error) {
     console.error('Error fetching channels:', error)
     return NextResponse.json({ error: 'Failed to fetch channels' }, { status: 500 })
@@ -65,44 +67,66 @@ export async function GET(req: NextRequest) {
 
 // POST /api/channels — create a new channel (admin only)
 export async function POST(req: NextRequest) {
-
-      const db = await getDb()
   return requireAdminAuth(req, async () => {
-  try {
-    const body = await req.json()
-    const channel = await db.channel.create({
-      data: {
-        name: body.name,
-        logo: body.logo || '',
-        category: Array.isArray(body.category) ? body.category.filter(Boolean).join(',') : (body.category || 'entertainment'),
-        streamType: body.streamType || 'm3u',
-        streamUrl: body.streamUrl || '',
-        githubM3uPath: body.githubM3uPath || '',
-        language: body.language || '',
-        country: body.country || '',
-        tags: Array.isArray(body.tags) ? body.tags.join(',') : (body.tags || ''),
-        isFeatured: body.isFeatured || false,
-        isActive: body.isActive !== false,
-        // Token refresh automation
-        sourcePageUrl: body.sourcePageUrl || '',
-        refreshPattern: body.refreshPattern || '',
-        autoRefresh: body.autoRefresh === true,
-        // Auto-parse token expiry from the stream URL if present
-        tokenExpiresAt: body.streamUrl
-          ? (parseTokenExpiry(body.streamUrl).expiresAt
-            ? new Date(parseTokenExpiry(body.streamUrl).expiresAt as number)
-            : null)
-          : null,
-      },
-    })
+    try {
+      const db = await getDb()
+      const body = await req.json()
+      const id = generateId()
+      const now = new Date().toISOString()
 
-    // Invalidate channel caches
-    apiCache.invalidateChannels()
+      const category = Array.isArray(body.category)
+        ? body.category.filter(Boolean).join(',')
+        : body.category || 'entertainment'
+      const tags = Array.isArray(body.tags) ? body.tags.join(',') : body.tags || ''
 
-    return NextResponse.json(channel, { status: 201 })
-  } catch (error) {
-    console.error('Error creating channel:', error)
-    return NextResponse.json({ error: 'Failed to create channel' }, { status: 500 })
-  }
+      const tokenExpiry = body.streamUrl
+        ? parseTokenExpiry(body.streamUrl).expiresAt
+          ? new Date(parseTokenExpiry(body.streamUrl).expiresAt as number).toISOString()
+          : null
+        : null
+
+      await db.run(
+        `INSERT INTO Channel (id, name, logo, category, streamType, streamUrl, githubM3uPath, language, country, tags, isFeatured, isActive, viewCount, createdAt, updatedAt, sourcePageUrl, refreshPattern, tokenExpiresAt, lastRefreshedAt, autoRefresh, refreshError)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        id,
+        body.name,
+        body.logo || '',
+        category,
+        body.streamType || 'm3u',
+        body.streamUrl || '',
+        body.githubM3uPath || '',
+        body.language || '',
+        body.country || '',
+        tags,
+        body.isFeatured ? 1 : 0,
+        body.isActive !== false ? 1 : 0,
+        0,
+        now,
+        now,
+        body.sourcePageUrl || '',
+        body.refreshPattern || '',
+        tokenExpiry,
+        null,
+        body.autoRefresh === true ? 1 : 0,
+        ''
+      )
+
+      apiCache.invalidateChannels()
+
+      const channel = await db.first<ChannelRow>('SELECT * FROM Channel WHERE id = ?', id)
+      const result = channel
+        ? {
+            ...channel,
+            isFeatured: toBool(channel.isFeatured),
+            isActive: toBool(channel.isActive),
+            autoRefresh: toBool(channel.autoRefresh),
+          }
+        : null
+
+      return NextResponse.json(result, { status: 201 })
+    } catch (error) {
+      console.error('Error creating channel:', error)
+      return NextResponse.json({ error: 'Failed to create channel' }, { status: 500 })
+    }
   })
 }

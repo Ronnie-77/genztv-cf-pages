@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
-import { requireAdminAuth } from '@/lib/auth'
+import type { ChannelRow } from '@/lib/types'
 import { refreshStreamUrl, parseTokenExpiry, isTokenExpiringSoon } from '@/lib/token-refresh'
+import { requireAdminAuth } from '@/lib/auth'
 
 /**
  * POST /api/channels/refresh-expired
@@ -26,9 +27,26 @@ export const maxDuration = 300 // 5 min — batch refresh can take a while
 
 const CRON_SECRET = process.env.CRON_REFRESH_SECRET || ''
 
-export async function POST(req: NextRequest) {
+type CandidateRow = Pick<
+  ChannelRow,
+  'id' | 'name' | 'sourcePageUrl' | 'refreshPattern' | 'streamUrl' | 'tokenExpiresAt'
+>
 
-      const db = await getDb()
+const CANDIDATE_COLUMNS =
+  'id, name, sourcePageUrl, refreshPattern, streamUrl, tokenExpiresAt'
+
+type StatusRow = Pick<
+  ChannelRow,
+  'id' | 'name' | 'streamType' | 'sourcePageUrl' | 'tokenExpiresAt' | 'lastRefreshedAt' | 'refreshError'
+>
+
+const STATUS_COLUMNS =
+  'id, name, streamType, sourcePageUrl, tokenExpiresAt, lastRefreshedAt, refreshError'
+
+const CANDIDATE_WHERE =
+  'autoRefresh = 1 AND sourcePageUrl IS NOT NULL AND sourcePageUrl != ? AND isActive = 1'
+
+export async function POST(req: NextRequest) {
   // Auth: either admin OR valid cron secret
   const cronSecret = req.headers.get('x-cron-secret')
   const isCron = CRON_SECRET && cronSecret === CRON_SECRET
@@ -41,25 +59,15 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const db = await getDb()
     const body = await req.json().catch(() => ({}))
     const forceAll = Boolean(body?.forceAll)
 
-    // Find candidate channels: autoRefresh=true + has sourcePageUrl
-    const candidates = await db.channel.findMany({
-      where: {
-        autoRefresh: true,
-        sourcePageUrl: { not: '' },
-        isActive: true,
-      },
-      select: {
-        id: true,
-        name: true,
-        sourcePageUrl: true,
-        refreshPattern: true,
-        streamUrl: true,
-        tokenExpiresAt: true,
-      },
-    })
+    // Find candidate channels: autoRefresh=true + has sourcePageUrl + isActive=true
+    const candidates = await db.all<CandidateRow>(
+      `SELECT ${CANDIDATE_COLUMNS} FROM Channel WHERE ${CANDIDATE_WHERE}`,
+      ''
+    )
 
     // Filter to "expiring soon" unless forceAll
     const toRefresh = forceAll
@@ -67,7 +75,7 @@ export async function POST(req: NextRequest) {
       : candidates.filter((c) => {
           // Refresh if: no expiry known (might be expired), OR expiring soon, OR already expired
           if (!c.tokenExpiresAt) return true // unknown — be safe, try
-          return isTokenExpiringSoon(c.tokenExpiresAt)
+          return isTokenExpiringSoon(new Date(c.tokenExpiresAt))
         })
 
     console.log(
@@ -91,20 +99,24 @@ export async function POST(req: NextRequest) {
         const result = await refreshStreamUrl(ch.sourcePageUrl, {
           pattern: ch.refreshPattern || undefined,
         })
+        const now = new Date().toISOString()
 
         if (result.success && result.newStreamUrl) {
           const newUrl = result.newStreamUrl
           if (/\.m3u8?(\?|$)/i.test(newUrl)) {
             const parsed = parseTokenExpiry(newUrl)
-            await db.channel.update({
-              where: { id: ch.id },
-              data: {
-                streamUrl: newUrl,
-                tokenExpiresAt: parsed.expiresAt ? new Date(parsed.expiresAt) : null,
-                lastRefreshedAt: new Date(),
-                refreshError: '',
-              },
-            })
+            const tokenExpiresAt = parsed.expiresAt
+              ? new Date(parsed.expiresAt).toISOString()
+              : null
+            await db.run(
+              'UPDATE Channel SET streamUrl = ?, tokenExpiresAt = ?, lastRefreshedAt = ?, refreshError = ?, updatedAt = ? WHERE id = ?',
+              newUrl,
+              tokenExpiresAt,
+              now,
+              '',
+              now,
+              ch.id
+            )
             successCount++
             results.push({
               id: ch.id,
@@ -115,10 +127,12 @@ export async function POST(req: NextRequest) {
             })
             console.log(`[refresh-expired] ✅ ${ch.name}: refreshed (${result.source})`)
           } else {
-            await db.channel.update({
-              where: { id: ch.id },
-              data: { refreshError: `Not m3u8: ${newUrl.slice(0, 100)}` },
-            })
+            await db.run(
+              'UPDATE Channel SET refreshError = ?, updatedAt = ? WHERE id = ?',
+              `Not m3u8: ${newUrl.slice(0, 100)}`,
+              now,
+              ch.id
+            )
             failedCount++
             results.push({
               id: ch.id,
@@ -128,10 +142,12 @@ export async function POST(req: NextRequest) {
             })
           }
         } else {
-          await db.channel.update({
-            where: { id: ch.id },
-            data: { refreshError: result.message },
-          })
+          await db.run(
+            'UPDATE Channel SET refreshError = ?, updatedAt = ? WHERE id = ?',
+            result.message,
+            now,
+            ch.id
+          )
           failedCount++
           results.push({
             id: ch.id,
@@ -143,10 +159,13 @@ export async function POST(req: NextRequest) {
         }
       } catch (err) {
         const msg = err instanceof Error ? err.message : 'Unknown error'
-        await db.channel.update({
-          where: { id: ch.id },
-          data: { refreshError: msg },
-        })
+        const now = new Date().toISOString()
+        await db.run(
+          'UPDATE Channel SET refreshError = ?, updatedAt = ? WHERE id = ?',
+          msg,
+          now,
+          ch.id
+        )
         failedCount++
         results.push({ id: ch.id, name: ch.name, success: false, message: msg })
       }
@@ -162,7 +181,10 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('[refresh-expired] Error:', error)
     return NextResponse.json(
-      { error: 'Failed to refresh expired channels', detail: error instanceof Error ? error.message : 'Unknown' },
+      {
+        error: 'Failed to refresh expired channels',
+        detail: error instanceof Error ? error.message : 'Unknown',
+      },
       { status: 500 }
     )
   }
@@ -175,33 +197,22 @@ export async function POST(req: NextRequest) {
  * Does NOT perform a refresh — just shows what would be refreshed.
  */
 export async function GET(req: NextRequest) {
-
-      const db = await getDb()
   return requireAdminAuth(req, async () => {
     try {
-      const channels = await db.channel.findMany({
-        where: {
-          autoRefresh: true,
-          sourcePageUrl: { not: '' },
-          isActive: true,
-        },
-        select: {
-          id: true,
-          name: true,
-          streamType: true,
-          sourcePageUrl: true,
-          tokenExpiresAt: true,
-          lastRefreshedAt: true,
-          refreshError: true,
-        },
-        orderBy: { tokenExpiresAt: 'asc' },
-      })
+      const db = await getDb()
+      const channels = await db.all<StatusRow>(
+        `SELECT ${STATUS_COLUMNS} FROM Channel WHERE ${CANDIDATE_WHERE} ORDER BY tokenExpiresAt ASC`,
+        ''
+      )
 
-      const annotated = channels.map((c) => ({
-        ...c,
-        needsRefresh: !c.tokenExpiresAt || isTokenExpiringSoon(c.tokenExpiresAt),
-        isExpired: c.tokenExpiresAt ? c.tokenExpiresAt.getTime() < Date.now() : false,
-      }))
+      const annotated = channels.map((c) => {
+        const expiryMs = c.tokenExpiresAt ? new Date(c.tokenExpiresAt).getTime() : null
+        return {
+          ...c,
+          needsRefresh: !c.tokenExpiresAt || isTokenExpiringSoon(new Date(c.tokenExpiresAt)),
+          isExpired: expiryMs !== null ? expiryMs < Date.now() : false,
+        }
+      })
 
       return NextResponse.json({
         total: annotated.length,

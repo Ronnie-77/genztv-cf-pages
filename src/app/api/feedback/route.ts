@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getDb } from '@/lib/db'
+import { getDb, generateId } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
+import type { FeedbackRow } from '@/lib/types'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // /api/feedback
@@ -33,8 +34,6 @@ const rateLimitMap = new Map<string, number>()
 const RATE_LIMIT_MS = 30_000
 
 export async function POST(req: NextRequest) {
-
-      const db = await getDb()
   try {
     // Rate limit check
     const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown'
@@ -76,24 +75,34 @@ export async function POST(req: NextRequest) {
     const ua = req.headers.get('user-agent') || ''
     const { device, browser } = parseUserAgent(ua)
 
-    const feedback = await db.feedback.create({
-      data: {
-        category: finalCategory,
-        email,
-        subject,
-        message,
-        page: typeof b.page === 'string' ? b.page.slice(0, 500) : '',
-        userAgent: ua.slice(0, 500),
-        device,
-        browser,
-        status: 'new',
-      },
-    })
+    const db = await getDb()
+    const id = generateId()
+    const nowIso = new Date().toISOString()
+    const page = typeof b.page === 'string' ? b.page.slice(0, 500) : ''
+
+    await db.run(
+      `INSERT INTO Feedback
+       (id, category, email, subject, message, page, userAgent, device, browser, status, adminNote, createdAt, updatedAt)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      id,
+      finalCategory,
+      email,
+      subject,
+      message,
+      page,
+      ua.slice(0, 500),
+      device,
+      browser,
+      'new',
+      '',
+      nowIso,
+      nowIso
+    )
 
     // Update rate limit
     rateLimitMap.set(ip, now)
 
-    return NextResponse.json({ success: true, id: feedback.id })
+    return NextResponse.json({ success: true, id })
   } catch (error) {
     console.error('[Feedback] POST error:', error)
     const message = error instanceof Error ? error.message : 'Unknown error'
@@ -102,8 +111,6 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-
-      const db = await getDb()
   try {
     // Admin only
     const authenticated = await isAdminAuthenticated(req)
@@ -111,10 +118,10 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const feedbacks = await db.feedback.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: 200, // limit to most recent 200
-    })
+    const db = await getDb()
+    const feedbacks = await db.all<FeedbackRow>(
+      'SELECT * FROM Feedback ORDER BY createdAt DESC LIMIT 200'
+    )
 
     return NextResponse.json(feedbacks)
   } catch (error) {

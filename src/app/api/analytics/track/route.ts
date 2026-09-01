@@ -1,51 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getDb } from '@/lib/db'
+import { getDb, generateId } from '@/lib/db'
 import { parseUserAgent } from '@/lib/ua-parser'
 import { lookupCountry, countryFromHeaders } from '@/lib/geo'
 import { apiCache } from '@/lib/cache'
+import type { DailyStatRow } from '@/lib/types'
 
 // POST /api/analytics/track — track a page view
+//
 // Records REAL visitor data only: IP, User-Agent → device + browser,
 // IP → country (via ip-api.com), page, channel, referrer.
-// Also maintains DailyStat.peakVisitors = max concurrent online (5-min window)
+// Also maintains DailyStat.peakVisitors = max concurrent online (60s window)
 // seen so far today.
 //
-// DEFENSIVE DESIGN:
-// The Task-17 schema added `device`, `browser`, `country` (PageView/VisitorSession)
-// and `peakVisitors`, `topDevices`, `topBrowsers` (DailyStat). If a developer's
-// LOCAL machine hasn't run `bun run db:push` yet, the local Prisma client /
-// SQLite DB won't know these fields and every write that includes them would
-// throw "Unknown field `device` ..." and return 500 — breaking ALL tracking.
-// To avoid that, every write below is attempted with the full (rich) payload
-// first, and on a schema-mismatch error we retry with a minimal payload that
-// only contains the original (pre-Task-17) fields. This way tracking NEVER
-// breaks, even on an unmigrated local DB.
-
-function isSchemaMismatchError(err: unknown): boolean {
-  const msg = err instanceof Error ? err.message : String(err)
-  return (
-    msg.includes('Unknown field') ||
-    msg.includes('does not exist') ||
-    msg.includes('unknown column') ||
-    msg.includes('no such column')
-  )
-}
-
-// Fields introduced in Task-17. Stripped from the payload on the fallback path.
-const NEW_FIELDS = ['device', 'browser', 'country', 'peakVisitors', 'topDevices', 'topBrowsers']
-
-// Fields introduced for live-viewer tracking (PageView.matchId,
-// VisitorSession.currentChannelId / currentMatchId). Stripped from the
-// payload on the fallback path when the local DB hasn't been migrated yet.
-const LIVE_VIEWER_FIELDS = ['matchId', 'currentChannelId', 'currentMatchId']
-
-function stripNewFields<T extends Record<string, unknown>>(data: T): Partial<T> {
-  const out: Record<string, unknown> = {}
-  for (const [k, v] of Object.entries(data)) {
-    if (!NEW_FIELDS.includes(k) && !LIVE_VIEWER_FIELDS.includes(k)) out[k] = v
-  }
-  return out as Partial<T>
-}
+// All writes use raw D1 SQL. Schema fields (device/browser/country/matchId/
+// currentChannelId/currentMatchId/peakVisitors/topDevices/topBrowsers) are
+// all present in prisma/d1-schema.sql — no defensive fallback needed.
 
 // ── Auto-Cleanup ──
 // Probabilistically triggers analytics data cleanup (1% chance per request).
@@ -72,22 +41,18 @@ async function triggerAutoCleanup() {
       _lastResetDate = todayStr
 
       // Delete all PageViews (detailed data not needed — DailyStat has counts)
-      db.pageView.deleteMany({}).then((result) => {
-        if (result.count > 0) {
-          console.log(`[Analytics Daily Reset] Deleted ${result.count} PageViews`)
-        }
-      }).catch((err) => {
-        console.error('[Analytics Daily Reset] PageView deletion failed:', err)
-      })
+      db.run('DELETE FROM PageView')
+        .then(() => console.log('[Analytics Daily Reset] PageView table cleared'))
+        .catch((err) => {
+          console.error('[Analytics Daily Reset] PageView deletion failed:', err)
+        })
 
       // Delete all VisitorSessions (stale — new day)
-      db.visitorSession.deleteMany({}).then((result) => {
-        if (result.count > 0) {
-          console.log(`[Analytics Daily Reset] Deleted ${result.count} VisitorSessions`)
-        }
-      }).catch((err) => {
-        console.error('[Analytics Daily Reset] VisitorSession deletion failed:', err)
-      })
+      db.run('DELETE FROM VisitorSession')
+        .then(() => console.log('[Analytics Daily Reset] VisitorSession table cleared'))
+        .catch((err) => {
+          console.error('[Analytics Daily Reset] VisitorSession deletion failed:', err)
+        })
 
       // Invalidate all caches
       try { apiCache.clear() } catch { /* ignore */ }
@@ -101,43 +66,32 @@ async function triggerAutoCleanup() {
     }
 
     // ── Old Data Cleanup (fallback for non-reset days) ──
-    const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
-    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+    const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000).toISOString()
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()
 
-    db.pageView.deleteMany({
-      where: { createdAt: { lt: ninetyDaysAgo } },
-    }).then((result) => {
-      if (result.count > 0) {
-        console.log(`[Analytics Auto-Cleanup] Deleted ${result.count} old PageViews`)
-      }
-    }).catch((err) => {
-      console.error('[Analytics Auto-Cleanup] PageView cleanup failed:', err)
-    })
+    db.run('DELETE FROM PageView WHERE createdAt < ?', ninetyDaysAgo)
+      .catch((err) => {
+        console.error('[Analytics Auto-Cleanup] PageView cleanup failed:', err)
+      })
 
-    db.visitorSession.deleteMany({
-      where: { lastSeen: { lt: thirtyDaysAgo } },
-    }).then((result) => {
-      if (result.count > 0) {
-        console.log(`[Analytics Auto-Cleanup] Deleted ${result.count} old VisitorSessions`)
-      }
-    }).catch((err) => {
-      console.error('[Analytics Auto-Cleanup] VisitorSession cleanup failed:', err)
-    })
+    db.run('DELETE FROM VisitorSession WHERE lastSeen < ?', thirtyDaysAgo)
+      .catch((err) => {
+        console.error('[Analytics Auto-Cleanup] VisitorSession cleanup failed:', err)
+      })
   } catch {
     // Non-critical — never fail the track request
   }
 }
 
 export async function POST(request: NextRequest) {
+  // ── Probabilistic auto-cleanup (1% chance per request) ──
+  // Fire-and-forget: don't await, don't block the response
+  if (Math.random() < 0.01) {
+    void triggerAutoCleanup().catch(() => {})
+  }
 
-      const db = await getDb()
   try {
-    // ── Probabilistic auto-cleanup (1% chance per request) ──
-    // Fire-and-forget: don't await, don't block the response
-    if (Math.random() < 0.01) {
-      void triggerAutoCleanup().catch(() => {})
-    }
-
+    const db = await getDb()
     const body = await request.json()
     const { page, channelId, matchId, referrer } = body as {
       page: string
@@ -178,152 +132,107 @@ export async function POST(request: NextRequest) {
     const sessionId = Math.abs(hash).toString(36).padStart(8, '0')
 
     const now = new Date()
-    const todayStr = now.toISOString().slice(0, 10) // YYYY-MM-DD
+    const nowIso = now.toISOString()
+    const todayStr = nowIso.slice(0, 10) // YYYY-MM-DD
+    const todayStartIso = todayStr + 'T00:00:00.000Z'
     // "Online now" window — MUST match /api/admin/live-viewers' active
     // window (60s) so peak-visitors tracking uses the same definition of
     // "online" as the admin live-viewer counts.
-    const activeSince = new Date(now.getTime() - 60 * 1000)
+    const activeSinceIso = new Date(now.getTime() - 60 * 1000).toISOString()
 
     // Check if this session already viewed today (BEFORE creating the page view)
-    const existingTodayView = await db.pageView.findFirst({
-      where: {
-        sessionId,
-        createdAt: {
-          gte: new Date(todayStr + 'T00:00:00.000Z'),
-        },
-      },
-      select: { id: true },
-    })
+    const existingTodayView = await db.first<{ id: string }>(
+      'SELECT id FROM PageView WHERE sessionId = ? AND createdAt >= ? LIMIT 1',
+      sessionId,
+      todayStartIso
+    )
 
     // Create PageView (with REAL device + browser).
-    // Fallback: if the local DB schema is pre-Task-17, retry without new fields.
-    const pageViewData: Record<string, unknown> = {
+    await db.run(
+      `INSERT INTO PageView (id, sessionId, page, channelId, matchId, referrer, userAgent, country, ip, device, browser, createdAt)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      generateId(),
       sessionId,
       page,
-      channelId: channelId || null,
-      matchId: matchId || null,
-      referrer: referrer || '',
-      userAgent: ua,
+      channelId || null,
+      matchId || null,
+      referrer || '',
+      ua,
       country,
       ip,
       device,
       browser,
-    }
-    try {
-      await db.pageView.create({ data: pageViewData as never })
-    } catch (err) {
-      if (isSchemaMismatchError(err)) {
-        await db.pageView.create({ data: stripNewFields(pageViewData) as never })
-      } else {
-        throw err
-      }
-    }
+      nowIso
+    )
 
-    // Upsert VisitorSession (sequential to avoid memory spikes).
-    // Fallback: strip country/device/browser on schema mismatch.
-    // Also stores currentChannelId / currentMatchId for live-viewer tracking.
-    const sessionUpdate = {
-      lastSeen: now,
-      pageCount: { increment: 1 },
-      country: country || undefined,
-      device: device || undefined,
-      browser: browser || undefined,
-      // Live-viewer attribution: if this is a watch page view, record which
-      // channel/match the visitor is watching. Cleared (set to null) on
-      // non-watch page views so a stale attribution doesn't linger.
-      currentChannelId: page === 'watch' ? (channelId || null) : null,
-      currentMatchId: page === 'watch' ? (matchId || null) : null,
-    }
-    const sessionCreate = {
+    // Upsert VisitorSession (sessionId is UNIQUE — see VisitorSession_sessionId_key).
+    // - On INSERT: firstSeen=lastSeen=now, pageCount=1.
+    // - On CONFLICT: increment pageCount atomically, update lastSeen +
+    //   attribution fields.
+    // Live-viewer attribution: if this is a watch page view, record which
+    // channel/match the visitor is watching. Cleared (set to null) on
+    // non-watch page views so a stale attribution doesn't linger.
+    const currentChannelId = page === 'watch' ? (channelId || null) : null
+    const currentMatchId = page === 'watch' ? (matchId || null) : null
+    await db.run(
+      `INSERT INTO VisitorSession (id, sessionId, firstSeen, lastSeen, pageCount, country, userAgent, ip, device, browser, currentChannelId, currentMatchId)
+       VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT(sessionId) DO UPDATE SET
+         lastSeen = excluded.lastSeen,
+         pageCount = pageCount + 1,
+         country = excluded.country,
+         device = excluded.device,
+         browser = excluded.browser,
+         currentChannelId = excluded.currentChannelId,
+         currentMatchId = excluded.currentMatchId`,
+      generateId(),
       sessionId,
-      firstSeen: now,
-      lastSeen: now,
-      pageCount: 1,
+      nowIso,
+      nowIso,
       country,
-      userAgent: ua,
+      ua,
       ip,
       device,
       browser,
-      currentChannelId: page === 'watch' ? (channelId || null) : null,
-      currentMatchId: page === 'watch' ? (matchId || null) : null,
-    }
-    try {
-      await db.visitorSession.upsert({
-        where: { sessionId },
-        update: sessionUpdate as never,
-        create: sessionCreate as never,
-      })
-    } catch (err) {
-      if (isSchemaMismatchError(err)) {
-        await db.visitorSession.upsert({
-          where: { sessionId },
-          update: stripNewFields(sessionUpdate as Record<string, unknown>) as never,
-          create: stripNewFields(sessionCreate as Record<string, unknown>) as never,
-        })
-      } else {
-        throw err
-      }
-    }
+      currentChannelId,
+      currentMatchId
+    )
 
     // If channelId is provided, increment channel viewCount
     if (channelId) {
-      await db.channel.update({
-        where: { id: channelId },
-        data: { viewCount: { increment: 1 } },
-      }).catch(() => {
-        // Channel might not exist — ignore error
-      })
-    }
-
-    // Upsert DailyStat.
-    // Fallback: the Task-17 schema added peakVisitors/topDevices/topBrowsers to
-    // DailyStat. On an old DB the `create` block referencing them throws, so we
-    // retry with a minimal create block.
-    const statCreate: Record<string, unknown> = {
-      date: todayStr,
-      totalViews: 0,
-      uniqueVisitors: 0,
-      peakVisitors: 0,
-      topPages: '{}',
-      topChannels: '{}',
-      topCountries: '{}',
-      topDevices: '{}',
-      topBrowsers: '{}',
-    }
-    let currentStat
-    try {
-      currentStat = await db.dailyStat.upsert({
-        where: { date: todayStr },
-        update: {},
-        create: statCreate as never,
-      })
-    } catch (err) {
-      if (isSchemaMismatchError(err)) {
-        currentStat = await db.dailyStat.upsert({
-          where: { date: todayStr },
-          update: {},
-          create: stripNewFields(statCreate) as never,
+      db.run('UPDATE Channel SET viewCount = viewCount + 1 WHERE id = ?', channelId)
+        .catch(() => {
+          // Channel might not exist — ignore error
         })
-      } else {
-        throw err
-      }
     }
 
-    // Parse and update JSON fields.
-    // Defensive reads: topDevices/topBrowsers/topCountries may be absent on an
-    // unmigrated DB (the column simply won't exist in the returned row).
-    const pv = currentStat as Record<string, unknown>
-    const topPages: Record<string, number> = JSON.parse((pv.topPages as string) ?? '{}')
-    const topChannels: Record<string, number> = JSON.parse((pv.topChannels as string) ?? '{}')
-    const topCountries: Record<string, number> = JSON.parse((pv.topCountries as string) ?? '{}')
-    let topDevices: Record<string, number> = {}
-    let topBrowsers: Record<string, number> = {}
-    try {
-      topDevices = JSON.parse((pv.topDevices as string) ?? '{}')
-    } catch { /* column absent on old schema */ }
-    try {
-      topBrowsers = JSON.parse((pv.topBrowsers as string) ?? '{}')
-    } catch { /* column absent on old schema */ }
+    // Ensure today's DailyStat row exists (date is UNIQUE — DailyStat_date_key).
+    // ON CONFLICT DO NOTHING preserves any existing counts.
+    await db.run(
+      `INSERT INTO DailyStat (id, date, totalViews, uniqueVisitors, peakVisitors, topPages, topChannels, topCountries, topDevices, topBrowsers, createdAt, updatedAt)
+       VALUES (?, ?, 0, 0, 0, '{}', '{}', '{}', '{}', '{}', ?, ?)
+       ON CONFLICT(date) DO NOTHING`,
+      generateId(),
+      todayStr,
+      nowIso,
+      nowIso
+    )
+
+    // Fetch today's (just-ensured) stat
+    const currentStat = await db.first<DailyStatRow>(
+      'SELECT * FROM DailyStat WHERE date = ?',
+      todayStr
+    )
+    if (!currentStat) {
+      throw new Error("Failed to load today's DailyStat after upsert")
+    }
+
+    // Parse and update JSON fields
+    const topPages: Record<string, number> = JSON.parse(currentStat.topPages ?? '{}')
+    const topChannels: Record<string, number> = JSON.parse(currentStat.topChannels ?? '{}')
+    const topCountries: Record<string, number> = JSON.parse(currentStat.topCountries ?? '{}')
+    const topDevices: Record<string, number> = JSON.parse(currentStat.topDevices ?? '{}')
+    const topBrowsers: Record<string, number> = JSON.parse(currentStat.topBrowsers ?? '{}')
 
     topPages[page] = (topPages[page] || 0) + 1
 
@@ -343,60 +252,49 @@ export async function POST(request: NextRequest) {
       topBrowsers[browser] = (topBrowsers[browser] || 0) + 1
     }
 
-    // Build update payload.
-    // Includes the new JSON columns (topDevices/topBrowsers). If the local DB
-    // doesn't have them, the update below will throw → we retry with a
-    // stripped payload.
-    const updateData: Record<string, unknown> = {
-      totalViews: { increment: 1 },
-      topPages: JSON.stringify(topPages),
-      topChannels: JSON.stringify(topChannels),
-      topCountries: JSON.stringify(topCountries),
-      topDevices: JSON.stringify(topDevices),
-      topBrowsers: JSON.stringify(topBrowsers),
-    }
-
-    if (!existingTodayView) {
-      updateData.uniqueVisitors = { increment: 1 }
-    }
-
-    try {
-      await db.dailyStat.update({
-        where: { id: currentStat.id },
-        data: updateData as never,
-      })
-    } catch (err) {
-      if (isSchemaMismatchError(err)) {
-        await db.dailyStat.update({
-          where: { id: currentStat.id },
-          data: stripNewFields(updateData) as never,
-        })
-      } else {
-        throw err
-      }
-    }
+    // Atomic increment for counts (matches Prisma's `{ increment: 1 }`).
+    // uniqueVisitors increments by 1 only if this is a new unique session today.
+    const uniqueIncrement = existingTodayView ? 0 : 1
+    await db.run(
+      `UPDATE DailyStat SET
+         totalViews = totalViews + 1,
+         uniqueVisitors = uniqueVisitors + ?,
+         topPages = ?,
+         topChannels = ?,
+         topCountries = ?,
+         topDevices = ?,
+         topBrowsers = ?,
+         updatedAt = ?
+       WHERE id = ?`,
+      uniqueIncrement,
+      JSON.stringify(topPages),
+      JSON.stringify(topChannels),
+      JSON.stringify(topCountries),
+      JSON.stringify(topDevices),
+      JSON.stringify(topBrowsers),
+      nowIso,
+      currentStat.id
+    )
 
     // Update peakVisitors = max concurrent online (60-second window) seen today.
     // This is a REAL metric: the highest number of simultaneously-active
     // visitors recorded so far today. Computed AFTER this session is recorded
     // so the current visitor is included in the count.
     // The 60-second window matches /api/admin/live-viewers for consistency.
-    // Wrapped in try/catch: peakVisitors column may be absent on an old DB,
-    // and this is non-critical (must not fail the track request).
+    // Wrapped in try/catch — non-critical (must not fail the track request).
     try {
-      const onlineNow = await db.visitorSession.count({
-        where: { lastSeen: { gte: activeSince } },
-      })
-      const storedPeak = (pv.peakVisitors as number) || 0
+      const onlineRow = await db.first<{ c: number }>(
+        'SELECT COUNT(*) as c FROM VisitorSession WHERE lastSeen >= ?',
+        activeSinceIso
+      )
+      const onlineNow = onlineRow?.c ?? 0
+      const storedPeak = currentStat.peakVisitors || 0
       if (onlineNow > storedPeak) {
-        try {
-          await db.dailyStat.update({
-            where: { id: currentStat.id },
-            data: { peakVisitors: onlineNow },
-          })
-        } catch {
-          // peakVisitors column absent on old schema — skip silently
-        }
+        await db.run(
+          'UPDATE DailyStat SET peakVisitors = ? WHERE id = ?',
+          onlineNow,
+          currentStat.id
+        )
       }
     } catch {
       // Non-critical — don't fail the track request

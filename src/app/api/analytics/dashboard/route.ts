@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
 import { requireAdminAuth } from '@/lib/auth'
 import { apiCache } from '@/lib/cache'
+import type { DailyStatRow, PageViewRow, ChannelRow } from '@/lib/types'
 
 // GET /api/analytics/dashboard — admin analytics dashboard data
 //
@@ -12,10 +13,10 @@ import { apiCache } from '@/lib/cache'
 //   - Calendar: All DailyStat rows for the selected month
 //   - Top Channels/Countries/Devices: From DailyStat JSON counts (not raw rows)
 export async function GET(request: NextRequest) {
-
-      const db = await getDb()
   return requireAdminAuth(request, async () => {
     try {
+      const db = await getDb()
+
       // Check cache first (10s TTL)
       const cached = apiCache.getDashboard()
       if (cached) {
@@ -28,7 +29,7 @@ export async function GET(request: NextRequest) {
       const sevenDaysAgo = new Date(now.getTime() - 7 * 86400000).toISOString().slice(0, 10)
       const thirtyDaysAgo = new Date(now.getTime() - 30 * 86400000).toISOString().slice(0, 10)
       const fourteenDaysAgo = new Date(now.getTime() - 13 * 86400000).toISOString().slice(0, 10)
-      const activeSince = new Date(now.getTime() - 60 * 1000)
+      const activeSince = new Date(now.getTime() - 60 * 1000).toISOString()
 
       // ── Calendar month param ──
       const { searchParams } = new URL(request.url)
@@ -37,16 +38,22 @@ export async function GET(request: NextRequest) {
       const calendarMon = calendarMonth ? parseInt(calendarMonth.split('-')[1]) : now.getMonth() + 1
 
       // Fetch today's stat
-      const todayStat = await db.dailyStat.findUnique({ where: { date: todayStr } })
+      const todayStat = await db.first<DailyStatRow>(
+        'SELECT * FROM DailyStat WHERE date = ?',
+        todayStr
+      )
 
       // Fetch yesterday's stat
-      const yesterdayStat = await db.dailyStat.findUnique({ where: { date: yesterdayStr } })
+      const yesterdayStat = await db.first<DailyStatRow>(
+        'SELECT * FROM DailyStat WHERE date = ?',
+        yesterdayStr
+      )
 
       // Fetch daily chart data (14 days)
-      const dailyStats = await db.dailyStat.findMany({
-        where: { date: { gte: fourteenDaysAgo } },
-        orderBy: { date: 'asc' },
-      })
+      const dailyStats = await db.all<DailyStatRow>(
+        'SELECT * FROM DailyStat WHERE date >= ? ORDER BY date ASC',
+        fourteenDaysAgo
+      )
 
       // Aggregate 7-day stats
       const last7DaysStats = dailyStats.filter(s => s.date >= sevenDaysAgo)
@@ -62,7 +69,10 @@ export async function GET(request: NextRequest) {
 
       // 30-day stats — fetch separately only if needed
       const last30DaysStats = fourteenDaysAgo <= thirtyDaysAgo
-        ? await db.dailyStat.findMany({ where: { date: { gte: thirtyDaysAgo } }, orderBy: { date: 'asc' } })
+        ? await db.all<DailyStatRow>(
+            'SELECT * FROM DailyStat WHERE date >= ? ORDER BY date ASC',
+            thirtyDaysAgo
+          )
         : last7DaysStats
       const last30Days = {
         views: last30DaysStats.reduce((sum, s) => sum + s.totalViews, 0),
@@ -75,31 +85,25 @@ export async function GET(request: NextRequest) {
       }
 
       // Total all time — fetch all DailyStat rows
-      const allStats = await db.dailyStat.findMany({ orderBy: { date: 'asc' } })
+      const allStats = await db.all<DailyStatRow>('SELECT * FROM DailyStat ORDER BY date ASC')
       const totalAllTime = {
         views: allStats.reduce((sum, s) => sum + s.totalViews, 0),
         uniqueVisitors: allStats.reduce((sum, s) => sum + s.uniqueVisitors, 0),
       }
 
       // Online now (real: sessions active in last 60 seconds)
-      const onlineNow = await db.visitorSession.count({
-        where: { lastSeen: { gte: activeSince } },
-      })
+      const onlineRow = await db.first<{ c: number }>(
+        'SELECT COUNT(*) as c FROM VisitorSession WHERE lastSeen >= ?',
+        activeSince
+      )
+      const onlineNow = onlineRow?.c ?? 0
 
       // Recent page views (only exists for today — yesterday's were deleted at midnight)
-      let recentPageViews: Array<{
-        page: string
-        channelId: string | null
-        createdAt: Date
-        country?: string
-        device?: string
-        browser?: string
-      }> = []
+      let recentPageViews: PageViewRow[] = []
       try {
-        recentPageViews = await db.pageView.findMany({
-          take: 20,
-          orderBy: { createdAt: 'desc' },
-        }) as typeof recentPageViews
+        recentPageViews = await db.all<PageViewRow>(
+          'SELECT * FROM PageView ORDER BY createdAt DESC LIMIT 20'
+        )
       } catch (e) {
         console.error('[Analytics] recentPageViews fetch failed (degraded):', e)
         recentPageViews = []
@@ -145,14 +149,15 @@ export async function GET(request: NextRequest) {
         .slice(0, 20)
         .map(([id]) => id)
 
-      const channels = topChannelIds.length
-        ? await db.channel.findMany({
-            where: { id: { in: topChannelIds } },
-            select: { id: true, name: true },
-          })
-        : []
-
-      const channelMap = new Map(channels.map((c) => [c.id, c.name]))
+      let channelMap = new Map<string, string>()
+      if (topChannelIds.length > 0) {
+        const placeholders = topChannelIds.map(() => '?').join(', ')
+        const channels = await db.all<Pick<ChannelRow, 'id' | 'name'>>(
+          `SELECT id, name FROM Channel WHERE id IN (${placeholders})`,
+          ...topChannelIds
+        )
+        channelMap = new Map(channels.map(c => [c.id, c.name]))
+      }
 
       const topChannelsAllTime = Object.entries(channelCounts)
         .sort(([, a], [, b]) => b - a)
@@ -183,12 +188,11 @@ export async function GET(request: NextRequest) {
       const nextYear = calendarMon === 12 ? calendarYear + 1 : calendarYear
       const monthEnd = `${nextYear}-${String(nextMon).padStart(2, '0')}-01`
 
-      const calendarStats = await db.dailyStat.findMany({
-        where: {
-          date: { gte: monthStart, lt: monthEnd },
-        },
-        orderBy: { date: 'asc' },
-      })
+      const calendarStats = await db.all<DailyStatRow>(
+        'SELECT * FROM DailyStat WHERE date >= ? AND date < ? ORDER BY date ASC',
+        monthStart,
+        monthEnd
+      )
 
       const calendarDays = calendarStats.map(s => ({
         date: s.date,
@@ -205,18 +209,7 @@ export async function GET(request: NextRequest) {
         peakVisitors: s.peakVisitors || 0,
       }))
 
-      const formatStat = (
-        stat: {
-          totalViews: number
-          uniqueVisitors: number
-          peakVisitors?: number
-          topPages?: string
-          topChannels?: string
-          topCountries?: string
-          topDevices?: string
-          topBrowsers?: string
-        } | null
-      ) => ({
+      const formatStat = (stat: DailyStatRow | null) => ({
         views: stat?.totalViews || 0,
         uniqueVisitors: stat?.uniqueVisitors || 0,
         peakVisitors: stat?.peakVisitors || 0,
@@ -242,7 +235,9 @@ export async function GET(request: NextRequest) {
         recentPageViews: recentPageViews.map((pv) => ({
           page: pv.page,
           channelId: pv.channelId,
-          createdAt: pv.createdAt.toISOString(),
+          // SQLite stores createdAt as ISO string already; normalise to
+          // ensure the frontend always sees a valid Date-parseable string.
+          createdAt: pv.createdAt ? new Date(pv.createdAt).toISOString() : '',
           country: pv.country || '',
           device: pv.device || '',
           browser: pv.browser || '',

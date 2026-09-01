@@ -1,0 +1,586 @@
+     1→2026-08-26T15:27:32.906Z        Initializing build environment...
+     2→2026-08-26T15:27:35.591Z        Success: Finished initializing build environment
+     3→2026-08-26T15:27:36.557Z        Cloning repository...
+     4→2026-08-26T15:27:39.691Z        Detected the following tools from environment: bun@1.2.15, npm@10.9.2, nodejs@24.18.0
+     5→2026-08-26T15:27:39.694Z        Restoring from dependencies cache
+     6→2026-08-26T15:27:39.696Z        Restoring from build output cache
+     7→2026-08-26T15:27:39.898Z        Installing project dependencies: bun install --frozen-lockfile
+     8→2026-08-26T15:27:40.839Z        bun install v1.2.15 (df017990)
+     9→2026-08-26T15:28:12.213Z        
+    10→2026-08-26T15:28:12.215Z        $ prisma generate
+    11→2026-08-26T15:28:13.622Z        Prisma schema loaded from prisma/schema.prisma
+    12→2026-08-26T15:28:13.634Z        warn Preview feature "driverAdapters" is deprecated. The functionality can be used without specifying it as a preview feature.
+    13→2026-08-26T15:28:14.101Z        ┌─────────────────────────────────────────────────────────┐
+    14→2026-08-26T15:28:14.102Z        │  Update available 6.19.2 -> 8.0.0-rc.12                 │
+    15→2026-08-26T15:28:14.102Z        │                                                         │
+    16→2026-08-26T15:28:14.102Z        │  This is a major update - please follow the guide at    │
+    17→2026-08-26T15:28:14.102Z        │  https://pris.ly/d/major-version-upgrade                │
+    18→2026-08-26T15:28:14.103Z        │                                                         │
+    19→2026-08-26T15:28:14.103Z        │  Run the following to update                            │
+    20→2026-08-26T15:28:14.103Z        │    npm i --save-dev prisma@latest                       │
+    21→2026-08-26T15:28:14.103Z        │    npm i @prisma/client@latest                          │
+    22→2026-08-26T15:28:14.103Z        └─────────────────────────────────────────────────────────┘
+    23→2026-08-26T15:28:14.103Z        
+    24→2026-08-26T15:28:14.103Z        ✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 227ms
+    25→2026-08-26T15:28:14.104Z        
+    26→2026-08-26T15:28:14.104Z        Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+    27→2026-08-26T15:28:14.104Z        
+    28→2026-08-26T15:28:14.104Z        Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+    29→2026-08-26T15:28:14.104Z        
+    30→2026-08-26T15:28:14.157Z        
+    31→2026-08-26T15:28:14.158Z        + @cloudflare/workers-types@5.20260817.1
+    32→2026-08-26T15:28:14.158Z        + @tailwindcss/postcss@4.1.18
+    33→2026-08-26T15:28:14.158Z        + @types/react@19.2.8
+    34→2026-08-26T15:28:14.158Z        + @types/react-dom@19.2.3
+    35→2026-08-26T15:28:14.158Z        + @types/web-push@3.6.4
+    36→2026-08-26T15:28:14.158Z        + bun-types@1.3.6
+    37→2026-08-26T15:28:14.158Z        + eslint@9.39.2
+    38→2026-08-26T15:28:14.158Z        + eslint-config-next@16.1.3
+    39→2026-08-26T15:28:14.158Z        + tailwindcss@4.1.18
+    40→2026-08-26T15:28:14.158Z        + tw-animate-css@1.4.0
+    41→2026-08-26T15:28:14.158Z        + typescript@5.9.3
+    42→2026-08-26T15:28:14.158Z        + wrangler@4.123.0
+    43→2026-08-26T15:28:14.158Z        + @dnd-kit/core@6.3.1
+    44→2026-08-26T15:28:14.158Z        + @dnd-kit/sortable@10.0.0
+    45→2026-08-26T15:28:14.158Z        + @dnd-kit/utilities@3.2.2
+    46→2026-08-26T15:28:14.158Z        + @hookform/resolvers@5.2.2
+    47→2026-08-26T15:28:14.158Z        + @mdxeditor/editor@3.52.3
+    48→2026-08-26T15:28:14.159Z        + @opennextjs/cloudflare@1.20.2
+    49→2026-08-26T15:28:14.159Z        + @prisma/adapter-d1@7.9.1
+    50→2026-08-26T15:28:14.159Z        + @prisma/client@6.19.2
+    51→2026-08-26T15:28:14.159Z        + @radix-ui/react-accordion@1.2.12
+    52→2026-08-26T15:28:14.159Z        + @radix-ui/react-alert-dialog@1.1.15
+    53→2026-08-26T15:28:14.160Z        + @radix-ui/react-aspect-ratio@1.1.8
+    54→2026-08-26T15:28:14.160Z        + @radix-ui/react-avatar@1.1.11
+    55→2026-08-26T15:28:14.160Z        + @radix-ui/react-checkbox@1.3.3
+    56→2026-08-26T15:28:14.160Z        + @radix-ui/react-collapsible@1.1.12
+    57→2026-08-26T15:28:14.160Z        + @radix-ui/react-context-menu@2.2.16
+    58→2026-08-26T15:28:14.160Z        + @radix-ui/react-dialog@1.1.15
+    59→2026-08-26T15:28:14.160Z        + @radix-ui/react-dropdown-menu@2.1.16
+    60→2026-08-26T15:28:14.160Z        + @radix-ui/react-hover-card@1.1.15
+    61→2026-08-26T15:28:14.160Z        + @radix-ui/react-label@2.1.8
+    62→2026-08-26T15:28:14.161Z        + @radix-ui/react-menubar@1.1.16
+    63→2026-08-26T15:28:14.161Z        + @radix-ui/react-navigation-menu@1.2.14
+    64→2026-08-26T15:28:14.161Z        + @radix-ui/react-popover@1.1.15
+    65→2026-08-26T15:28:14.161Z        + @radix-ui/react-progress@1.1.8
+    66→2026-08-26T15:28:14.161Z        + @radix-ui/react-radio-group@1.3.8
+    67→2026-08-26T15:28:14.161Z        + @radix-ui/react-scroll-area@1.2.10
+    68→2026-08-26T15:28:14.161Z        + @radix-ui/react-select@2.2.6
+    69→2026-08-26T15:28:14.161Z        + @radix-ui/react-separator@1.1.8
+    70→2026-08-26T15:28:14.161Z        + @radix-ui/react-slider@1.3.6
+    71→2026-08-26T15:28:14.161Z        + @radix-ui/react-slot@1.2.4
+    72→2026-08-26T15:28:14.161Z        + @radix-ui/react-switch@1.2.6
+    73→2026-08-26T15:28:14.161Z        + @radix-ui/react-tabs@1.1.13
+    74→2026-08-26T15:28:14.164Z        + @radix-ui/react-toast@1.2.15
+    75→2026-08-26T15:28:14.164Z        + @radix-ui/react-toggle@1.1.10
+    76→2026-08-26T15:28:14.164Z        + @radix-ui/react-toggle-group@1.1.11
+    77→2026-08-26T15:28:14.164Z        + @radix-ui/react-tooltip@1.2.8
+    78→2026-08-26T15:28:14.164Z        + @reactuses/core@6.1.9
+    79→2026-08-26T15:28:14.164Z        + @tanstack/react-query@5.90.19
+    80→2026-08-26T15:28:14.164Z        + @tanstack/react-table@8.21.3
+    81→2026-08-26T15:28:14.165Z        + class-variance-authority@0.7.1
+    82→2026-08-26T15:28:14.165Z        + clsx@2.1.1
+    83→2026-08-26T15:28:14.165Z        + cmdk@1.1.1
+    84→2026-08-26T15:28:14.167Z        + date-fns@4.1.0
+    85→2026-08-26T15:28:14.167Z        + embla-carousel-react@8.6.0
+    86→2026-08-26T15:28:14.167Z        + framer-motion@12.26.2
+    87→2026-08-26T15:28:14.167Z        + hls.js@1.7.0
+    88→2026-08-26T15:28:14.168Z        + input-otp@1.4.2
+    89→2026-08-26T15:28:14.168Z        + lucide-react@0.525.0
+    90→2026-08-26T15:28:14.168Z        + mpegts.js@1.8.2
+    91→2026-08-26T15:28:14.168Z        + next@16.1.3
+    92→2026-08-26T15:28:14.168Z        + next-auth@4.24.13
+    93→2026-08-26T15:28:14.168Z        + next-intl@4.7.0
+    94→2026-08-26T15:28:14.168Z        + next-themes@0.4.6
+    95→2026-08-26T15:28:14.168Z        + prisma@6.19.2
+    96→2026-08-26T15:28:14.168Z        + react@19.2.3
+    97→2026-08-26T15:28:14.168Z        + react-day-picker@9.13.0
+    98→2026-08-26T15:28:14.169Z        + react-dom@19.2.3
+    99→2026-08-26T15:28:14.169Z        + react-hook-form@7.71.1
+   100→2026-08-26T15:28:14.169Z        + react-markdown@10.1.0
+   101→2026-08-26T15:28:14.169Z        + react-resizable-panels@3.0.6
+   102→2026-08-26T15:28:14.169Z        + react-syntax-highlighter@15.6.6
+   103→2026-08-26T15:28:14.169Z        + recharts@2.15.4
+   104→2026-08-26T15:28:14.169Z        + sharp@0.34.5
+   105→2026-08-26T15:28:14.169Z        + socket.io-client@4.8.3
+   106→2026-08-26T15:28:14.169Z        + sonner@2.0.7
+   107→2026-08-26T15:28:14.169Z        + tailwind-merge@3.4.0
+   108→2026-08-26T15:28:14.169Z        + tailwindcss-animate@1.0.7
+   109→2026-08-26T15:28:14.169Z        + uuid@11.1.0
+   110→2026-08-26T15:28:14.170Z        + vaul@1.1.2
+   111→2026-08-26T15:28:14.170Z        + web-push@3.6.7
+   112→2026-08-26T15:28:14.170Z        + z-ai-web-dev-sdk@0.0.18
+   113→2026-08-26T15:28:14.170Z        + zod@4.3.5
+   114→2026-08-26T15:28:14.170Z        + zustand@5.0.10
+   115→2026-08-26T15:28:14.170Z        
+   116→2026-08-26T15:28:14.170Z        1128 packages installed [33.39s]
+   117→2026-08-26T15:28:14.436Z        Executing user build command: npm run build:cf
+   118→2026-08-26T15:28:15.075Z        
+   119→2026-08-26T15:28:15.075Z        > genztv@0.3.0 build:cf
+   120→2026-08-26T15:28:15.075Z        > prisma generate && opennextjs-cloudflare build
+   121→2026-08-26T15:28:15.075Z        
+   122→2026-08-26T15:28:16.484Z        Prisma schema loaded from prisma/schema.prisma
+   123→2026-08-26T15:28:16.491Z        warn Preview feature "driverAdapters" is deprecated. The functionality can be used without specifying it as a preview feature.
+   124→2026-08-26T15:28:16.829Z        
+   125→2026-08-26T15:28:16.829Z        ✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 162ms
+   126→2026-08-26T15:28:16.830Z        
+   127→2026-08-26T15:28:16.830Z        Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+   128→2026-08-26T15:28:16.830Z        
+   129→2026-08-26T15:28:16.830Z        Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+   130→2026-08-26T15:28:16.830Z        
+   131→2026-08-26T15:28:19.134Z        
+   132→2026-08-26T15:28:19.134Z        ┌─────────────────────────────┐
+   133→2026-08-26T15:28:19.134Z        │ OpenNext — Cloudflare build │
+   134→2026-08-26T15:28:19.134Z        └─────────────────────────────┘
+   135→2026-08-26T15:28:19.134Z        
+   136→2026-08-26T15:28:19.314Z        file:///opt/buildhome/repo/node_modules/@opennextjs/cloudflare/dist/cli/build/utils/ensure-cf-config.js:62
+   137→2026-08-26T15:28:19.315Z                throw new Error(errorMessage);
+   138→2026-08-26T15:28:19.316Z                      ^
+   139→2026-08-26T15:28:19.316Z        
+   140→2026-08-26T15:28:19.316Z        Error: The `open-next.config.ts` should have a default export like this:
+   141→2026-08-26T15:28:19.316Z        
+   142→2026-08-26T15:28:19.317Z        {
+   143→2026-08-26T15:28:19.320Z          default: {
+   144→2026-08-26T15:28:19.320Z            override: {
+   145→2026-08-26T15:28:19.320Z              wrapper: "cloudflare-node",
+   146→2026-08-26T15:28:19.321Z              converter: "edge",
+   147→2026-08-26T15:28:19.321Z              proxyExternalRequest: "fetch",
+   148→2026-08-26T15:28:19.321Z              incrementalCache: "dummy" | function,
+   149→2026-08-26T15:28:19.321Z              tagCache: "dummy" | function,
+   150→2026-08-26T15:28:19.321Z              queue: "dummy" | "direct" | function,
+   151→2026-08-26T15:28:19.321Z            },
+   152→2026-08-26T15:28:19.321Z          },
+   153→2026-08-26T15:28:19.322Z          edgeExternals: ["node:crypto"],
+   154→2026-08-26T15:28:19.322Z          middleware: {
+   155→2026-08-26T15:28:19.322Z            external: true,
+   156→2026-08-26T15:28:19.322Z            override: {
+   157→2026-08-26T15:28:19.322Z              wrapper: "cloudflare-edge",
+   158→2026-08-26T15:28:19.322Z              converter: "edge",
+   159→2026-08-26T15:28:19.322Z              proxyExternalRequest: "fetch",
+   160→2026-08-26T15:28:19.323Z              incrementalCache: "dummy" | function,
+   161→2026-08-26T15:28:19.328Z              tagCache: "dummy" | function,
+   162→2026-08-26T15:28:19.335Z              queue: "dummy" | "direct" | function,
+   163→2026-08-26T15:28:19.336Z            },
+   164→2026-08-26T15:28:19.336Z          },
+   165→2026-08-26T15:28:19.336Z        }
+   166→2026-08-26T15:28:19.344Z        
+   167→2026-08-26T15:28:19.344Z        
+   168→2026-08-26T15:28:19.344Z            at ensureCloudflareConfig (file:///opt/buildhome/repo/node_modules/@opennextjs/cloudflare/dist/cli/build/utils/ensure-cf-config.js:62:15)
+   169→2026-08-26T15:28:19.344Z            at compileConfig (file:///opt/buildhome/repo/node_modules/@opennextjs/cloudflare/dist/cli/commands/utils/utils.js:58:5)
+   170→2026-08-26T15:28:19.344Z            at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+   171→2026-08-26T15:28:19.344Z            at async buildCommand (file:///opt/buildhome/repo/node_modules/@opennextjs/cloudflare/dist/cli/commands/build.js:14:34)
+   172→2026-08-26T15:28:19.344Z        
+   173→2026-08-26T15:28:19.344Z        Node.js v24.18.0
+   174→2026-08-26T15:28:19.473Z        Failed: error occurred while running build command
+   175→2026-08-26T15:27:32.906Z        Initializing build environment...
+   176→2026-08-26T15:27:35.591Z        Success: Finished initializing build environment
+   177→2026-08-26T15:27:36.557Z        Cloning repository...
+   178→2026-08-26T15:27:39.691Z        Detected the following tools from environment: bun@1.2.15, npm@10.9.2, nodejs@24.18.0
+   179→2026-08-26T15:27:39.694Z        Restoring from dependencies cache
+   180→2026-08-26T15:27:39.696Z        Restoring from build output cache
+   181→2026-08-26T15:27:39.898Z        Installing project dependencies: bun install --frozen-lockfile
+   182→2026-08-26T15:27:40.839Z        bun install v1.2.15 (df017990)
+   183→2026-08-26T15:28:12.213Z        
+   184→2026-08-26T15:28:12.215Z        $ prisma generate
+   185→2026-08-26T15:28:13.622Z        Prisma schema loaded from prisma/schema.prisma
+   186→2026-08-26T15:28:13.634Z        warn Preview feature "driverAdapters" is deprecated. The functionality can be used without specifying it as a preview feature.
+   187→2026-08-26T15:28:14.101Z        ┌─────────────────────────────────────────────────────────┐
+   188→2026-08-26T15:28:14.102Z        │  Update available 6.19.2 -> 8.0.0-rc.12                 │
+   189→2026-08-26T15:28:14.102Z        │                                                         │
+   190→2026-08-26T15:28:14.102Z        │  This is a major update - please follow the guide at    │
+   191→2026-08-26T15:28:14.102Z        │  https://pris.ly/d/major-version-upgrade                │
+   192→2026-08-26T15:28:14.103Z        │                                                         │
+   193→2026-08-26T15:28:14.103Z        │  Run the following to update                            │
+   194→2026-08-26T15:28:14.103Z        │    npm i --save-dev prisma@latest                       │
+   195→2026-08-26T15:28:14.103Z        │    npm i @prisma/client@latest                          │
+   196→2026-08-26T15:28:14.103Z        └─────────────────────────────────────────────────────────┘
+   197→2026-08-26T15:28:14.103Z        
+   198→2026-08-26T15:28:14.103Z        ✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 227ms
+   199→2026-08-26T15:28:14.104Z        
+   200→2026-08-26T15:28:14.104Z        Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+   201→2026-08-26T15:28:14.104Z        
+   202→2026-08-26T15:28:14.104Z        Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+   203→2026-08-26T15:28:14.104Z        
+   204→2026-08-26T15:28:14.157Z        
+   205→2026-08-26T15:28:14.158Z        + @cloudflare/workers-types@5.20260817.1
+   206→2026-08-26T15:28:14.158Z        + @tailwindcss/postcss@4.1.18
+   207→2026-08-26T15:28:14.158Z        + @types/react@19.2.8
+   208→2026-08-26T15:28:14.158Z        + @types/react-dom@19.2.3
+   209→2026-08-26T15:28:14.158Z        + @types/web-push@3.6.4
+   210→2026-08-26T15:28:14.158Z        + bun-types@1.3.6
+   211→2026-08-26T15:28:14.158Z        + eslint@9.39.2
+   212→2026-08-26T15:28:14.158Z        + eslint-config-next@16.1.3
+   213→2026-08-26T15:28:14.158Z        + tailwindcss@4.1.18
+   214→2026-08-26T15:28:14.158Z        + tw-animate-css@1.4.0
+   215→2026-08-26T15:28:14.158Z        + typescript@5.9.3
+   216→2026-08-26T15:28:14.158Z        + wrangler@4.123.0
+   217→2026-08-26T15:28:14.158Z        + @dnd-kit/core@6.3.1
+   218→2026-08-26T15:28:14.158Z        + @dnd-kit/sortable@10.0.0
+   219→2026-08-26T15:28:14.158Z        + @dnd-kit/utilities@3.2.2
+   220→2026-08-26T15:28:14.158Z        + @hookform/resolvers@5.2.2
+   221→2026-08-26T15:28:14.158Z        + @mdxeditor/editor@3.52.3
+   222→2026-08-26T15:28:14.159Z        + @opennextjs/cloudflare@1.20.2
+   223→2026-08-26T15:28:14.159Z        + @prisma/adapter-d1@7.9.1
+   224→2026-08-26T15:28:14.159Z        + @prisma/client@6.19.2
+   225→2026-08-26T15:28:14.159Z        + @radix-ui/react-accordion@1.2.12
+   226→2026-08-26T15:28:14.159Z        + @radix-ui/react-alert-dialog@1.1.15
+   227→2026-08-26T15:28:14.160Z        + @radix-ui/react-aspect-ratio@1.1.8
+   228→2026-08-26T15:28:14.160Z        + @radix-ui/react-avatar@1.1.11
+   229→2026-08-26T15:28:14.160Z        + @radix-ui/react-checkbox@1.3.3
+   230→2026-08-26T15:28:14.160Z        + @radix-ui/react-collapsible@1.1.12
+   231→2026-08-26T15:28:14.160Z        + @radix-ui/react-context-menu@2.2.16
+   232→2026-08-26T15:28:14.160Z        + @radix-ui/react-dialog@1.1.15
+   233→2026-08-26T15:28:14.160Z        + @radix-ui/react-dropdown-menu@2.1.16
+   234→2026-08-26T15:28:14.160Z        + @radix-ui/react-hover-card@1.1.15
+   235→2026-08-26T15:28:14.160Z        + @radix-ui/react-label@2.1.8
+   236→2026-08-26T15:28:14.161Z        + @radix-ui/react-menubar@1.1.16
+   237→2026-08-26T15:28:14.161Z        + @radix-ui/react-navigation-menu@1.2.14
+   238→2026-08-26T15:28:14.161Z        + @radix-ui/react-popover@1.1.15
+   239→2026-08-26T15:28:14.161Z        + @radix-ui/react-progress@1.1.8
+   240→2026-08-26T15:28:14.161Z        + @radix-ui/react-radio-group@1.3.8
+   241→2026-08-26T15:28:14.161Z        + @radix-ui/react-scroll-area@1.2.10
+   242→2026-08-26T15:28:14.161Z        + @radix-ui/react-select@2.2.6
+   243→2026-08-26T15:28:14.161Z        + @radix-ui/react-separator@1.1.8
+   244→2026-08-26T15:28:14.161Z        + @radix-ui/react-slider@1.3.6
+   245→2026-08-26T15:28:14.161Z        + @radix-ui/react-slot@1.2.4
+   246→2026-08-26T15:28:14.161Z        + @radix-ui/react-switch@1.2.6
+   247→2026-08-26T15:28:14.161Z        + @radix-ui/react-tabs@1.1.13
+   248→2026-08-26T15:28:14.164Z        + @radix-ui/react-toast@1.2.15
+   249→2026-08-26T15:28:14.164Z        + @radix-ui/react-toggle@1.1.10
+   250→2026-08-26T15:28:14.164Z        + @radix-ui/react-toggle-group@1.1.11
+   251→2026-08-26T15:28:14.164Z        + @radix-ui/react-tooltip@1.2.8
+   252→2026-08-26T15:28:14.164Z        + @reactuses/core@6.1.9
+   253→2026-08-26T15:28:14.164Z        + @tanstack/react-query@5.90.19
+   254→2026-08-26T15:28:14.164Z        + @tanstack/react-table@8.21.3
+   255→2026-08-26T15:28:14.165Z        + class-variance-authority@0.7.1
+   256→2026-08-26T15:28:14.165Z        + clsx@2.1.1
+   257→2026-08-26T15:28:14.165Z        + cmdk@1.1.1
+   258→2026-08-26T15:28:14.167Z        + date-fns@4.1.0
+   259→2026-08-26T15:28:14.167Z        + embla-carousel-react@8.6.0
+   260→2026-08-26T15:28:14.167Z        + framer-motion@12.26.2
+   261→2026-08-26T15:28:14.167Z        + hls.js@1.7.0
+   262→2026-08-26T15:28:14.168Z        + input-otp@1.4.2
+   263→2026-08-26T15:28:14.168Z        + lucide-react@0.525.0
+   264→2026-08-26T15:28:14.168Z        + mpegts.js@1.8.2
+   265→2026-08-26T15:28:14.168Z        + next@16.1.3
+   266→2026-08-26T15:28:14.168Z        + next-auth@4.24.13
+   267→2026-08-26T15:28:14.168Z        + next-intl@4.7.0
+   268→2026-08-26T15:28:14.168Z        + next-themes@0.4.6
+   269→2026-08-26T15:28:14.168Z        + prisma@6.19.2
+   270→2026-08-26T15:28:14.168Z        + react@19.2.3
+   271→2026-08-26T15:28:14.168Z        + react-day-picker@9.13.0
+   272→2026-08-26T15:28:14.169Z        + react-dom@19.2.3
+   273→2026-08-26T15:28:14.169Z        + react-hook-form@7.71.1
+   274→2026-08-26T15:28:14.169Z        + react-markdown@10.1.0
+   275→2026-08-26T15:28:14.169Z        + react-resizable-panels@3.0.6
+   276→2026-08-26T15:28:14.169Z        + react-syntax-highlighter@15.6.6
+   277→2026-08-26T15:28:14.169Z        + recharts@2.15.4
+   278→2026-08-26T15:28:14.169Z        + sharp@0.34.5
+   279→2026-08-26T15:28:14.169Z        + socket.io-client@4.8.3
+   280→2026-08-26T15:28:14.169Z        + sonner@2.0.7
+   281→2026-08-26T15:28:14.169Z        + tailwind-merge@3.4.0
+   282→2026-08-26T15:28:14.169Z        + tailwindcss-animate@1.0.7
+   283→2026-08-26T15:28:14.169Z        + uuid@11.1.0
+   284→2026-08-26T15:28:14.170Z        + vaul@1.1.2
+   285→2026-08-26T15:28:14.170Z        + web-push@3.6.7
+   286→2026-08-26T15:28:14.170Z        + z-ai-web-dev-sdk@0.0.18
+   287→2026-08-26T15:28:14.170Z        + zod@4.3.5
+   288→2026-08-26T15:28:14.170Z        + zustand@5.0.10
+   289→2026-08-26T15:28:14.170Z        
+   290→2026-08-26T15:28:14.170Z        1128 packages installed [33.39s]
+   291→2026-08-26T15:28:14.436Z        Executing user build command: npm run build:cf
+   292→2026-08-26T15:28:15.075Z        
+   293→2026-08-26T15:28:15.075Z        > genztv@0.3.0 build:cf
+   294→2026-08-26T15:28:15.075Z        > prisma generate && opennextjs-cloudflare build
+   295→2026-08-26T15:28:15.075Z        
+   296→2026-08-26T15:28:16.484Z        Prisma schema loaded from prisma/schema.prisma
+   297→2026-08-26T15:28:16.491Z        warn Preview feature "driverAdapters" is deprecated. The functionality can be used without specifying it as a preview feature.
+   298→2026-08-26T15:28:16.829Z        
+   299→2026-08-26T15:28:16.829Z        ✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 162ms
+   300→2026-08-26T15:28:16.830Z        
+   301→2026-08-26T15:28:16.830Z        Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+   302→2026-08-26T15:28:16.830Z        
+   303→2026-08-26T15:28:16.830Z        Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+   304→2026-08-26T15:28:16.830Z        
+   305→2026-08-26T15:28:19.134Z        
+   306→2026-08-26T15:28:19.134Z        ┌─────────────────────────────┐
+   307→2026-08-26T15:28:19.134Z        │ OpenNext — Cloudflare build │
+   308→2026-08-26T15:28:19.134Z        └─────────────────────────────┘
+   309→2026-08-26T15:28:19.134Z        
+   310→2026-08-26T15:28:19.314Z        file:///opt/buildhome/repo/node_modules/@opennextjs/cloudflare/dist/cli/build/utils/ensure-cf-config.js:62
+   311→2026-08-26T15:28:19.315Z                throw new Error(errorMessage);
+   312→2026-08-26T15:28:19.316Z                      ^
+   313→2026-08-26T15:28:19.316Z        
+   314→2026-08-26T15:28:19.316Z        Error: The `open-next.config.ts` should have a default export like this:
+   315→2026-08-26T15:28:19.316Z        
+   316→2026-08-26T15:28:19.317Z        {
+   317→2026-08-26T15:28:19.320Z          default: {
+   318→2026-08-26T15:28:19.320Z            override: {
+   319→2026-08-26T15:28:19.320Z              wrapper: "cloudflare-node",
+   320→2026-08-26T15:28:19.321Z              converter: "edge",
+   321→2026-08-26T15:28:19.321Z              proxyExternalRequest: "fetch",
+   322→2026-08-26T15:28:19.321Z              incrementalCache: "dummy" | function,
+   323→2026-08-26T15:28:19.321Z              tagCache: "dummy" | function,
+   324→2026-08-26T15:28:19.321Z              queue: "dummy" | "direct" | function,
+   325→2026-08-26T15:28:19.321Z            },
+   326→2026-08-26T15:28:19.321Z          },
+   327→2026-08-26T15:28:19.322Z          edgeExternals: ["node:crypto"],
+   328→2026-08-26T15:28:19.322Z          middleware: {
+   329→2026-08-26T15:28:19.322Z            external: true,
+   330→2026-08-26T15:28:19.322Z            override: {
+   331→2026-08-26T15:28:19.322Z              wrapper: "cloudflare-edge",
+   332→2026-08-26T15:28:19.322Z              converter: "edge",
+   333→2026-08-26T15:28:19.322Z              proxyExternalRequest: "fetch",
+   334→2026-08-26T15:28:19.323Z              incrementalCache: "dummy" | function,
+   335→2026-08-26T15:28:19.328Z              tagCache: "dummy" | function,
+   336→2026-08-26T15:28:19.335Z              queue: "dummy" | "direct" | function,
+   337→2026-08-26T15:28:19.336Z            },
+   338→2026-08-26T15:28:19.336Z          },
+   339→2026-08-26T15:28:19.336Z        }
+   340→2026-08-26T15:28:19.344Z        
+   341→2026-08-26T15:28:19.344Z        
+   342→2026-08-26T15:28:19.344Z            at ensureCloudflareConfig (file:///opt/buildhome/repo/node_modules/@opennextjs/cloudflare/dist/cli/build/utils/ensure-cf-config.js:62:15)
+   343→2026-08-26T15:28:19.344Z            at compileConfig (file:///opt/buildhome/repo/node_modules/@opennextjs/cloudflare/dist/cli/commands/utils/utils.js:58:5)
+   344→2026-08-26T15:28:19.344Z            at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+   345→2026-08-26T15:28:19.344Z            at async buildCommand (file:///opt/buildhome/repo/node_modules/@opennextjs/cloudflare/dist/cli/commands/build.js:14:34)
+   346→2026-08-26T15:28:19.344Z        
+   347→2026-08-26T15:28:19.344Z        Node.js v24.18.0
+   348→2026-08-26T15:28:19.473Z        Failed: error occurred while running build command
+   349→2026-08-26T15:45:51.341Z        
+   350→2026-08-26T15:45:51.342Z        $ prisma generate
+   351→2026-08-26T15:45:52.634Z        Prisma schema loaded from prisma/schema.prisma
+   352→2026-08-26T15:45:52.639Z        warn Preview feature "driverAdapters" is deprecated. The functionality can be used without specifying it as a preview feature.
+   353→2026-08-26T15:45:53.097Z        ┌─────────────────────────────────────────────────────────┐
+   354→2026-08-26T15:45:53.097Z        │  Update available 6.19.2 -> 8.0.0-rc.12                 │
+   355→2026-08-26T15:45:53.098Z        │                                                         │
+   356→2026-08-26T15:45:53.098Z        │  This is a major update - please follow the guide at    │
+   357→2026-08-26T15:45:53.098Z        │  https://pris.ly/d/major-version-upgrade                │
+   358→2026-08-26T15:45:53.099Z        │                                                         │
+   359→2026-08-26T15:45:53.099Z        │  Run the following to update                            │
+   360→2026-08-26T15:45:53.099Z        │    npm i --save-dev prisma@latest                       │
+   361→2026-08-26T15:45:53.100Z        │    npm i @prisma/client@latest                          │
+   362→2026-08-26T15:45:53.100Z        └─────────────────────────────────────────────────────────┘
+   363→2026-08-26T15:45:53.100Z        
+   364→2026-08-26T15:45:53.100Z        ✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 315ms
+   365→2026-08-26T15:45:53.100Z        
+   366→2026-08-26T15:45:53.100Z        Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+   367→2026-08-26T15:45:53.101Z        
+   368→2026-08-26T15:45:53.101Z        Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+   369→2026-08-26T15:45:53.101Z        
+   370→2026-08-26T15:45:53.141Z        
+   371→2026-08-26T15:45:53.141Z        + @cloudflare/workers-types@5.20260817.1
+   372→2026-08-26T15:45:53.141Z        + @tailwindcss/postcss@4.1.18
+   373→2026-08-26T15:45:53.141Z        + @types/react@19.2.8
+   374→2026-08-26T15:45:53.141Z        + @types/react-dom@19.2.3
+   375→2026-08-26T15:45:53.142Z        + @types/web-push@3.6.4
+   376→2026-08-26T15:45:53.142Z        + bun-types@1.3.6
+   377→2026-08-26T15:45:53.142Z        + eslint@9.39.2
+   378→2026-08-26T15:45:53.142Z        + eslint-config-next@16.1.3
+   379→2026-08-26T15:45:53.142Z        + tailwindcss@4.1.18
+   380→2026-08-26T15:45:53.143Z        + tw-animate-css@1.4.0
+   381→2026-08-26T15:45:53.143Z        + typescript@5.9.3
+   382→2026-08-26T15:45:53.143Z        + wrangler@4.123.0
+   383→2026-08-26T15:45:53.143Z        + @dnd-kit/core@6.3.1
+   384→2026-08-26T15:45:53.143Z        + @dnd-kit/sortable@10.0.0
+   385→2026-08-26T15:45:53.143Z        + @dnd-kit/utilities@3.2.2
+   386→2026-08-26T15:45:53.143Z        + @hookform/resolvers@5.2.2
+   387→2026-08-26T15:45:53.143Z        + @mdxeditor/editor@3.52.3
+   388→2026-08-26T15:45:53.143Z        + @opennextjs/cloudflare@1.20.2
+   389→2026-08-26T15:45:53.143Z        + @prisma/adapter-d1@7.9.1
+   390→2026-08-26T15:45:53.144Z        + @prisma/client@6.19.2
+   391→2026-08-26T15:45:53.144Z        + @radix-ui/react-accordion@1.2.12
+   392→2026-08-26T15:45:53.144Z        + @radix-ui/react-alert-dialog@1.1.15
+   393→2026-08-26T15:45:53.144Z        + @radix-ui/react-aspect-ratio@1.1.8
+   394→2026-08-26T15:45:53.144Z        + @radix-ui/react-avatar@1.1.11
+   395→2026-08-26T15:45:53.144Z        + @radix-ui/react-checkbox@1.3.3
+   396→2026-08-26T15:45:53.144Z        + @radix-ui/react-collapsible@1.1.12
+   397→2026-08-26T15:45:53.144Z        + @radix-ui/react-context-menu@2.2.16
+   398→2026-08-26T15:45:53.144Z        + @radix-ui/react-dialog@1.1.15
+   399→2026-08-26T15:45:53.144Z        + @radix-ui/react-dropdown-menu@2.1.16
+   400→2026-08-26T15:45:53.145Z        + @radix-ui/react-hover-card@1.1.15
+   401→2026-08-26T15:45:53.145Z        + @radix-ui/react-label@2.1.8
+   402→2026-08-26T15:45:53.145Z        + @radix-ui/react-menubar@1.1.16
+   403→2026-08-26T15:45:53.145Z        + @radix-ui/react-navigation-menu@1.2.14
+   404→2026-08-26T15:45:53.145Z        + @radix-ui/react-popover@1.1.15
+   405→2026-08-26T15:45:53.145Z        + @radix-ui/react-progress@1.1.8
+   406→2026-08-26T15:45:53.145Z        + @radix-ui/react-radio-group@1.3.8
+   407→2026-08-26T15:45:53.145Z        + @radix-ui/react-scroll-area@1.2.10
+   408→2026-08-26T15:45:53.145Z        + @radix-ui/react-select@2.2.6
+   409→2026-08-26T15:45:53.145Z        + @radix-ui/react-separator@1.1.8
+   410→2026-08-26T15:45:53.145Z        + @radix-ui/react-slider@1.3.6
+   411→2026-08-26T15:45:53.145Z        + @radix-ui/react-slot@1.2.4
+   412→2026-08-26T15:45:53.145Z        + @radix-ui/react-switch@1.2.6
+   413→2026-08-26T15:45:53.145Z        + @radix-ui/react-tabs@1.1.13
+   414→2026-08-26T15:45:53.145Z        + @radix-ui/react-toast@1.2.15
+   415→2026-08-26T15:45:53.145Z        + @radix-ui/react-toggle@1.1.10
+   416→2026-08-26T15:45:53.146Z        + @radix-ui/react-toggle-group@1.1.11
+   417→2026-08-26T15:45:53.146Z        + @radix-ui/react-tooltip@1.2.8
+   418→2026-08-26T15:45:53.146Z        + @reactuses/core@6.1.9
+   419→2026-08-26T15:45:53.146Z        + @tanstack/react-query@5.90.19
+   420→2026-08-26T15:45:53.146Z        + @tanstack/react-table@8.21.3
+   421→2026-08-26T15:45:53.146Z        + class-variance-authority@0.7.1
+   422→2026-08-26T15:45:53.146Z        + clsx@2.1.1
+   423→2026-08-26T15:45:53.147Z        + cmdk@1.1.1
+   424→2026-08-26T15:45:53.147Z        + date-fns@4.1.0
+   425→2026-08-26T15:45:53.147Z        + embla-carousel-react@8.6.0
+   426→2026-08-26T15:45:53.147Z        + framer-motion@12.26.2
+   427→2026-08-26T15:45:53.147Z        + hls.js@1.7.0
+   428→2026-08-26T15:45:53.147Z        + input-otp@1.4.2
+   429→2026-08-26T15:45:53.147Z        + lucide-react@0.525.0
+   430→2026-08-26T15:45:53.147Z        + mpegts.js@1.8.2
+   431→2026-08-26T15:45:53.147Z        + next@16.1.3
+   432→2026-08-26T15:45:53.147Z        + next-auth@4.24.13
+   433→2026-08-26T15:45:53.147Z        + next-intl@4.7.0
+   434→2026-08-26T15:45:53.147Z        + next-themes@0.4.6
+   435→2026-08-26T15:45:53.147Z        + prisma@6.19.2
+   436→2026-08-26T15:45:53.148Z        + react@19.2.3
+   437→2026-08-26T15:45:53.148Z        + react-day-picker@9.13.0
+   438→2026-08-26T15:45:53.148Z        + react-dom@19.2.3
+   439→2026-08-26T15:45:53.148Z        + react-hook-form@7.71.1
+   440→2026-08-26T15:45:53.148Z        + react-markdown@10.1.0
+   441→2026-08-26T15:45:53.148Z        + react-resizable-panels@3.0.6
+   442→2026-08-26T15:45:53.149Z        + react-syntax-highlighter@15.6.6
+   443→2026-08-26T15:45:53.149Z        + recharts@2.15.4
+   444→2026-08-26T15:45:53.149Z        + sharp@0.34.5
+   445→2026-08-26T15:45:53.149Z        + socket.io-client@4.8.3
+   446→2026-08-26T15:45:53.153Z        + sonner@2.0.7
+   447→2026-08-26T15:45:53.154Z        + tailwind-merge@3.4.0
+   448→2026-08-26T15:45:53.154Z        + tailwindcss-animate@1.0.7
+   449→2026-08-26T15:45:53.154Z        + uuid@11.1.0
+   450→2026-08-26T15:45:53.154Z        + vaul@1.1.2
+   451→2026-08-26T15:45:53.154Z        + web-push@3.6.7
+   452→2026-08-26T15:45:53.154Z        + z-ai-web-dev-sdk@0.0.18
+   453→2026-08-26T15:45:53.154Z        + zod@4.3.5
+   454→2026-08-26T15:45:53.154Z        + zustand@5.0.10
+   455→2026-08-26T15:45:53.155Z        
+   456→2026-08-26T15:45:53.155Z        1128 packages installed [24.72s]
+   457→2026-08-26T15:45:53.441Z        Executing user build command: npm run build:cf
+   458→2026-08-26T15:45:54.438Z        
+   459→2026-08-26T15:45:54.439Z        > genztv@0.3.0 build:cf
+   460→2026-08-26T15:45:54.439Z        > prisma generate && opennextjs-cloudflare build
+   461→2026-08-26T15:45:54.439Z        
+   462→2026-08-26T15:45:55.981Z        Prisma schema loaded from prisma/schema.prisma
+   463→2026-08-26T15:45:55.990Z        warn Preview feature "driverAdapters" is deprecated. The functionality can be used without specifying it as a preview feature.
+   464→2026-08-26T15:45:56.364Z        
+   465→2026-08-26T15:45:56.364Z        ✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 203ms
+   466→2026-08-26T15:45:56.364Z        
+   467→2026-08-26T15:45:56.364Z        Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+   468→2026-08-26T15:45:56.364Z        
+   469→2026-08-26T15:45:56.364Z        Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+   470→2026-08-26T15:45:56.364Z        
+   471→2026-08-26T15:45:58.760Z        
+   472→2026-08-26T15:45:58.761Z        ┌─────────────────────────────┐
+   473→2026-08-26T15:45:58.764Z        │ OpenNext — Cloudflare build │
+   474→2026-08-26T15:45:58.766Z        └─────────────────────────────┘
+   475→2026-08-26T15:45:58.768Z        
+   476→2026-08-26T15:45:58.921Z        App directory: /opt/buildhome/repo
+   477→2026-08-26T15:45:58.922Z        Next.js version : 16.1.3
+   478→2026-08-26T15:45:58.924Z        @opennextjs/cloudflare version: 1.20.2
+   479→2026-08-26T15:45:58.924Z        @opennextjs/aws version: 4.1.0
+   480→2026-08-26T15:45:58.925Z        WARN workerd compatibility_date: 2025-01-01, consider updating your wrangler config to a more recent date to benefit from the latest features and fixes.
+   481→2026-08-26T15:45:58.929Z        
+   482→2026-08-26T15:45:58.929Z        ┌─────────────────────────────────┐
+   483→2026-08-26T15:45:58.930Z        │ OpenNext — Building Next.js app │
+   484→2026-08-26T15:45:58.930Z        └─────────────────────────────────┘
+   485→2026-08-26T15:45:58.931Z        
+   486→2026-08-26T15:45:59.095Z        $ next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/
+   487→2026-08-26T15:46:00.151Z        ⚠ No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+   488→2026-08-26T15:46:00.157Z        Attention: Next.js now collects completely anonymous telemetry regarding usage.
+   489→2026-08-26T15:46:00.157Z        This information is used to shape Next.js' roadmap and prioritize features.
+   490→2026-08-26T15:46:00.157Z        You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+   491→2026-08-26T15:46:00.157Z        https://nextjs.org/telemetry
+   492→2026-08-26T15:46:00.157Z        
+   493→2026-08-26T15:46:00.187Z        ▲ Next.js 16.1.3 (Turbopack)
+   494→2026-08-26T15:46:00.189Z        - Experiments (use with caution):
+   495→2026-08-26T15:46:00.189Z          · proxyClientMaxBodySize: "100mb"
+   496→2026-08-26T15:46:00.189Z          · serverActions
+   497→2026-08-26T15:46:00.189Z        
+   498→2026-08-26T15:46:00.268Z          Creating an optimized production build ...
+   499→2026-08-26T15:46:34.582Z        Turbopack build encountered 1 warnings:
+   500→2026-08-26T15:46:34.582Z        ./src/app/api/push/notifications/route.ts:59:41
+   501→2026-08-26T15:46:34.582Z        Module not found: Can't resolve '@/lib/push-sender'
+   502→2026-08-26T15:46:34.582Z          57 |     if (sendPush) {
+   503→2026-08-26T15:46:34.582Z          58 |       try {
+   504→2026-08-26T15:46:34.582Z        > 59 |         const { sendPushToAll } = await import('@/lib/push-sender')
+   505→2026-08-26T15:46:34.582Z             |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   506→2026-08-26T15:46:34.582Z          60 |         const result = await sendPushToAll({
+   507→2026-08-26T15:46:34.582Z          61 |           title,
+   508→2026-08-26T15:46:34.583Z          62 |           body: notifBody || '',
+   509→2026-08-26T15:46:34.583Z        
+   510→2026-08-26T15:46:34.583Z        Import map: aliased to relative './src/lib/push-sender' inside of [project]/
+   511→2026-08-26T15:46:34.583Z        
+   512→2026-08-26T15:46:34.583Z        
+   513→2026-08-26T15:46:34.583Z        https://nextjs.org/docs/messages/module-not-found
+   514→2026-08-26T15:46:34.583Z        
+   515→2026-08-26T15:46:34.583Z        
+   516→2026-08-26T15:46:34.601Z        ✓ Compiled successfully in 33.6s
+   517→2026-08-26T15:46:34.611Z          Skipping validation of types
+   518→2026-08-26T15:46:34.895Z          Collecting page data using 1 worker ...
+   519→2026-08-26T15:46:36.180Z          Generating static pages using 1 worker (0/44) ...
+   520→2026-08-26T15:46:36.331Z          Generating static pages using 1 worker (11/44) 
+   521→2026-08-26T15:46:36.339Z          Generating static pages using 1 worker (22/44) 
+   522→2026-08-26T15:46:36.346Z          Generating static pages using 1 worker (33/44) 
+   523→2026-08-26T15:46:36.372Z        ✓ Generating static pages using 1 worker (44/44) in 191.6ms
+   524→2026-08-26T15:46:36.382Z          Finalizing page optimization ...
+   525→2026-08-26T15:46:37.442Z        
+   526→2026-08-26T15:46:37.446Z        Route (app)
+   527→2026-08-26T15:46:37.447Z        ┌ ○ /
+   528→2026-08-26T15:46:37.447Z        ├ ○ /_not-found
+   529→2026-08-26T15:46:37.448Z        ├ ƒ /api
+   530→2026-08-26T15:46:37.448Z        ├ ƒ /api/admin/live-viewers
+   531→2026-08-26T15:46:37.448Z        ├ ƒ /api/analytics/cleanup
+   532→2026-08-26T15:46:37.448Z        ├ ƒ /api/analytics/daily-reset
+   533→2026-08-26T15:46:37.448Z        ├ ƒ /api/analytics/dashboard
+   534→2026-08-26T15:46:37.448Z        ├ ƒ /api/analytics/heartbeat
+   535→2026-08-26T15:46:37.448Z        ├ ƒ /api/analytics/track
+   536→2026-08-26T15:46:37.448Z        ├ ƒ /api/auth/login
+   537→2026-08-26T15:46:37.448Z        ├ ƒ /api/auth/logout
+   538→2026-08-26T15:46:37.448Z        ├ ƒ /api/auth/verify
+   539→2026-08-26T15:46:37.448Z        ├ ƒ /api/categories
+   540→2026-08-26T15:46:37.448Z        ├ ƒ /api/categories/[id]
+   541→2026-08-26T15:46:37.448Z        ├ ƒ /api/channels
+   542→2026-08-26T15:46:37.448Z        ├ ƒ /api/channels/[id]
+   543→2026-08-26T15:46:37.448Z        ├ ƒ /api/channels/[id]/reactive-refresh
+   544→2026-08-26T15:46:37.448Z        ├ ƒ /api/channels/[id]/refresh
+   545→2026-08-26T15:46:37.448Z        ├ ƒ /api/channels/export
+   546→2026-08-26T15:46:37.448Z        ├ ƒ /api/channels/import-file
+   547→2026-08-26T15:46:37.449Z        ├ ƒ /api/channels/refresh-expired
+   548→2026-08-26T15:46:37.449Z        ├ ƒ /api/data
+   549→2026-08-26T15:46:37.449Z        ├ ƒ /api/data/import
+   550→2026-08-26T15:46:37.449Z        ├ ƒ /api/data/reset
+   551→2026-08-26T15:46:37.449Z        ├ ƒ /api/db-health
+   552→2026-08-26T15:46:37.449Z        ├ ƒ /api/feedback
+   553→2026-08-26T15:46:37.449Z        ├ ƒ /api/feedback/[id]
+   554→2026-08-26T15:46:37.449Z        ├ ƒ /api/fifalive
+   555→2026-08-26T15:46:37.451Z        ├ ƒ /api/fifalive/streams
+   556→2026-08-26T15:46:37.452Z        ├ ƒ /api/iframe-proxy
+   557→2026-08-26T15:46:37.452Z        ├ ƒ /api/m3u-parse
+   558→2026-08-26T15:46:37.453Z        ├ ƒ /api/matches
+   559→2026-08-26T15:46:37.453Z        ├ ƒ /api/matches/[id]
+   560→2026-08-26T15:46:37.453Z        ├ ƒ /api/matches/sync-statuses
+   561→2026-08-26T15:46:37.453Z        ├ ƒ /api/notifications
+   562→2026-08-26T15:46:37.453Z        ├ ƒ /api/notifications/[id]
+   563→2026-08-26T15:46:37.453Z        ├ ƒ /api/notifications/admin
+   564→2026-08-26T15:46:37.453Z        ├ ƒ /api/push/notifications
+   565→2026-08-26T15:46:37.453Z        ├ ƒ /api/push/notifications/[id]
+   566→2026-08-26T15:46:37.453Z        ├ ƒ /api/push/notify
+   567→2026-08-26T15:46:37.453Z        ├ ƒ /api/push/subscribe
+   568→2026-08-26T15:46:37.453Z        ├ ƒ /api/push/subscribers
+   569→2026-08-26T15:46:37.453Z        ├ ƒ /api/push/unsubscribe
+   570→2026-08-26T15:46:37.453Z        ├ ƒ /api/push/vapid-key
+   571→2026-08-26T15:46:37.453Z        ├ ƒ /api/resolve-fifalive
+   572→2026-08-26T15:46:37.453Z        ├ ƒ /api/seed
+   573→2026-08-26T15:46:37.453Z        ├ ƒ /api/settings
+   574→2026-08-26T15:46:37.453Z        ├ ƒ /api/settings/security
+   575→2026-08-26T15:46:37.453Z        ├ ƒ /api/stream-proxy
+   576→2026-08-26T15:46:37.453Z        ├ ƒ /api/transcode
+   577→2026-08-26T15:46:37.453Z        └ ƒ /api/transcode-stream
+   578→2026-08-26T15:46:37.453Z        
+   579→2026-08-26T15:46:37.454Z        
+   580→2026-08-26T15:46:37.454Z        ƒ Proxy (Middleware)
+   581→2026-08-26T15:46:37.454Z        
+   582→2026-08-26T15:46:37.454Z        ○  (Static)   prerendered as static content
+   583→2026-08-26T15:46:37.454Z        ƒ  (Dynamic)  server-rendered on demand
+   584→2026-08-26T15:46:37.454Z        
+   585→2026-08-26T15:46:37.582Z        ERROR Node.js middleware is not currently supported. Consider switching to Edge Middleware.
+   586→2026-08-26T15:46:37.664Z        Failed: error occurred while running build command

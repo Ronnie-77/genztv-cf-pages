@@ -22,27 +22,15 @@ import { requireAdminAuth } from '@/lib/auth'
 // (4x tolerance — several missed heartbeats won't drop a live viewer),
 // while keeping the count near real-time.
 //
-// Schema-mismatch safe: if the local DB hasn't been migrated to add
-// currentChannelId / currentMatchId, returns 0 for everything (and doesn't
-// crash the admin panel).
-
-function isSchemaMismatchError(err: unknown): boolean {
-  const msg = err instanceof Error ? err.message : String(err)
-  return (
-    msg.includes('Unknown field') ||
-    msg.includes('does not exist') ||
-    msg.includes('unknown column') ||
-    msg.includes('no such column')
-  )
-}
+// Implementation: raw SQL with `COUNT(*)` and `GROUP BY` aggregation —
+// much cheaper than Prisma's `groupBy` (no client-side materialisation).
 
 const ACTIVE_WINDOW_MS = 60 * 1000 // 60 seconds — matches 15s heartbeat x4 tolerance
 
 export async function POST(request: NextRequest) {
-
-      const db = await getDb()
   return requireAdminAuth(request, async () => {
     try {
+      const db = await getDb()
       const body = await request.json().catch(() => ({}))
       const channelIds: string[] = Array.isArray(body.channelIds)
         ? body.channelIds.filter((id: unknown) => typeof id === 'string' && id)
@@ -51,77 +39,56 @@ export async function POST(request: NextRequest) {
         ? body.matchIds.filter((id: unknown) => typeof id === 'string' && id)
         : []
 
-      const activeSince = new Date(Date.now() - ACTIVE_WINDOW_MS)
-
-      // Group sessions by currentChannelId / currentMatchId in ONE query
-      // each, then count. This is much cheaper than one query per id.
-      // We read all sessions active in the last 60 seconds and aggregate in
-      // JS — fine for the expected scale (a few hundred to a few thousand
-      // concurrent viewers).
-
-      // Defensive: currentChannelId / currentMatchId may be absent on an
-      // unmigrated DB. In that case we return 0 counts (the admin panel
-      // still works, just shows 0 until the DB is migrated).
+      const activeSince = new Date(Date.now() - ACTIVE_WINDOW_MS).toISOString()
 
       const channelViewers: Record<string, number> = {}
       const matchViewers: Record<string, number> = {}
       for (const id of channelIds) channelViewers[id] = 0
       for (const id of matchIds) matchViewers[id] = 0
 
-      let totalOnline = 0
+      // Total active sessions (site-wide) — single COUNT(*) query.
+      const totalRow = await db.first<{ c: number }>(
+        'SELECT COUNT(*) as c FROM VisitorSession WHERE lastSeen >= ?',
+        activeSince
+      )
+      const totalOnline = totalRow?.c ?? 0
 
-      try {
-        // Count total active sessions (site-wide).
-        totalOnline = await db.visitorSession.count({
-          where: { lastSeen: { gte: activeSince } },
-        })
-
-        // Aggregate channel viewers.
-        if (channelIds.length > 0) {
-          const rows = await db.visitorSession.groupBy({
-            by: ['currentChannelId'],
-            where: {
-              lastSeen: { gte: activeSince },
-              currentChannelId: { in: channelIds },
-            },
-            _count: { _all: true },
-          })
-          for (const row of rows) {
-            const id = row.currentChannelId
-            if (id && channelViewers[id] !== undefined) {
-              channelViewers[id] = row._count._all
-            }
+      // Aggregate channel viewers in ONE GROUP BY query (instead of one
+      // query per channel id).
+      if (channelIds.length > 0) {
+        const placeholders = channelIds.map(() => '?').join(', ')
+        const rows = await db.all<{ currentChannelId: string; c: number }>(
+          `SELECT currentChannelId, COUNT(*) as c
+           FROM VisitorSession
+           WHERE lastSeen >= ? AND currentChannelId IN (${placeholders})
+           GROUP BY currentChannelId`,
+          activeSince,
+          ...channelIds
+        )
+        for (const row of rows) {
+          const id = row.currentChannelId
+          if (id && channelViewers[id] !== undefined) {
+            channelViewers[id] = row.c
           }
         }
+      }
 
-        // Aggregate match viewers.
-        if (matchIds.length > 0) {
-          const rows = await db.visitorSession.groupBy({
-            by: ['currentMatchId'],
-            where: {
-              lastSeen: { gte: activeSince },
-              currentMatchId: { in: matchIds },
-            },
-            _count: { _all: true },
-          })
-          for (const row of rows) {
-            const id = row.currentMatchId
-            if (id && matchViewers[id] !== undefined) {
-              matchViewers[id] = row._count._all
-            }
+      // Aggregate match viewers in ONE GROUP BY query.
+      if (matchIds.length > 0) {
+        const placeholders = matchIds.map(() => '?').join(', ')
+        const rows = await db.all<{ currentMatchId: string; c: number }>(
+          `SELECT currentMatchId, COUNT(*) as c
+           FROM VisitorSession
+           WHERE lastSeen >= ? AND currentMatchId IN (${placeholders})
+           GROUP BY currentMatchId`,
+          activeSince,
+          ...matchIds
+        )
+        for (const row of rows) {
+          const id = row.currentMatchId
+          if (id && matchViewers[id] !== undefined) {
+            matchViewers[id] = row.c
           }
-        }
-      } catch (err) {
-        if (isSchemaMismatchError(err)) {
-          // Local DB hasn't been migrated — currentChannelId / currentMatchId
-          // columns don't exist. Return 0 counts (already initialised above)
-          // and a 0 totalOnline. The admin panel will show 0 / 0 / 0 until
-          // the DB is migrated. Don't crash.
-          console.warn(
-            '[live-viewers] currentChannelId/currentMatchId columns absent on local DB — returning 0 counts.'
-          )
-        } else {
-          throw err
         }
       }
 

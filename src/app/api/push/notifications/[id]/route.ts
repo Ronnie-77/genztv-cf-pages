@@ -7,8 +7,6 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-
-      const db = await getDb()
   try {
     const authenticated = await isAdminAuthenticated(req)
     if (!authenticated) {
@@ -16,10 +14,8 @@ export async function DELETE(
     }
 
     const { id } = await params
-
-    await db.notification.delete({
-      where: { id },
-    })
+    const db = await getDb()
+    await db.run('DELETE FROM Notice WHERE id = ?', id)
 
     return NextResponse.json({ success: true })
   } catch (error) {

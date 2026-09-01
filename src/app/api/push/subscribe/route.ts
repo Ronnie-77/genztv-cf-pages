@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getDb } from '@/lib/db'
+import { getDb, generateId } from '@/lib/db'
+import type { PushSubscriptionRow } from '@/lib/types'
 
 // POST /api/push/subscribe — Subscribe to push notifications
 export async function POST(req: NextRequest) {
-
-      const db = await getDb()
   try {
+    const db = await getDb()
     const body = await req.json()
     const { endpoint, keys } = body
 
@@ -13,21 +13,34 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing subscription data' }, { status: 400 })
     }
 
-    // Upsert subscription (update if endpoint already exists)
-    const subscription = await db.pushSubscription.upsert({
-      where: { endpoint },
-      update: {
-        p256dh: keys.p256dh,
-        auth: keys.auth,
-      },
-      create: {
+    // Upsert: update if endpoint exists, otherwise insert.
+    const existing = await db.first<Pick<PushSubscriptionRow, 'id'>>(
+      'SELECT id FROM PushSubscription WHERE endpoint = ?',
+      endpoint
+    )
+    let id: string
+    if (existing) {
+      id = existing.id
+      await db.run(
+        'UPDATE PushSubscription SET p256dh = ?, auth = ? WHERE endpoint = ?',
+        keys.p256dh,
+        keys.auth,
+        endpoint
+      )
+    } else {
+      id = generateId()
+      await db.run(
+        `INSERT INTO PushSubscription (id, endpoint, p256dh, auth, createdAt)
+         VALUES (?, ?, ?, ?, ?)`,
+        id,
         endpoint,
-        p256dh: keys.p256dh,
-        auth: keys.auth,
-      },
-    })
+        keys.p256dh,
+        keys.auth,
+        new Date().toISOString()
+      )
+    }
 
-    return NextResponse.json({ success: true, id: subscription.id })
+    return NextResponse.json({ success: true, id })
   } catch (error) {
     console.error('[Push] Subscribe error:', error)
     return NextResponse.json({ error: 'Failed to subscribe' }, { status: 500 })
@@ -36,9 +49,8 @@ export async function POST(req: NextRequest) {
 
 // DELETE /api/push/subscribe — Unsubscribe from push notifications
 export async function DELETE(req: NextRequest) {
-
-      const db = await getDb()
   try {
+    const db = await getDb()
     const body = await req.json()
     const { endpoint } = body
 
@@ -46,9 +58,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Missing endpoint' }, { status: 400 })
     }
 
-    await db.pushSubscription.deleteMany({
-      where: { endpoint },
-    })
+    await db.run('DELETE FROM PushSubscription WHERE endpoint = ?', endpoint)
 
     return NextResponse.json({ success: true })
   } catch (error) {

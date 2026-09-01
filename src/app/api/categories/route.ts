@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getDb } from '@/lib/db'
+import { getDb, generateId } from '@/lib/db'
 import { requireAdminAuth } from '@/lib/auth'
 import { apiCache } from '@/lib/cache'
+import type { CategoryRow } from '@/lib/types'
 
 // GET /api/categories
 export async function GET() {
-
-      const db = await getDb()
   try {
     // Check cache first
     const cached = apiCache.getCategories()
@@ -14,9 +13,11 @@ export async function GET() {
       return NextResponse.json(cached)
     }
 
-    const categories = await db.category.findMany({
-      orderBy: { order: 'asc' },
-    })
+    const db = await getDb()
+    // `order` is a SQL keyword — must be quoted.
+    const categories = await db.all<CategoryRow>(
+      'SELECT * FROM Category ORDER BY "order" ASC'
+    )
 
     // Cache the result
     apiCache.setCategories(categories)
@@ -30,28 +31,38 @@ export async function GET() {
 
 // POST /api/categories (admin only)
 export async function POST(req: NextRequest) {
-
-      const db = await getDb()
   return requireAdminAuth(req, async () => {
-  try {
-    const body = await req.json()
-    const category = await db.category.create({
-      data: {
-        name: body.name,
-        icon: body.icon || '',
-        color: body.color || '',
-        order: body.order || 0,
-        channelCount: body.channelCount || 0,
-      },
-    })
+    try {
+      const db = await getDb()
+      const body = await req.json()
+      const id = generateId()
+      const now = new Date().toISOString()
 
-    // Invalidate categories cache
-    apiCache.invalidateCategories()
+      await db.run(
+        `INSERT INTO Category
+           (id, name, icon, color, "order", channelCount, createdAt, updatedAt)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        id,
+        body.name,
+        body.icon || '',
+        body.color || '',
+        body.order || 0,
+        body.channelCount || 0,
+        now,
+        now
+      )
 
-    return NextResponse.json(category, { status: 201 })
-  } catch (error) {
-    console.error('Error creating category:', error)
-    return NextResponse.json({ error: 'Failed to create category' }, { status: 500 })
-  }
+      // Invalidate categories cache
+      apiCache.invalidateCategories()
+
+      const category = await db.first<CategoryRow>(
+        'SELECT * FROM Category WHERE id = ?',
+        id
+      )
+      return NextResponse.json(category, { status: 201 })
+    } catch (error) {
+      console.error('Error creating category:', error)
+      return NextResponse.json({ error: 'Failed to create category' }, { status: 500 })
+    }
   })
 }

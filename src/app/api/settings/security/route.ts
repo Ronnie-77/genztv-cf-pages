@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
+import { apiCache } from '@/lib/cache'
+import type { AppSettingRow } from '@/lib/types'
+import { toBool, toNum } from '@/lib/types'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // /api/settings/security
@@ -20,18 +23,17 @@ import { isAdminAuthenticated } from '@/lib/auth'
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function GET() {
-
-      const db = await getDb()
   try {
-    let settings = await db.appSetting.findUnique({
-      where: { id: 'app' },
-      select: { securityEnabled: true },
-    })
-    if (!settings) {
+    const db = await getDb()
+    const row = await db.first<Pick<AppSettingRow, 'securityEnabled'>>(
+      'SELECT securityEnabled FROM AppSetting WHERE id = ?',
+      'app'
+    )
+    if (!row) {
       // No row yet — default to secure (true).
       return NextResponse.json({ securityEnabled: true })
     }
-    return NextResponse.json({ securityEnabled: settings.securityEnabled })
+    return NextResponse.json({ securityEnabled: toBool(row.securityEnabled) })
   } catch (error) {
     console.error('[Settings/Security] GET error:', error)
     // Fail-safe: when in doubt, keep security ON.
@@ -40,15 +42,13 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
-
-      const db = await getDb()
   try {
     // Admin-only.
     const authenticated = await isAdminAuthenticated(req)
     if (!authenticated) {
       return NextResponse.json(
         { error: 'Unauthorized — admin login required' },
-        { status: 401 },
+        { status: 401 }
       )
     }
 
@@ -62,24 +62,44 @@ export async function PATCH(req: NextRequest) {
     if (typeof b.securityEnabled !== 'boolean') {
       return NextResponse.json(
         { error: 'securityEnabled (boolean) is required' },
-        { status: 400 },
+        { status: 400 }
       )
     }
 
-    const updated = await db.appSetting.upsert({
-      where: { id: 'app' },
-      update: { securityEnabled: b.securityEnabled },
-      create: { id: 'app', securityEnabled: b.securityEnabled },
-      select: { securityEnabled: true },
-    })
+    const db = await getDb()
+    const securityEnabled = toNum(b.securityEnabled)
 
-    return NextResponse.json({ securityEnabled: updated.securityEnabled })
+    // Upsert: if no row exists, insert one with the new securityEnabled value;
+    // otherwise just update that one column.
+    const existing = await db.first<{ id: string }>(
+      "SELECT id FROM AppSetting WHERE id = ?",
+      'app'
+    )
+    if (!existing) {
+      await db.run(
+        `INSERT INTO AppSetting (id, appName, securityEnabled) VALUES (?, ?, ?)`,
+        'app',
+        'GenZ TV',
+        securityEnabled
+      )
+    } else {
+      await db.run(
+        'UPDATE AppSetting SET securityEnabled = ? WHERE id = ?',
+        securityEnabled,
+        'app'
+      )
+    }
+
+    // Invalidate the settings cache so other endpoints pick up the change.
+    apiCache.invalidateSettings()
+
+    return NextResponse.json({ securityEnabled: b.securityEnabled })
   } catch (error) {
     console.error('[Settings/Security] PATCH error:', error)
     const message = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json(
       { error: 'Failed to update security setting', detail: message },
-      { status: 500 },
+      { status: 500 }
     )
   }
 }

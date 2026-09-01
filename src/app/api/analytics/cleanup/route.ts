@@ -10,35 +10,37 @@ import { requireAdminAuth } from '@/lib/auth'
 //
 // Returns count of deleted rows. Can also be called as a scheduled job
 // or triggered probabilistically from the track endpoint.
-export async function DELETE(req: NextRequest) {
 
-      const db = await getDb()
+export async function DELETE(req: NextRequest) {
   return requireAdminAuth(req, async () => {
     try {
+      const db = await getDb()
       const now = new Date()
-      const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
-      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000).toISOString()
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()
 
-      // Delete old PageViews (90+ days)
-      const deletedPageViews = await db.pageView.deleteMany({
-        where: {
-          createdAt: { lt: ninetyDaysAgo },
-        },
-      })
+      // Count + delete old PageViews (90+ days)
+      const pvCountRow = await db.first<{ c: number }>(
+        'SELECT COUNT(*) as c FROM PageView WHERE createdAt < ?',
+        ninetyDaysAgo
+      )
+      const pageViewsDeleted = pvCountRow?.c ?? 0
+      await db.run('DELETE FROM PageView WHERE createdAt < ?', ninetyDaysAgo)
 
-      // Delete old VisitorSessions (30+ days inactive)
-      const deletedSessions = await db.visitorSession.deleteMany({
-        where: {
-          lastSeen: { lt: thirtyDaysAgo },
-        },
-      })
+      // Count + delete old VisitorSessions (30+ days inactive)
+      const vsCountRow = await db.first<{ c: number }>(
+        'SELECT COUNT(*) as c FROM VisitorSession WHERE lastSeen < ?',
+        thirtyDaysAgo
+      )
+      const sessionsDeleted = vsCountRow?.c ?? 0
+      await db.run('DELETE FROM VisitorSession WHERE lastSeen < ?', thirtyDaysAgo)
 
       const result = {
-        pageViewsDeleted: deletedPageViews.count,
-        sessionsDeleted: deletedSessions.count,
+        pageViewsDeleted,
+        sessionsDeleted,
         cutoffDate: {
-          pageViews: ninetyDaysAgo.toISOString(),
-          sessions: thirtyDaysAgo.toISOString(),
+          pageViews: ninetyDaysAgo,
+          sessions: thirtyDaysAgo,
         },
       }
 
