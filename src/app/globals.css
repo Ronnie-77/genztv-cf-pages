@@ -1332,19 +1332,17 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .team-logo-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
   border-radius: 50%;
-  padding: 2px;
 }
 
 .team-logo-flag {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
   border-radius: 50%;
-  padding: 2px;
 }
 
 .team-logo-emoji {
